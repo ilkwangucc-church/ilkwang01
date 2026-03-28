@@ -1,0 +1,99 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "예배/말씀",
+  description: "일광교회 예배 안내 및 설교 영상 - 주일예배, 새벽기도회, 수요예배",
+};
+
+const services = [
+  { name: "주일 1부 예배", time: "주일 오전 9:30", place: "본당", icon: "☀️", desc: "온 가족이 함께 드리는 아침 예배입니다." },
+  { name: "주일 2부 예배", time: "주일 오전 11:00", place: "본당", icon: "🌿", desc: "일광교회의 주 예배입니다. 모든 성도가 함께 합니다." },
+  { name: "주일 3부 예배", time: "주일 오후 1:30", place: "본당", icon: "🌞", desc: "청년 및 오후 성도를 위한 예배입니다." },
+  { name: "새벽기도회", time: "매일 오전 5:00", place: "본당", icon: "🌅", desc: "이른 아침 하나님 앞에 나아가는 기도회입니다." },
+  { name: "수요오전기도회", time: "수요일 오전 10:30", place: "본당", icon: "🙏", desc: "중보기도와 함께하는 오전 기도회입니다." },
+  { name: "수요성경공부", time: "수요일 오후 8:00", place: "본당", icon: "📖", desc: "말씀을 깊이 공부하는 성경공부입니다." },
+];
+
+const sermons = [
+  { date: "2025.12.7", title: "바닥에서도 시작되는 하나님의 스토리", scripture: "창세기 39:1-6", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
+  { date: "2025.11.30", title: "감사가 넘치는 삶", scripture: "빌립보서 4:6-7", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
+  { date: "2025.11.23", title: "하나님의 은혜로 충분합니다", scripture: "고린도후서 12:9", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
+  { date: "2025.11.16", title: "믿음의 발걸음을 내딛으라", scripture: "히브리서 11:1-6", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
+];
+
+export default function WorshipPage() {
+  return (
+    <div>
+      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Worship & Message</p>
+          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">예배 / 말씀</h1>
+        </div>
+      </div>
+
+      {/* 서브메뉴 */}
+      <div className="bg-white border-b sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+          {["예배안내", "설교영상"].map((m, i) => (
+            <Link key={m} href={i === 0 ? "/worship" : "/worship/sermons"}
+              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 0 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
+              {m}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        {/* 예배 안내 */}
+        <section className="mb-20">
+          <h2 className="font-nanum-extrabold text-3xl text-gray-800 mb-8">예배 안내</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {services.map((s) => (
+              <div key={s.name} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all">
+                <div className="text-4xl mb-3">{s.icon}</div>
+                <h3 className="font-nanum-extrabold text-gray-800 text-lg mb-1">{s.name}</h3>
+                <p className="text-[#2E7D32] font-nanum-extrabold text-xl mb-1">{s.time}</p>
+                <p className="text-gray-400 text-xs mb-3">📍 {s.place}</p>
+                <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 최신 설교 */}
+        <section>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-nanum-extrabold text-3xl text-gray-800">최신 설교</h2>
+            <Link href="/worship/sermons" className="text-[#2E7D32] font-nanum-bold text-sm hover:underline">
+              전체 보기 →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {sermons.map((s) => (
+              <div key={s.title} className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-md transition-all group">
+                <div className="aspect-video bg-gray-900 relative">
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${s.videoId}?rel=0&modestbranding=1`}
+                    title={s.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div className="p-5">
+                  <p className="text-[#2E7D32] text-xs font-nanum-bold mb-1">{s.scripture}</p>
+                  <h3 className="font-nanum-bold text-gray-800 leading-snug mb-2">{s.title}</h3>
+                  <div className="flex gap-3 text-xs text-gray-400">
+                    <span>{s.date}</span>
+                    <span>{s.preacher}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

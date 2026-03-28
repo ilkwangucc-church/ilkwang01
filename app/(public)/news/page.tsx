@@ -1,0 +1,97 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Calendar, Pin } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "교회소식",
+  description: "일광교회 공지사항 및 교회 소식",
+};
+
+const notices = [
+  { id: 1, title: "2025년 12월 성탄절 예배 및 행사 안내", date: "2025.12.01", category: "공지사항", pinned: true },
+  { id: 2, title: "2025년 4분기 구역예배 일정 안내", date: "2025.11.20", category: "공지사항", pinned: true },
+  { id: 3, title: "2025년 추수감사주일 헌신예배 안내", date: "2025.11.10", category: "행사안내", pinned: false },
+  { id: 4, title: "교회 주차 안내 - 주일 주차 협조 요청", date: "2025.11.01", category: "공지사항", pinned: false },
+  { id: 5, title: "2025년 겨울 성경학교 교사 모집", date: "2025.10.25", category: "모집", pinned: false },
+  { id: 6, title: "일광교회 홈페이지 새단장 안내", date: "2025.10.15", category: "공지사항", pinned: false },
+  { id: 7, title: "2025년 교회 운동회 행사 사진 모음", date: "2025.10.05", category: "행사안내", pinned: false },
+  { id: 8, title: "10월 교역자 간담회 결과 공유", date: "2025.09.28", category: "공지사항", pinned: false },
+];
+
+const categoryColors: Record<string, string> = {
+  "공지사항": "bg-blue-100 text-blue-700",
+  "행사안내": "bg-green-100 text-green-700",
+  "모집": "bg-yellow-100 text-yellow-700",
+};
+
+export default function NewsPage() {
+  return (
+    <div>
+      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">News</p>
+          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">교회 소식</h1>
+        </div>
+      </div>
+
+      {/* 서브메뉴 */}
+      <div className="bg-white border-b sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+          {[
+            { label: "공지사항", href: "/news" },
+            { label: "행사안내", href: "/news/events" },
+            { label: "갤러리", href: "/news/gallery" },
+          ].map((m, i) => (
+            <Link key={m.label} href={m.href}
+              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 0 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
+              {m.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+          {/* 헤더 */}
+          <div className="grid grid-cols-12 bg-gray-50 border-b px-6 py-3 text-xs font-nanum-bold text-gray-500">
+            <div className="col-span-1 text-center">번호</div>
+            <div className="col-span-2 text-center">분류</div>
+            <div className="col-span-6">제목</div>
+            <div className="col-span-3 text-center">날짜</div>
+          </div>
+
+          {notices.map((n) => (
+            <div key={n.id} className="grid grid-cols-12 items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+              <div className="col-span-1 text-center text-sm text-gray-400">
+                {n.pinned ? <Pin className="w-4 h-4 text-[#F9A825] mx-auto" /> : n.id}
+              </div>
+              <div className="col-span-2 text-center">
+                <span className={`text-xs px-2 py-0.5 rounded-full font-nanum-bold ${categoryColors[n.category] || "bg-gray-100 text-gray-600"}`}>
+                  {n.category}
+                </span>
+              </div>
+              <div className="col-span-6">
+                <Link href={`/news/${n.id}`} className={`font-nanum-bold hover:text-[#2E7D32] transition-colors ${n.pinned ? "text-gray-800" : "text-gray-700"}`}>
+                  {n.pinned && <span className="text-[#F9A825] mr-1">[필독]</span>}
+                  {n.title}
+                </Link>
+              </div>
+              <div className="col-span-3 flex items-center justify-center gap-1 text-xs text-gray-400">
+                <Calendar className="w-3 h-3" />{n.date}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 페이지네이션 */}
+        <div className="flex justify-center gap-1 mt-8">
+          {[1, 2, 3, 4, 5].map((p) => (
+            <button key={p} className={`w-9 h-9 rounded-lg text-sm font-nanum-bold transition-colors ${p === 1 ? "bg-[#2E7D32] text-white" : "text-gray-500 hover:bg-gray-100"}`}>
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
