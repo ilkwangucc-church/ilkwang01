@@ -15,7 +15,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
   const isLight = variant === "light";
 
   return (
-    <Link href="/" className="flex items-center gap-2 select-none group">
+    <Link href="/" className="flex items-center gap-1 select-none group">
       {/* Icon — mix-blend-mode:multiply removes white JPEG background */}
       <div className="shrink-0" style={{ width: iconW, height: h }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
