@@ -1,33 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "사이트 준비 중",
-  description: "곧 새로운 모습으로 찾아뵙겠습니다.",
+  title: { default: "일광교회", template: "%s | 일광교회" },
+  description: "행복과 영원으로 초대하는 일광교회 - 대한예수교장로회(합동) 서울 성북구 길음동",
+  keywords: ["일광교회", "교회", "성북구", "길음", "대한예수교장로회", "합동"],
+  openGraph: {
+    title: "일광교회",
+    description: "행복과 영원으로 초대하는 일광교회",
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="ko" className={`${geist.variable} h-full`}>
+      <body className="min-h-full flex flex-col antialiased">{children}</body>
     </html>
   );
 }

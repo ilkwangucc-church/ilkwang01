@@ -1,26 +1,74 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+/* =========================================
+   일광교회 브랜드 컬러 시스템
+   Primary Green: #2E7D32 (짙은 초록)
+   Accent Yellow: #F9A825 (따뜻한 노랑)
+   ========================================= */
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+
+  /* Brand Colors */
+  --brand-green-50:  #E8F5E9;
+  --brand-green-100: #C8E6C9;
+  --brand-green-200: #A5D6A7;
+  --brand-green-300: #81C784;
+  --brand-green-400: #66BB6A;
+  --brand-green-500: #4CAF50;
+  --brand-green-600: #2E7D32;
+  --brand-green-700: #1B5E20;
+
+  --brand-yellow-50:  #FFFDE7;
+  --brand-yellow-100: #FFF9C4;
+  --brand-yellow-300: #FFD54F;
+  --brand-yellow-400: #FFCA28;
+  --brand-yellow-500: #F9A825;
+  --brand-yellow-600: #F57F17;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-geist);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* 브랜드 컬러 등록 */
+  --color-primary:        var(--brand-green-600);
+  --color-primary-light:  var(--brand-green-400);
+  --color-primary-dark:   var(--brand-green-700);
+  --color-primary-50:     var(--brand-green-50);
+  --color-primary-100:    var(--brand-green-100);
+
+  --color-accent:         var(--brand-yellow-500);
+  --color-accent-light:   var(--brand-yellow-300);
+  --color-accent-dark:    var(--brand-yellow-600);
+  --color-accent-50:      var(--brand-yellow-50);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Nanum Gothic", var(--font-sans), sans-serif;
+  word-break: keep-all;
 }
+
+/* 나눔고딕 두께별 유틸리티 */
+.font-nanum { font-family: "Nanum Gothic", sans-serif; font-weight: 400; }
+.font-nanum-bold { font-family: "Nanum Gothic", sans-serif; font-weight: 700; }
+.font-nanum-extrabold { font-family: "Nanum Gothic", sans-serif; font-weight: 800; }
+
+/* 부드러운 스크롤 */
+html { scroll-behavior: smooth; }
+
+/* 링크 기본 스타일 */
+a { transition: color 0.2s; }
+
+/* 섹션 공통 패딩 */
+.section { padding: 4rem 0; }
+.section-sm { padding: 2rem 0; }
+
+/* 브랜드 그라디언트 */
+.bg-brand { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-green-400)); }
+.bg-brand-accent { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-yellow-500)); }
