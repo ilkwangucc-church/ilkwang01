@@ -76,12 +76,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
 
-        {/* Logo: 투명 시 흰 배경 pill로 가시성 확보 */}
-        <div className={`transition-all duration-300 rounded-lg ${
-          !white ? "bg-white/25 backdrop-blur-sm px-3 py-1.5" : ""
-        }`}>
-          <Logo size="md" />
-        </div>
+        <Logo size="md" variant={white ? "dark" : "light"} />
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center">
