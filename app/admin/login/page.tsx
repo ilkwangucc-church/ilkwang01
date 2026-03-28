@@ -31,7 +31,9 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Logo size="sm" />
+            <div className="bg-white rounded-xl px-4 py-2">
+              <Logo size="sm" />
+            </div>
           </div>
           <h1 className="text-xl font-bold text-white">관리자 로그인</h1>
           <p className="text-gray-400 text-sm mt-1">일광교회 관리자 전용</p>
