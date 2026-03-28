@@ -11,7 +11,7 @@ export default function ContactPage() {
     <div>
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Contact</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Contact</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">문의하기</h1>
         </div>
       </div>

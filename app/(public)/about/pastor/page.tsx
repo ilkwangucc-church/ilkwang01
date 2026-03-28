@@ -122,7 +122,7 @@ export default function PastorPage() {
               { title: "선교하는 공동체", desc: "이웃을 사랑하고 열방을 품는 교회로서, 지역 사회와 세계 선교를 함께 감당합니다." },
             ].map((item, i) => (
               <div key={i} className="bg-white/10 rounded-xl p-6">
-                <h3 className="font-bold text-[#F9A825] text-lg mb-3">{item.title}</h3>
+                <h3 className="font-bold text-[#FFC107] text-lg mb-3">{item.title}</h3>
                 <p className="text-green-100 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}

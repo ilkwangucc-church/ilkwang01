@@ -20,7 +20,7 @@ const beliefs = [
 
 export default function ValuesSection() {
   return (
-    <section className="py-24 bg-[#f0f4f9]">
+    <section className="py-24 bg-[#F8FAF8]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-14">

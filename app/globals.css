@@ -2,16 +2,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
 
 /* =========================================
-   일광교회 브랜드 컬러 시스템
-   Primary Green: #2E7D32 (짙은 초록)
-   Accent Yellow: #F9A825 (따뜻한 노랑)
+   일광교회 브랜드 컬러 시스템 v2
+   =========================================
+   구분               색상 코드   용도
+   ─────────────────────────────────────────
+   Primary (Brand)   #2E7D32   로고, 메인 버튼(CTA), 강조 텍스트
+   Primary Dark      #1B5E20   버튼 Hover, 깊이감 있는 강조
+   Background (Main) #F8FAF8   전체 배경 (연한 그린 빛 화이트)
+   Surface (Section) #FFFFFF   카드 UI, 섹션 구분용 화이트
+   Text (Main)       #1A1C1A   가독성을 위한 짙은 차콜 그레이
+   Accent / Point    #FFC107   이벤트·알림용 골드/옐로우
+   Dark Navy         #1a2744   Footer, Hero 오버레이 (구조용)
    ========================================= */
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  /* === 시맨틱 컬러 === */
+  --background: #F8FAF8;
+  --surface:    #FFFFFF;
+  --foreground: #1A1C1A;
 
-  /* Brand Colors */
+  /* === Brand Green === */
   --brand-green-50:  #E8F5E9;
   --brand-green-100: #C8E6C9;
   --brand-green-200: #A5D6A7;
@@ -21,30 +31,41 @@
   --brand-green-600: #2E7D32;
   --brand-green-700: #1B5E20;
 
-  --brand-yellow-50:  #FFFDE7;
-  --brand-yellow-100: #FFF9C4;
-  --brand-yellow-300: #FFD54F;
-  --brand-yellow-400: #FFCA28;
-  --brand-yellow-500: #F9A825;
-  --brand-yellow-600: #F57F17;
+  /* === Accent Gold === */
+  --brand-gold-50:  #FFF8E1;
+  --brand-gold-100: #FFECB3;
+  --brand-gold-300: #FFE082;
+  --brand-gold-500: #FFC107;
+  --brand-gold-700: #F57F17;
+
+  /* === Dark Navy (구조용: Footer, Hero, 날짜 박스) === */
+  --dark-navy:       #1a2744;
+  --dark-navy-light: #243356;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface:    var(--surface);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist);
 
-  /* 브랜드 컬러 등록 */
-  --color-primary:        var(--brand-green-600);
-  --color-primary-light:  var(--brand-green-400);
-  --color-primary-dark:   var(--brand-green-700);
-  --color-primary-50:     var(--brand-green-50);
-  --color-primary-100:    var(--brand-green-100);
+  /* Primary Green */
+  --color-primary:       var(--brand-green-600);
+  --color-primary-light: var(--brand-green-400);
+  --color-primary-dark:  var(--brand-green-700);
+  --color-primary-50:    var(--brand-green-50);
+  --color-primary-100:   var(--brand-green-100);
 
-  --color-accent:         var(--brand-yellow-500);
-  --color-accent-light:   var(--brand-yellow-300);
-  --color-accent-dark:    var(--brand-yellow-600);
-  --color-accent-50:      var(--brand-yellow-50);
+  /* Accent Gold */
+  --color-accent:        var(--brand-gold-500);
+  --color-accent-light:  var(--brand-gold-300);
+  --color-accent-dark:   var(--brand-gold-700);
+  --color-accent-50:     var(--brand-gold-50);
+  --color-accent-100:    var(--brand-gold-100);
+
+  /* Dark Navy */
+  --color-dark:          var(--dark-navy);
+  --color-dark-light:    var(--dark-navy-light);
 }
 
 body {
@@ -55,9 +76,9 @@ body {
 }
 
 /* 나눔고딕 두께별 유틸리티 */
-.font-nanum { font-family: "Nanum Gothic", sans-serif; font-weight: 400; }
-.font-nanum-bold { font-family: "Nanum Gothic", sans-serif; font-weight: 700; }
-.font-nanum-extrabold { font-family: "Nanum Gothic", sans-serif; font-weight: 800; }
+.font-nanum          { font-family: "Nanum Gothic", sans-serif; font-weight: 400; }
+.font-nanum-bold     { font-family: "Nanum Gothic", sans-serif; font-weight: 700; }
+.font-nanum-extrabold{ font-family: "Nanum Gothic", sans-serif; font-weight: 800; }
 
 /* 부드러운 스크롤 */
 html { scroll-behavior: smooth; }
@@ -66,9 +87,19 @@ html { scroll-behavior: smooth; }
 a { transition: color 0.2s; }
 
 /* 섹션 공통 패딩 */
-.section { padding: 4rem 0; }
+.section    { padding: 4rem 0; }
 .section-sm { padding: 2rem 0; }
 
 /* 브랜드 그라디언트 */
-.bg-brand { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-green-400)); }
-.bg-brand-accent { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-yellow-500)); }
+.bg-brand        { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-green-400)); }
+.bg-brand-accent { background: linear-gradient(135deg, var(--brand-green-600), var(--brand-gold-500)); }
+
+/* 액센트 골드 하이라이트 (이벤트·알림용) */
+.badge-accent {
+  background: var(--brand-gold-500);
+  color: var(--foreground);
+  font-weight: 700;
+  padding: 0.2em 0.6em;
+  border-radius: 0.3em;
+  font-size: 0.75rem;
+}

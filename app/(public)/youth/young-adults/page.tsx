@@ -70,7 +70,7 @@ export default function YoungAdultsPage() {
               믿음이 있든 없든, 교회가 처음이든 — 누구나 환영합니다.<br />
               매 주일 오후 1:30 본당에서 먼저 예배를 드리고 오세요.
             </p>
-            <Link href="/contact" className="inline-block px-7 py-3 bg-[#F9A825] text-gray-900 rounded-full font-bold hover:bg-yellow-400 transition-colors">
+            <Link href="/contact" className="inline-block px-7 py-3 bg-[#FFC107] text-gray-900 rounded-full font-bold hover:bg-yellow-400 transition-colors">
               문의하기
             </Link>
           </div>

@@ -29,7 +29,7 @@ export default function GalleryPage() {
     <div>
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Gallery</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Gallery</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">갤러리</h1>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function GalleryPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="absolute bottom-0 p-3">
-                  <span className="text-xs text-[#F9A825] font-nanum-bold">{img.category}</span>
+                  <span className="text-xs text-[#FFC107] font-nanum-bold">{img.category}</span>
                   <p className="text-white text-sm font-nanum-bold">{img.title}</p>
                 </div>
               </div>

@@ -21,7 +21,7 @@ export default function AboutPage() {
       {/* 페이지 헤더 */}
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Church Introduction</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Church Introduction</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">교회소개</h1>
         </div>
       </div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-[#F9A825] text-gray-900 rounded-xl px-4 py-2 shadow-lg">
+            <div className="absolute -bottom-4 -right-4 bg-[#FFC107] text-gray-900 rounded-xl px-4 py-2 shadow-lg">
               <p className="font-nanum-extrabold text-sm">담임목사</p>
               <p className="font-nanum-extrabold text-lg">신점일 목사</p>
             </div>
@@ -82,7 +82,7 @@ export default function AboutPage() {
             </p>
             <p className="font-nanum-extrabold text-[#2E7D32] text-lg">여기 영원히 사는 길이 있습니다.</p>
 
-            <blockquote className="border-l-4 border-[#F9A825] pl-4 py-2 bg-[#FFFDE7] rounded-r-lg">
+            <blockquote className="border-l-4 border-[#FFC107] pl-4 py-2 bg-[#FFFDE7] rounded-r-lg">
               <p className="font-nanum-extrabold text-xl text-gray-800">
                 "내가 곧 길이요, 진리요, 생명이니 ···"
               </p>

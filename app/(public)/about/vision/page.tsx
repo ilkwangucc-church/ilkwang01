@@ -19,7 +19,7 @@ export default function VisionPage() {
     <div>
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Vision</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Vision</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">소개 &amp; 비전</h1>
         </div>
       </div>
@@ -48,10 +48,10 @@ export default function VisionPage() {
           <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-6">일광교회 사명</h2>
           <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] rounded-2xl p-8 text-white">
             <div className="text-center space-y-3 text-lg">
-              <p>살아계신 하나님을 <strong className="text-[#F9A825]">예배하고</strong></p>
-              <p>예수 그리스도의 제자로 <strong className="text-[#F9A825]">훈련되어</strong></p>
-              <p>성령의 능력으로 사랑하고 전도하고 <strong className="text-[#F9A825]">섬김으로</strong></p>
-              <p className="font-nanum-extrabold text-2xl text-[#F9A825] pt-2">하나님의 나라를 확장한다.</p>
+              <p>살아계신 하나님을 <strong className="text-[#FFC107]">예배하고</strong></p>
+              <p>예수 그리스도의 제자로 <strong className="text-[#FFC107]">훈련되어</strong></p>
+              <p>성령의 능력으로 사랑하고 전도하고 <strong className="text-[#FFC107]">섬김으로</strong></p>
+              <p className="font-nanum-extrabold text-2xl text-[#FFC107] pt-2">하나님의 나라를 확장한다.</p>
             </div>
           </div>
         </section>

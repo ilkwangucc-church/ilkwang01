@@ -29,7 +29,7 @@ export default function NewsPage() {
     <div>
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">News</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">News</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">교회 소식</h1>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function NewsPage() {
           {notices.map((n) => (
             <div key={n.id} className="grid grid-cols-12 items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
               <div className="col-span-1 text-center text-sm text-gray-400">
-                {n.pinned ? <Pin className="w-4 h-4 text-[#F9A825] mx-auto" /> : n.id}
+                {n.pinned ? <Pin className="w-4 h-4 text-[#FFC107] mx-auto" /> : n.id}
               </div>
               <div className="col-span-2 text-center">
                 <span className={`text-xs px-2 py-0.5 rounded-full font-nanum-bold ${categoryColors[n.category] || "bg-gray-100 text-gray-600"}`}>
@@ -72,7 +72,7 @@ export default function NewsPage() {
               </div>
               <div className="col-span-6">
                 <Link href={`/news/${n.id}`} className={`font-nanum-bold hover:text-[#2E7D32] transition-colors ${n.pinned ? "text-gray-800" : "text-gray-700"}`}>
-                  {n.pinned && <span className="text-[#F9A825] mr-1">[필독]</span>}
+                  {n.pinned && <span className="text-[#FFC107] mr-1">[필독]</span>}
                   {n.title}
                 </Link>
               </div>

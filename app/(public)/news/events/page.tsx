@@ -101,7 +101,7 @@ export default function EventsPage() {
             >
               {event.highlight && (
                 <div className="bg-[#2E7D32] text-white text-xs font-bold px-4 py-1.5 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-[#F9A825] rounded-full animate-pulse" />
+                  <span className="w-2 h-2 bg-[#FFC107] rounded-full animate-pulse" />
                   주요 행사
                 </div>
               )}

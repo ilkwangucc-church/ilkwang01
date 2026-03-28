@@ -10,7 +10,7 @@ export default function LocationPage() {
     <div>
       <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#F9A825] text-sm font-nanum-bold tracking-widest uppercase mb-2">Location</p>
+          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Location</p>
           <h1 className="font-nanum-extrabold text-4xl md:text-5xl">오시는 길</h1>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function LocationPage() {
             ].map((s) => (
               <div key={s.name} className="bg-white/10 rounded-xl p-4 text-center">
                 <p className="text-green-200 text-xs mb-1">{s.name}</p>
-                <p className="font-nanum-extrabold text-[#F9A825]">{s.time}</p>
+                <p className="font-nanum-extrabold text-[#FFC107]">{s.time}</p>
               </div>
             ))}
           </div>
