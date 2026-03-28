@@ -1,53 +1,73 @@
 import Link from "next/link";
-import { Play, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { fetchChannelVideos, ytWatch, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
 
-export default function LatestSermon() {
+export default async function LatestSermon() {
+  const videos = await fetchChannelVideos();
+  const latest = videos[0];
+  const videoId = latest?.id ?? "BVamVjzwBIo";
+  const title = latest?.title ?? '2026.03.15. "지혜로운 마음" (시편 90편 1-17)';
+
+  const embedSrc = ytEmbed(videoId, {
+    autoplay: true,
+    mute: true,
+    loop: true,
+    controls: true,
+  });
+
   return (
     <section className="relative z-10 -mt-16 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          {/* Thumbnail */}
-          <div className="md:w-72 shrink-0 relative overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=600&auto=format&fit=crop&q=80"
-              alt="주일 예배"
-              className="w-full h-52 md:h-full object-cover"
+          {/* ── 영상 임베드 (autoplay + mute) ── */}
+          <div className="md:w-80 shrink-0 relative bg-black" style={{ minHeight: 200 }}>
+            <iframe
+              src={embedSrc}
+              title={title}
+              className="absolute inset-0 w-full h-full"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
             />
-            <div className="absolute inset-0 bg-[#1a2744]/40 flex items-center justify-center">
-              <div className="w-14 h-14 rounded-full bg-[#2E7D32] flex items-center justify-center shadow-lg">
-                <Play className="w-6 h-6 text-white fill-white ml-1" />
-              </div>
-            </div>
           </div>
 
-          {/* Info */}
+          {/* ── 정보 ── */}
           <div className="flex-1 p-8 flex flex-col justify-center">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
-              주일 예배 생중계
+              지난 주일 예배 · 소리 없이 재생 중
             </p>
-            <h2 className="text-2xl font-black text-[#1a2744] mb-2">
-              주일 예배에 함께하세요
+            <h2 className="text-xl font-black text-[#1a2744] mb-2 line-clamp-2">
+              {title}
             </h2>
             <p className="text-gray-500 text-sm mb-6">
-              매주 일요일 오전 9:30 · 11:00 — 일광교회 유튜브 채널에서 생중계됩니다
+              매주 일요일 오전 9:30 · 11:00<br />
+              일광교회 유튜브 채널에서 생중계됩니다
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                href="https://www.youtube.com/@ilkwangucc"
+              <a
+                href={ytWatch(videoId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold text-sm rounded hover:bg-[#1B5E20] transition-colors"
               >
-                유튜브 참여하기 <ArrowRight className="w-4 h-4" />
-              </Link>
+                유튜브에서 시청 <ArrowRight className="w-4 h-4" />
+              </a>
               <Link
                 href="/worship/sermons"
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1a2744] hover:text-[#2E7D32] transition-colors"
               >
-                설교 목록 보기 <ArrowRight className="w-4 h-4" />
+                설교 목록 전체보기 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
+            <p className="mt-5 text-xs text-gray-400">
+              <a
+                href={YT_CHANNEL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#2E7D32] transition-colors"
+              >
+                ▶ 유튜브 채널 구독하기 @ilkwangucc
+              </a>
+            </p>
           </div>
         </div>
       </div>
