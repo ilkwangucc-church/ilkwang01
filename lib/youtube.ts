@@ -46,6 +46,7 @@ export function ytEmbed(
   if (opts.modestbranding !== false)  p.set("modestbranding", "1");
   p.set("rel", "0");
   p.set("playsinline", "1");
+  p.set("enablejsapi", "1");
   return `https://www.youtube.com/embed/${id}?${p.toString()}`;
 }
 

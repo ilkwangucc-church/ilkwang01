@@ -19,15 +19,18 @@ export default async function LatestSermon() {
     <section className="relative z-10 -mt-16 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          {/* ── 영상 임베드 (autoplay + mute) ── */}
-          <div className="md:w-80 shrink-0 relative bg-black" style={{ minHeight: 200 }}>
-            <iframe
-              src={embedSrc}
-              title={title}
-              className="absolute inset-0 w-full h-full"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-            />
+          {/* ── 영상 임베드 (16:9 고정, autoplay + mute) ── */}
+          <div className="md:w-[360px] shrink-0 bg-black">
+            {/* aspect-video wrapper → 16:9 비율 고정 */}
+            <div className="relative aspect-video">
+              <iframe
+                src={embedSrc}
+                title={title}
+                className="absolute inset-0 w-full h-full"
+                allow="autoplay; encrypted-media; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
           </div>
 
           {/* ── 정보 ── */}
