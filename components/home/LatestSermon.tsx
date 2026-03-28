@@ -16,7 +16,7 @@ export default async function LatestSermon() {
   });
 
   return (
-    <section className="relative z-10 -mt-16 px-6">
+    <section className="relative z-10 -mt-16">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
           {/* ── 영상 임베드: 모바일 16:9 / 데스크탑 카드 전체 높이 채움 ── */}
