@@ -23,9 +23,8 @@ export default function HeroSection() {
 
           {/* Main Heading */}
           <h1 className="text-5xl lg:text-7xl font-black text-white leading-[1.05] mb-6">
-            일광교회에<br />
-            <span className="text-[#6dbf73]">오신 것을</span><br />
-            환영합니다
+            일광교회에 오신<br />
+            것을 환영합니다
           </h1>
 
           {/* Body */}
