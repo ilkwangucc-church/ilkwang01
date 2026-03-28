@@ -3,31 +3,25 @@ import Link from "next/link";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
-  /** "dark" = white navbar (default), "light" = transparent hero navbar */
   variant?: "dark" | "light";
 }
 
 export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
   const h = { sm: 32, md: 40, lg: 56 }[size];
-  // logo01.jpg is 420×280 (3:2)
-  const iconW = Math.round(h * 1.5);
+  // logo01.png trimmed: 176×248 → ratio 0.71:1
+  const iconW = Math.round(h * 176 / 248);
 
   const isLight = variant === "light";
 
   return (
-    <Link href="/" className="flex items-center gap-0 select-none group">
-      {/* Icon — mix-blend-mode:multiply removes white JPEG background */}
+    <Link href="/" className="flex items-end gap-1 select-none group">
+      {/* Icon */}
       <div className="shrink-0" style={{ width: iconW, height: h }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo01.png"
           alt="일광교회"
-          style={{
-            width: iconW,
-            height: h,
-            objectFit: "cover",
-            display: "block",
-          }}
+          style={{ width: iconW, height: h, objectFit: "contain", display: "block" }}
         />
       </div>
 

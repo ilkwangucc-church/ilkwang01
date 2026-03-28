@@ -25,14 +25,14 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Col 1: Logo + About */}
         <div className="md:col-span-1">
-          <div className="mb-5">
+          <div className="mb-2">
             <Logo size="md" variant="light" />
           </div>
-          <p className="text-sm text-gray-400 leading-tight mb-3 pl-[60px]">
+          <p className="text-sm text-gray-400 leading-tight mb-3 pl-[29px]">
             대한예수교장로회(합동) 소속<br />
             1971년 설립된 서울 성북구 일광교회
           </p>
-          <p className="text-sm font-bold text-white pl-[60px]">02-927-0691</p>
+          <p className="text-sm font-bold text-white pl-[29px]">02-927-0691</p>
         </div>
 
         {/* Col 2: Worship Times */}
