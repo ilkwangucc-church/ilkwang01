@@ -17,10 +17,10 @@ export default async function LatestSermon() {
 
   return (
     <section className="relative z-10 -mt-16">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row max-w-6xl mx-auto">
           {/* ── 영상: 카드 전체 높이 cover (여백 없음) ── */}
-          <div className="sm:w-[420px] shrink-0 relative overflow-hidden self-stretch min-h-[236px]">
+          <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[326px]">
             <iframe
               src={embedSrc}
               title={title}
