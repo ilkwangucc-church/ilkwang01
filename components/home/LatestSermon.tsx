@@ -18,10 +18,10 @@ export default async function LatestSermon() {
   return (
     <section className="relative z-10 -mt-16">
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          {/* ── 영상 임베드: 모바일 16:9 / 데스크탑 카드 전체 높이 채움 ── */}
-          <div className="md:w-[420px] shrink-0 bg-black flex flex-col">
-            <div className="aspect-video md:aspect-auto md:flex-1 relative">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
+          {/* ── 영상: 항상 16:9 (검은 여백 없음) ── */}
+          <div className="sm:w-[420px] shrink-0">
+            <div className="aspect-video relative">
               <iframe
                 src={embedSrc}
                 title={title}
@@ -32,8 +32,8 @@ export default async function LatestSermon() {
             </div>
           </div>
 
-          {/* ── 정보 ── */}
-          <div className="flex-1 p-8 flex flex-col justify-center">
+          {/* ── 정보 (오른쪽) ── */}
+          <div className="flex-1 p-8 flex flex-col justify-center items-end text-right">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
               지난 주일 예배 · 소리 없이 재생 중
             </p>
@@ -44,7 +44,7 @@ export default async function LatestSermon() {
               매주 일요일 오전 9:30 · 11:00<br />
               일광교회 유튜브 채널에서 생중계됩니다
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 justify-end">
               <a
                 href={ytWatch(videoId)}
                 target="_blank"

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
@@ -50,17 +49,6 @@ export default function AboutPage() {
                 className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent">
-                <div className="p-6 text-white w-full">
-                  <p className="font-nanum-extrabold text-xl">신 점 일 목사</p>
-                  <p className="text-gray-300 text-sm">일광교회 담임목사</p>
-                </div>
-              </div>
-            </div>
-            {/* 골드 뱃지 */}
-            <div className="absolute -bottom-4 -right-4 bg-[#FFC107] text-gray-900 rounded-xl px-4 py-2 shadow-lg">
-              <p className="font-nanum-bold text-xs">Senior Pastor</p>
-              <p className="font-nanum-extrabold text-base">신점일 목사</p>
             </div>
           </div>
 
@@ -168,29 +156,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* 빠른 이동 */}
-      <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-4">
-        <Link
-          href="/about/vision"
-          className="flex items-center gap-4 p-6 rounded-2xl bg-[#E8F5E9] hover:bg-[#C8E6C9] transition-colors"
-        >
-          <div className="text-3xl">🌱</div>
-          <div>
-            <h4 className="font-nanum-extrabold text-gray-800">소개 &amp; 비전</h4>
-            <p className="text-gray-500 text-sm">일광교회의 사명과 비전을 소개합니다</p>
-          </div>
-        </Link>
-        <Link
-          href="/about/location"
-          className="flex items-center gap-4 p-6 rounded-2xl bg-[#FFFDE7] hover:bg-[#FFF9C4] transition-colors"
-        >
-          <div className="text-3xl">📍</div>
-          <div>
-            <h4 className="font-nanum-extrabold text-gray-800">오시는 길</h4>
-            <p className="text-gray-500 text-sm">서울 성북구 동소문로 212-68</p>
-          </div>
-        </Link>
-      </div>
     </div>
   );
 }

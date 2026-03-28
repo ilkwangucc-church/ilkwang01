@@ -17,14 +17,14 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 w-full">
         <div className="max-w-2xl">
           {/* Label */}
-          <p className="text-[#a3c9a8] text-xs font-bold uppercase tracking-[0.22em] mb-5">
+          <p className="text-[#a3c9a8] text-lg font-bold mb-3">
             행복과 영원으로 초대하는
           </p>
 
           {/* Main Heading */}
           <h1 className="text-5xl lg:text-7xl font-black text-white leading-[1.05] mb-6">
-            일광교회에 오신<br />
-            것을 환영합니다
+            일광교회에 오신 것을<br />
+            환영합니다
           </h1>
 
           {/* Body */}
