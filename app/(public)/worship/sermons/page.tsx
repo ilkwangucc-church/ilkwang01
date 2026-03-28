@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 // 실제 운영 시 Supabase DB 또는 YouTube API 연동으로 교체
 const sermons = [
-  { id: 1, title: "부활의 증인으로 살라", preacher: "담임목사", date: "2024-03-31", category: "주일예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "고전 15:1-11" },
-  { id: 2, title: "십자가 앞에 서라", preacher: "담임목사", date: "2024-03-24", category: "주일예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "갈 2:20" },
-  { id: 3, title: "기도의 능력", preacher: "담임목사", date: "2024-03-20", category: "수요예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "약 5:13-18" },
-  { id: 4, title: "주님을 닮아가는 삶", preacher: "담임목사", date: "2024-03-17", category: "주일예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "빌 2:1-11" },
-  { id: 5, title: "성령 충만한 교회", preacher: "담임목사", date: "2024-03-13", category: "수요예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "행 2:1-13" },
-  { id: 6, title: "말씀 위에 세운 믿음", preacher: "담임목사", date: "2024-03-10", category: "주일예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "마 7:24-27" },
-  { id: 7, title: "하나님의 선하심을 믿으라", preacher: "담임목사", date: "2024-03-06", category: "수요예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "롬 8:28" },
-  { id: 8, title: "새 언약의 백성", preacher: "담임목사", date: "2024-03-03", category: "주일예배", youtube: "https://www.youtube.com/@ilwangucc", scripture: "렘 31:31-34" },
+  { id: 1, title: "부활의 증인으로 살라", preacher: "담임목사", date: "2024-03-31", category: "주일예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "고전 15:1-11" },
+  { id: 2, title: "십자가 앞에 서라", preacher: "담임목사", date: "2024-03-24", category: "주일예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "갈 2:20" },
+  { id: 3, title: "기도의 능력", preacher: "담임목사", date: "2024-03-20", category: "수요예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "약 5:13-18" },
+  { id: 4, title: "주님을 닮아가는 삶", preacher: "담임목사", date: "2024-03-17", category: "주일예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "빌 2:1-11" },
+  { id: 5, title: "성령 충만한 교회", preacher: "담임목사", date: "2024-03-13", category: "수요예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "행 2:1-13" },
+  { id: 6, title: "말씀 위에 세운 믿음", preacher: "담임목사", date: "2024-03-10", category: "주일예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "마 7:24-27" },
+  { id: 7, title: "하나님의 선하심을 믿으라", preacher: "담임목사", date: "2024-03-06", category: "수요예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "롬 8:28" },
+  { id: 8, title: "새 언약의 백성", preacher: "담임목사", date: "2024-03-03", category: "주일예배", youtube: "https://www.youtube.com/@ilkwangucc", scripture: "렘 31:31-34" },
 ];
 
 const categories = ["전체", "주일예배", "수요예배", "특별예배", "새벽기도"];
@@ -33,7 +33,7 @@ export default function SermonsPage() {
             하나님의 말씀, 언제 어디서나 다시 들을 수 있습니다
           </p>
           <a
-            href="https://www.youtube.com/@ilwangucc"
+            href="https://www.youtube.com/@ilkwangucc"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-white text-[#2E7D32] rounded-full font-semibold hover:bg-green-50 transition-colors text-sm"
@@ -103,7 +103,7 @@ export default function SermonsPage() {
           {/* 더보기 */}
           <div className="text-center mt-10">
             <a
-              href="https://www.youtube.com/@ilwangucc"
+              href="https://www.youtube.com/@ilkwangucc"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3 border-2 border-[#2E7D32] text-[#2E7D32] rounded-full font-semibold hover:bg-[#2E7D32] hover:text-white transition-colors"

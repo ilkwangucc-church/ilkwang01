@@ -1,47 +1,52 @@
 import Link from "next/link";
-import { Clock, ChevronRight } from "lucide-react";
+import { BookOpen, Users, Baby, Calendar, Heart, Globe } from "lucide-react";
 
 const services = [
-  { name: "주일 1부 예배", time: "오전 9:30", icon: "☀️", desc: "가족 예배" },
-  { name: "주일 2부 예배", time: "오전 11:00", icon: "🌿", desc: "주 예배" },
-  { name: "주일 3부 예배", time: "오후 1:30", icon: "🌞", desc: "청년 예배" },
-  { name: "새벽기도회", time: "매일 오전 5:00", icon: "🌅", desc: "월~토" },
-  { name: "수요오전기도회", time: "수 오전 10:30", icon: "🙏", desc: "중보기도" },
-  { name: "수요성경공부", time: "수 오후 8:00", icon: "📖", desc: "말씀 훈련" },
+  { icon: BookOpen, title: "주일 예배", desc: "말씀 중심의 주일 예배로 하나님께 나아갑니다." },
+  { icon: Users, title: "청년부", desc: "청년들이 함께 성장하고 교제하는 공동체입니다." },
+  { icon: Baby, title: "주일학교", desc: "다음 세대를 믿음 안에서 양육하는 교육부입니다." },
+  { icon: Calendar, title: "특별 행사", desc: "부흥성회, 수련회 등 특별한 신앙 행사를 진행합니다." },
+  { icon: Heart, title: "상담 사역", desc: "삶의 어려움을 함께 나누고 회복을 돕습니다." },
+  { icon: Globe, title: "선교 사역", desc: "국내외 선교를 통해 복음을 전하는 교회입니다." },
 ];
 
 export default function WorshipSchedule() {
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-[#2E7D32] text-sm font-nanum-bold tracking-widest uppercase mb-2">Worship</p>
-          <h2 className="font-nanum-extrabold text-3xl md:text-4xl text-gray-800 mb-3">예배 안내</h2>
-          <p className="text-gray-500">하나님을 예배하는 시간에 함께해 주세요</p>
-          <div className="w-12 h-1 bg-[#F9A825] mx-auto rounded-full mt-3" />
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          {services.map((s) => (
-            <div
-              key={s.name}
-              className="bg-gradient-to-br from-[#E8F5E9] to-white rounded-2xl p-5 border border-[#C8E6C9] hover:shadow-md transition-shadow"
+    <section className="py-24 bg-[#f0f4f9]">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Left */}
+          <div>
+            <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
+              OUR MINISTRY
+            </p>
+            <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] leading-tight mb-6">
+              지역 사회와 함께<br />성장하는 교회
+            </h2>
+            <p className="text-gray-500 text-base leading-relaxed mb-8">
+              일광교회는 예배와 교육, 교제와 봉사를 통해 성도들이 하나님의 사람으로
+              세워지도록 돕고 있습니다. 다양한 부서와 사역을 통해 모든 세대가 함께 합니다.
+            </p>
+            <Link
+              href="/worship"
+              className="inline-block px-7 py-3.5 bg-[#2E7D32] text-white font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
             >
-              <div className="text-3xl mb-3">{s.icon}</div>
-              <h3 className="font-nanum-bold text-gray-800 mb-1">{s.name}</h3>
-              <p className="text-[#2E7D32] font-nanum-extrabold text-lg">{s.time}</p>
-              <p className="text-gray-400 text-xs mt-1">{s.desc}</p>
-            </div>
-          ))}
-        </div>
+              예배 안내 보기
+            </Link>
+          </div>
 
-        <div className="text-center">
-          <Link
-            href="/worship"
-            className="inline-flex items-center gap-2 text-[#2E7D32] font-nanum-bold hover:gap-3 transition-all"
-          >
-            예배 안내 자세히 보기 <ChevronRight className="w-4 h-4" />
-          </Link>
+          {/* Right: Service Grid */}
+          <div className="grid grid-cols-3 gap-4">
+            {services.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-xl border-2 border-[#1a2744]/10 bg-white flex items-center justify-center shadow-sm">
+                  <Icon className="w-5 h-5 text-[#1a2744]" />
+                </div>
+                <h3 className="text-sm font-bold text-[#1a2744]">{title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

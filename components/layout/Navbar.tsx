@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import Logo from "./Logo";
 
 const nav = [
@@ -51,7 +51,6 @@ const nav = [
     ],
   },
   { label: "커뮤니티", href: "/blog" },
-  { label: "온라인헌금", href: "/offering" },
 ];
 
 export default function Navbar() {
@@ -59,11 +58,13 @@ export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
+        {/* Logo */}
         <Logo size="md" />
 
-        <nav className="hidden lg:flex items-center gap-1">
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-0">
           {nav.map((item) => (
             <div
               key={item.href}
@@ -73,18 +74,18 @@ export default function Navbar() {
             >
               <Link
                 href={item.href}
-                className="flex items-center gap-0.5 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#2E7D32] transition-colors"
+                className="flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold text-[#1a2744] hover:text-[#2E7D32] transition-colors"
               >
                 {item.label}
-                {item.sub && <ChevronDown className="w-3 h-3" />}
+                {item.sub && <ChevronDown className="w-3.5 h-3.5 opacity-60" />}
               </Link>
               {item.sub && activeMenu === item.href && (
-                <div className="absolute top-full left-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
+                <div className="absolute top-full left-0 mt-0 w-40 bg-white rounded-b-xl shadow-xl border-t-2 border-[#2E7D32] py-2 z-50">
                   {item.sub.map((s) => (
                     <Link
                       key={s.href}
                       href={s.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#E8F5E9] hover:text-[#2E7D32] transition-colors"
+                      className="block px-5 py-2.5 text-sm text-[#1a2744] hover:bg-[#f0f4f0] hover:text-[#2E7D32] transition-colors"
                     >
                       {s.label}
                     </Link>
@@ -95,31 +96,38 @@ export default function Navbar() {
           ))}
         </nav>
 
+        {/* Right: Phone + CTA */}
         <div className="hidden lg:flex items-center gap-4">
-          <a href="tel:02-927-0691" className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#2E7D32]">
-            <Phone className="w-4 h-4" /> 02-927-0691
+          <a
+            href="tel:02-927-0691"
+            className="flex items-center gap-1.5 text-sm font-medium text-[#1a2744] hover:text-[#2E7D32] transition-colors"
+          >
+            <Phone className="w-4 h-4" />
+            02-927-0691
           </a>
           <Link
-            href="/login"
-            className="text-sm px-3 py-1.5 rounded-full border border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white transition-colors"
+            href="/offering"
+            className="px-5 py-2.5 bg-[#2E7D32] text-white text-sm font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
           >
-            로그인
+            온라인 헌금
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="lg:hidden p-2">
+        {/* Mobile Hamburger */}
+        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-[#1a2744]">
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {open && (
-        <div className="lg:hidden border-t bg-white px-4 py-4 space-y-1">
+        <div className="lg:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-1 shadow-lg">
           {nav.map((item) => (
             <div key={item.href}>
               <Link
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block py-2 font-medium text-gray-700 border-b border-gray-100"
+                className="block py-2.5 text-[15px] font-semibold text-[#1a2744] border-b border-gray-100"
               >
                 {item.label}
               </Link>
@@ -130,7 +138,7 @@ export default function Navbar() {
                       key={s.href}
                       href={s.href}
                       onClick={() => setOpen(false)}
-                      className="block py-1 text-sm text-gray-500 hover:text-[#2E7D32]"
+                      className="block py-1.5 text-sm text-gray-500 hover:text-[#2E7D32]"
                     >
                       {s.label}
                     </Link>
@@ -139,9 +147,17 @@ export default function Navbar() {
               )}
             </div>
           ))}
-          <div className="pt-2 flex gap-3">
-            <a href="tel:02-927-0691" className="text-sm text-gray-600">📞 02-927-0691</a>
-            <Link href="/login" className="text-sm text-[#2E7D32] font-medium">로그인</Link>
+          <div className="pt-3 flex items-center gap-3">
+            <a href="tel:02-927-0691" className="text-sm text-[#1a2744] font-medium">
+              📞 02-927-0691
+            </a>
+            <Link
+              href="/offering"
+              onClick={() => setOpen(false)}
+              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded font-bold"
+            >
+              온라인 헌금
+            </Link>
           </div>
         </div>
       )}
