@@ -27,7 +27,7 @@ export default function ContactCTA() {
           </p>
           <a
             href="tel:02-927-0691"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2E7D32] text-white font-bold rounded hover:bg-[#1B5E20] transition-colors text-base tracking-wide"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors text-base tracking-wide"
           >
             <Phone className="w-5 h-5" />
             02-927-0691

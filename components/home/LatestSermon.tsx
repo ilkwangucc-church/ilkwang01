@@ -49,7 +49,7 @@ export default async function LatestSermon() {
                 href={ytWatch(videoId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold text-sm rounded hover:bg-[#1B5E20] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold text-sm rounded-[26px] hover:bg-[#1B5E20] transition-colors"
               >
                 유튜브에서 시청 <ArrowRight className="w-4 h-4" />
               </a>

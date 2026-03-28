@@ -37,13 +37,13 @@ export default function HeroSection() {
           <div className="flex flex-wrap gap-4">
             <Link
               href="/about"
-              className="px-8 py-4 bg-[#2E7D32] text-white font-bold text-base rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
+              className="px-8 py-4 bg-[#2E7D32] text-white font-bold text-base rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
             >
               교회 소개 보기
             </Link>
             <Link
               href="/worship/sermons"
-              className="px-8 py-4 border-2 border-white text-white font-bold text-base rounded hover:bg-white hover:text-[#1a2744] transition-colors tracking-wide"
+              className="px-8 py-4 border-2 border-white text-white font-bold text-base rounded-[26px] hover:bg-white hover:text-[#1a2744] transition-colors tracking-wide"
             >
               설교 영상 보기
             </Link>

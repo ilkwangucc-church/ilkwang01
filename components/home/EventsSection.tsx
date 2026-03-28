@@ -47,7 +47,7 @@ export default function EventsSection() {
             </p>
             <Link
               href="/news/events"
-              className="inline-block px-7 py-3.5 bg-[#2E7D32] text-white font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
+              className="inline-block px-7 py-3.5 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
             >
               모든 행사 보기
             </Link>

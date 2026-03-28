@@ -67,7 +67,7 @@ export default async function BlogPreview() {
         <div className="text-center mt-12">
           <Link
             href="/worship/sermons"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2E7D32] text-white font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
           >
             전체 설교 목록 보기 <ArrowRight className="w-4 h-4" />
           </Link>

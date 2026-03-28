@@ -57,7 +57,7 @@ export default function ValuesSection() {
         <div className="text-center mt-12">
           <Link
             href="/about/vision"
-            className="inline-block px-8 py-3.5 bg-[#2E7D32] text-white font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
+            className="inline-block px-8 py-3.5 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
           >
             교회 비전 보기
           </Link>

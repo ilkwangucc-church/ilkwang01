@@ -129,7 +129,7 @@ export default function Navbar() {
           </a>
           <Link
             href="/offering"
-            className={`px-5 py-2.5 text-sm font-bold rounded transition-colors tracking-wide ${
+            className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
               white
                 ? "bg-[#2E7D32] text-white hover:bg-[#1B5E20]"
                 : "border border-white/80 text-white hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
@@ -181,7 +181,7 @@ export default function Navbar() {
               📞 02-927-0691
             </a>
             <Link href="/offering" onClick={() => setOpen(false)}
-              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded font-bold">
+              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded-[26px] font-bold">
               온라인 헌금
             </Link>
           </div>

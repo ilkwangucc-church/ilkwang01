@@ -112,7 +112,7 @@ export default function Footer() {
             </p>
             <Link
               href="/offering"
-              className="inline-block px-5 py-2.5 bg-[#2E7D32] text-white text-sm font-bold rounded hover:bg-[#1B5E20] transition-colors"
+              className="inline-block px-5 py-2.5 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors"
             >
               온라인 헌금
             </Link>

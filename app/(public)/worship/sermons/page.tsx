@@ -62,7 +62,7 @@ export default async function SermonsPage() {
               href={YT_CHANNEL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3.5 border-2 border-[#2E7D32] text-[#2E7D32] rounded font-bold hover:bg-[#2E7D32] hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3.5 border-2 border-[#2E7D32] text-[#2E7D32] rounded-[26px] font-bold hover:bg-[#2E7D32] hover:text-white transition-colors"
             >
               유튜브에서 더보기 →
             </a>
