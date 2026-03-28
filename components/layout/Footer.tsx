@@ -28,11 +28,11 @@ export default function Footer() {
           <div className="mb-5">
             <Logo size="md" variant="light" />
           </div>
-          <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          <p className="text-sm text-gray-400 leading-snug mb-4 pl-[60px]">
             대한예수교장로회(합동) 소속<br />
             1971년 설립된 서울 성북구 일광교회
           </p>
-          <p className="text-sm font-bold text-white">02-927-0691</p>
+          <p className="text-sm font-bold text-white pl-[60px]">02-927-0691</p>
         </div>
 
         {/* Col 2: Worship Times */}
