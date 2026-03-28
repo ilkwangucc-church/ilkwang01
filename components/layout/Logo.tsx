@@ -20,13 +20,12 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
       <div className="shrink-0" style={{ width: iconW, height: h }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo01.jpg"
+          src="/logo01.png"
           alt="일광교회"
           style={{
             width: iconW,
             height: h,
             objectFit: "cover",
-            mixBlendMode: "multiply",
             display: "block",
           }}
         />
