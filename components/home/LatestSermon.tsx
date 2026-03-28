@@ -19,21 +19,26 @@ export default async function LatestSermon() {
     <section className="relative z-10 -mt-16">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
-          {/* ── 영상: 항상 16:9 (검은 여백 없음) ── */}
-          <div className="sm:w-[420px] shrink-0">
-            <div className="aspect-video relative">
-              <iframe
-                src={embedSrc}
-                title={title}
-                className="absolute inset-0 w-full h-full"
-                allow="autoplay; encrypted-media; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            </div>
+          {/* ── 영상: 카드 전체 높이 cover (여백 없음) ── */}
+          <div className="sm:w-[420px] shrink-0 relative overflow-hidden self-stretch min-h-[236px]">
+            <iframe
+              src={embedSrc}
+              title={title}
+              className="absolute"
+              style={{
+                width: "177.78%",
+                height: "100%",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              allow="autoplay; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+            />
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
-          <div className="flex-1 p-8 flex flex-col justify-center items-end text-right">
+          <div className="flex-1 p-8 flex flex-col justify-center">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
               지난 주일 예배 · 소리 없이 재생 중
             </p>
@@ -44,7 +49,7 @@ export default async function LatestSermon() {
               매주 일요일 오전 9:30 · 11:00<br />
               일광교회 유튜브 채널에서 생중계됩니다
             </p>
-            <div className="flex flex-wrap gap-4 justify-end">
+            <div className="flex flex-wrap gap-4">
               <a
                 href={ytWatch(videoId)}
                 target="_blank"
