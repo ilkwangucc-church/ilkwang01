@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import Logo from "./Logo";
 
@@ -9,11 +9,11 @@ const nav = [
     label: "교회소개",
     href: "/about",
     sub: [
-      { label: "인사말", href: "/about" },
-      { label: "교회역사", href: "/about/history" },
-      { label: "담임목사", href: "/about/pastor" },
-      { label: "교회비전", href: "/about/vision" },
-      { label: "오시는길", href: "/about/location" },
+      { label: "인사말",        href: "/about" },
+      { label: "교회역사",      href: "/about/history" },
+      { label: "섬기는 사람들", href: "/about/pastor" },
+      { label: "교회비전",      href: "/about/vision" },
+      { label: "오시는길",      href: "/about/location" },
     ],
   },
   {
@@ -30,14 +30,14 @@ const nav = [
     sub: [
       { label: "공지사항", href: "/news" },
       { label: "행사안내", href: "/news/events" },
-      { label: "갤러리", href: "/news/gallery" },
+      { label: "갤러리",   href: "/news/gallery" },
     ],
   },
   {
     label: "나눔과 교재",
     href: "/resources",
     sub: [
-      { label: "교재자료", href: "/resources" },
+      { label: "교재자료",   href: "/resources" },
       { label: "나눔게시판", href: "/resources/board" },
     ],
   },
@@ -46,7 +46,7 @@ const nav = [
     href: "/youth",
     sub: [
       { label: "주일학교", href: "/youth/sunday" },
-      { label: "청년부", href: "/youth/young-adults" },
+      { label: "청년부",   href: "/youth/young-adults" },
       { label: "중고등부", href: "/youth/teens" },
     ],
   },
@@ -54,33 +54,58 @@ const nav = [
 ];
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]             = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [scrolled, setScrolled]     = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // 스크롤 내려가거나 모바일 메뉴 열리면 → 흰 배경
+  const white = scrolled || open;
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        white ? "bg-white shadow-sm" : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
-        {/* Logo */}
-        <Logo size="md" />
+
+        {/* Logo: 투명 시 흰 배경 pill로 가시성 확보 */}
+        <div className={`transition-all duration-300 rounded-lg ${
+          !white ? "bg-white/25 backdrop-blur-sm px-3 py-1.5" : ""
+        }`}>
+          <Logo size="md" />
+        </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-0">
+        <nav className="hidden lg:flex items-center">
           {nav.map((item) => (
             <div
               key={item.href}
-              className="relative group"
+              className="relative"
               onMouseEnter={() => setActiveMenu(item.href)}
               onMouseLeave={() => setActiveMenu(null)}
             >
               <Link
                 href={item.href}
-                className="flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold text-[#1a2744] hover:text-[#2E7D32] transition-colors"
+                className={`flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold transition-colors ${
+                  white
+                    ? "text-[#1a2744] hover:text-[#2E7D32]"
+                    : "text-white/90 hover:text-white"
+                }`}
               >
                 {item.label}
                 {item.sub && <ChevronDown className="w-3.5 h-3.5 opacity-60" />}
               </Link>
+
               {item.sub && activeMenu === item.href && (
-                <div className="absolute top-full left-0 mt-0 w-40 bg-white rounded-b-xl shadow-xl border-t-2 border-[#2E7D32] py-2 z-50">
+                <div className="absolute top-full left-0 w-44 bg-white rounded-b-xl shadow-xl border-t-2 border-[#2E7D32] py-2 z-50">
                   {item.sub.map((s) => (
                     <Link
                       key={s.href}
@@ -100,21 +125,30 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-4">
           <a
             href="tel:02-927-0691"
-            className="flex items-center gap-1.5 text-sm font-medium text-[#1a2744] hover:text-[#2E7D32] transition-colors"
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              white ? "text-[#1a2744] hover:text-[#2E7D32]" : "text-white/90 hover:text-white"
+            }`}
           >
             <Phone className="w-4 h-4" />
             02-927-0691
           </a>
           <Link
             href="/offering"
-            className="px-5 py-2.5 bg-[#2E7D32] text-white text-sm font-bold rounded hover:bg-[#1B5E20] transition-colors tracking-wide"
+            className={`px-5 py-2.5 text-sm font-bold rounded transition-colors tracking-wide ${
+              white
+                ? "bg-[#2E7D32] text-white hover:bg-[#1B5E20]"
+                : "border border-white/80 text-white hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
+            }`}
           >
             온라인 헌금
           </Link>
         </div>
 
         {/* Mobile Hamburger */}
-        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-[#1a2744]">
+        <button
+          onClick={() => setOpen(!open)}
+          className={`lg:hidden p-2 transition-colors ${white ? "text-[#1a2744]" : "text-white"}`}
+        >
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -151,11 +185,8 @@ export default function Navbar() {
             <a href="tel:02-927-0691" className="text-sm text-[#1a2744] font-medium">
               📞 02-927-0691
             </a>
-            <Link
-              href="/offering"
-              onClick={() => setOpen(false)}
-              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded font-bold"
-            >
+            <Link href="/offering" onClick={() => setOpen(false)}
+              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded font-bold">
               온라인 헌금
             </Link>
           </div>

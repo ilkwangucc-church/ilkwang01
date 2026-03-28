@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "다음세대",
@@ -36,16 +37,7 @@ const departments = [
 export default function YouthPage() {
   return (
     <div className="min-h-screen">
-      {/* 헤더 */}
-      <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Next Generation</p>
-          <h1 className="text-4xl font-bold mb-4">다음세대</h1>
-          <p className="text-green-100 text-lg">
-            오늘의 아이들이 내일의 교회입니다 — 다음세대를 세우는 일광교회
-          </p>
-        </div>
-      </section>
+      <PageHero label="Next Generation" title="다음세대" subtitle="오늘의 아이들이 내일의 교회입니다 — 다음세대를 세우는 일광교회" image="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 비전 메시지 */}
       <section className="py-14 bg-white">

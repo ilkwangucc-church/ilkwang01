@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { UserCircle2 } from "lucide-react";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "섬기는 사람들 | 일광교회",
@@ -21,18 +22,10 @@ const staffSlots = Array.from({ length: 8 }, (_, i) => ({ id: i + 1 }));
 export default function PastorPage() {
   return (
     <div>
-      {/* 페이지 헤더 */}
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">
-            Our Team
-          </p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">섬기는 사람들</h1>
-        </div>
-      </div>
+      <PageHero label="Our Team" title="섬기는 사람들" subtitle="일광교회를 함께 섬기는 교역자 및 직원을 소개합니다" image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-16 z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
           {submenu.map((m) => (
             <Link

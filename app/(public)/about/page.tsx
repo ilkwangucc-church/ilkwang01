@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "인사말 | 일광교회",
@@ -18,18 +19,10 @@ const submenu = [
 export default function AboutPage() {
   return (
     <div>
-      {/* 페이지 헤더 */}
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">
-            Greeting
-          </p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">담임목사 인사말</h1>
-        </div>
-      </div>
+      <PageHero label="Greeting" title="담임목사 인사말" subtitle="행복과 영원으로 초대하는 일광교회" image="https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-16 z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
           {submenu.map((m) => (
             <Link

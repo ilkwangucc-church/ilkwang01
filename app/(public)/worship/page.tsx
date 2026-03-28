@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "예배/말씀",
@@ -25,15 +26,10 @@ const sermons = [
 export default function WorshipPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Worship & Message</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">예배 / 말씀</h1>
-        </div>
-      </div>
+      <PageHero label="Worship & Message" title="예배 / 말씀" subtitle="살아계신 하나님을 예배하고 그 말씀을 듣습니다" image="https://images.unsplash.com/photo-1520637836993-5730c1a53f8b?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-16 z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
           {["예배안내", "설교영상"].map((m, i) => (
             <Link key={m} href={i === 0 ? "/worship" : "/worship/sermons"}

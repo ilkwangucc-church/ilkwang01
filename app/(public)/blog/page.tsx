@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, User, Tag } from "lucide-react";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "커뮤니티",
@@ -21,13 +22,7 @@ const posts = [
 export default function BlogPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Community</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">교회 커뮤니티</h1>
-          <p className="text-green-200 mt-2">각 부서의 소식과 나눔을 함께해 주세요</p>
-        </div>
-      </div>
+      <PageHero label="Community" title="교회 커뮤니티" subtitle="각 부서의 소식과 나눔을 함께해 주세요" image="https://images.unsplash.com/photo-1544013434-93fc0d6a8f35?w=1800&auto=format&fit=crop&q=80" />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* 부서 필터 */}

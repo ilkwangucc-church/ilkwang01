@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { fetchChannelVideos, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
 import SermonCard from "./SermonCard";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "설교영상 | 일광교회",
@@ -16,27 +17,7 @@ export default async function SermonsPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAF8]">
-      {/* 헤더 */}
-      <section className="bg-[#1a2744] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-green-300 text-sm mb-3 tracking-widest uppercase">Sermons</p>
-          <h1 className="text-4xl font-black mb-4">설교영상</h1>
-          <p className="text-gray-300 text-lg">
-            하나님의 말씀, 언제 어디서나 다시 들을 수 있습니다
-          </p>
-          <a
-            href={YT_CHANNEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-[#2E7D32] text-white rounded font-bold hover:bg-[#1B5E20] transition-colors text-sm"
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            유튜브 채널 구독
-          </a>
-        </div>
-      </section>
+      <PageHero label="Sermons" title="설교영상" subtitle="하나님의 말씀, 언제 어디서나 다시 들을 수 있습니다" image="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 최신 영상 하이라이트 */}
       {latest && (

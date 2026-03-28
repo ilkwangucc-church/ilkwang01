@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, Pin } from "lucide-react";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "교회소식",
@@ -27,15 +28,10 @@ const categoryColors: Record<string, string> = {
 export default function NewsPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">News</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">교회 소식</h1>
-        </div>
-      </div>
+      <PageHero label="News" title="교회 소식" subtitle="일광교회의 소식과 공지사항을 전합니다" image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-16 z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
           {[
             { label: "공지사항", href: "/news" },

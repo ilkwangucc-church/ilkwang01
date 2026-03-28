@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "교회역사",
@@ -24,16 +25,7 @@ const timeline = [
 export default function HistoryPage() {
   return (
     <div className="min-h-screen">
-      {/* 헤더 */}
-      <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">History</p>
-          <h1 className="text-4xl font-bold mb-4">교회역사</h1>
-          <p className="text-green-100 text-lg">
-            1971년부터 지금까지 — 하나님의 신실하심으로 걸어온 발자취
-          </p>
-        </div>
-      </section>
+      <PageHero label="History" title="교회역사" subtitle="1971년부터 지금까지 — 하나님의 신실하심으로 걸어온 발자취" image="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 타임라인 */}
       <section className="py-20 bg-gray-50">

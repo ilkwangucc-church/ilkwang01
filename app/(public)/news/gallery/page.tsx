@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "갤러리",
@@ -27,15 +28,10 @@ const categories = ["전체", "예배", "행사", "교제", "다음세대", "봉
 export default function GalleryPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Gallery</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">갤러리</h1>
-        </div>
-      </div>
+      <PageHero label="Gallery" title="갤러리" subtitle="일광교회의 소중한 순간들을 사진으로 담았습니다" image="https://images.unsplash.com/photo-1574091948895-4a4bc19c3b69?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-16 z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
           {[{ label: "공지사항", href: "/news" }, { label: "행사안내", href: "/news/events" }, { label: "갤러리", href: "/news/gallery" }].map((m, i) => (
             <Link key={m.label} href={m.href}

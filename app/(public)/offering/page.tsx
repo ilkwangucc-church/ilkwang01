@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "온라인헌금",
@@ -23,12 +24,7 @@ const offeringTypes = [
 export default function OfferingPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Online Offering</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">온라인 헌금</h1>
-        </div>
-      </div>
+      <PageHero label="Online Offering" title="온라인 헌금" subtitle="하나님께 드리는 예물을 온라인으로 드릴 수 있습니다" image="https://images.unsplash.com/photo-1564419320461-6870880221ad?w=1800&auto=format&fit=crop&q=80" />
 
       <div className="max-w-4xl mx-auto px-4 py-16">
         {/* 안내 말씀 */}

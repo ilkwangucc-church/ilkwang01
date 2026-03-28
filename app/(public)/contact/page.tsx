@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "문의하기",
@@ -9,12 +10,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Contact</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">문의하기</h1>
-        </div>
-      </div>
+      <PageHero label="Contact" title="문의하기" subtitle="궁금하신 점이 있으시면 언제든지 연락주세요" image="https://images.unsplash.com/photo-1542396601-dca920ea2807?w=1800&auto=format&fit=crop&q=80" />
 
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12">

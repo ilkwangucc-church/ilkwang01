@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "소개&비전",
@@ -17,12 +18,7 @@ const communities = [
 export default function VisionPage() {
   return (
     <div>
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-[#FFC107] text-sm font-nanum-bold tracking-widest uppercase mb-2">Vision</p>
-          <h1 className="font-nanum-extrabold text-4xl md:text-5xl">소개 &amp; 비전</h1>
-        </div>
-      </div>
+      <PageHero label="Vision" title="소개 & 비전" subtitle="하나님 중심·성경 중심·교회 중심의 개혁주의 신앙 위에 세워진 교회" image="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=1800&auto=format&fit=crop&q=80" />
 
       <div className="max-w-5xl mx-auto px-4 py-16">
         {/* 교회 소개 */}
