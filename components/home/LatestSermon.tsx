@@ -19,10 +19,9 @@ export default async function LatestSermon() {
     <section className="relative z-10 -mt-16 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          {/* ── 영상 임베드 (16:9 고정, autoplay + mute) ── */}
-          <div className="md:w-[360px] shrink-0 bg-black">
-            {/* aspect-video wrapper → 16:9 비율 고정 */}
-            <div className="relative aspect-video">
+          {/* ── 영상 임베드: 모바일 16:9 / 데스크탑 카드 전체 높이 채움 ── */}
+          <div className="md:w-[420px] shrink-0 bg-black flex flex-col">
+            <div className="aspect-video md:aspect-auto md:flex-1 relative">
               <iframe
                 src={embedSrc}
                 title={title}
