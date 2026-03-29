@@ -14,7 +14,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
   const isLight = variant === "light";
 
   return (
-    <Link href="/" className="flex items-end gap-1 select-none group">
+    <Link href="/" className="flex items-end select-none group" style={{ gap: 3, letterSpacing: 0 }}>
       {/* Icon */}
       <div className="shrink-0" style={{ width: iconW, height: h }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
