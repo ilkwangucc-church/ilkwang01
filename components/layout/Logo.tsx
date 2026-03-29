@@ -26,7 +26,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
       </div>
 
       {/* Text */}
-      <div className="flex flex-col leading-none">
+      <div className="flex flex-col leading-none" style={{ paddingTop: 3 }}>
         <span
           className="font-nanum transition-colors duration-300"
           style={{
@@ -38,7 +38,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
           행복과 영원으로 초대하는
         </span>
         <span
-          className="font-black-han transition-colors duration-300"
+          className="font-noto-extrabold transition-colors duration-300"
           style={{
             fontSize: Math.round(h * 0.565) + 5,
             color: isLight ? "#ffffff" : "#1a2744",
