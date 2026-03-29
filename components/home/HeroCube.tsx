@@ -20,21 +20,6 @@ const ALL_IMAGES = [
 
 const SIZE = 210;
 const HALF = SIZE / 2;
-const DOT  = 6;
-
-// 큐브 8개 꼭지점 (x, y, z) — cubeRef 내부 3D 좌표
-const VERTS: [number, number, number][] = [
-  [0,    0,    -HALF], // 0: 뒤-상-좌
-  [SIZE, 0,    -HALF], // 1: 뒤-상-우
-  [SIZE, SIZE, -HALF], // 2: 뒤-하-우
-  [0,    SIZE, -HALF], // 3: 뒤-하-좌
-  [0,    0,    +HALF], // 4: 앞-상-좌
-  [SIZE, 0,    +HALF], // 5: 앞-상-우
-  [SIZE, SIZE, +HALF], // 6: 앞-하-우
-  [0,    SIZE, +HALF], // 7: 앞-하-좌
-];
-// 각 꼭지점에 연결된 3개의 인접 꼭지점
-const ADJ = [[1,3,4],[0,2,5],[1,3,6],[0,2,7],[0,5,7],[1,4,6],[2,5,7],[3,4,6]];
 
 const FACE_TRANSFORMS = [
   `translateZ(${HALF}px)`,
@@ -47,8 +32,6 @@ const FACE_TRANSFORMS = [
 
 export default function HeroCube() {
   const cubeRef = useRef<HTMLDivElement>(null);
-  const lampRef = useRef<HTMLDivElement>(null);
-  const lampVert = useRef(0);
   const [faces, setFaces] = useState<string[]>(() =>
     [...ALL_IMAGES].sort(() => Math.random() - 0.5).slice(0, 6)
   );
@@ -103,29 +86,6 @@ export default function HeroCube() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 형광노랑 램프 — 꼭지점 → 꼭지점 이동
-  useEffect(() => {
-    const lamp = lampRef.current;
-    if (!lamp) return;
-    const [ix, iy, iz] = VERTS[0];
-    gsap.set(lamp, { x: ix - DOT / 2, y: iy - DOT / 2, z: iz });
-    const move = () => {
-      const curr = lampVert.current;
-      const next = ADJ[curr][Math.floor(Math.random() * 3)];
-      lampVert.current = next;
-      const [tx, ty, tz] = VERTS[next];
-      gsap.to(lamp, {
-        x: tx - DOT / 2,
-        y: ty - DOT / 2,
-        z: tz,
-        duration: 3.5 + Math.random() * 2,
-        ease: "power2.inOut",
-        onComplete: move,
-      });
-    };
-    move();
-    return () => { gsap.killTweensOf(lamp); };
-  }, []);
 
   // 이미지 순환 — 같은 이미지 2회 이상 노출 방지
   useEffect(() => {
@@ -214,20 +174,6 @@ export default function HeroCube() {
             </div>
           ))}
 
-          {/* 형광노랑 램프 */}
-          <div
-            ref={lampRef}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: DOT,
-              height: DOT,
-              borderRadius: "50%",
-              background: "radial-gradient(circle, #ffff00 20%, rgba(255,255,0,0.7) 55%, rgba(255,255,0,0.2) 80%, transparent 100%)",
-              pointerEvents: "none",
-            }}
-          />
         </div>
       </div>
 
@@ -252,11 +198,11 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width: Math.round(SIZE / 2),
-              height: Math.round(SIZE / 2),
+              width: Math.round(SIZE / 4),
+              height: Math.round(SIZE / 4),
               objectFit: "cover",
               objectPosition: "center",
-              border: "0.5px solid rgba(255,255,255,0.25)",
+              border: "1px solid rgba(255,255,255,0.06)",
               borderRadius: 4,
               display: "block",
             }}
