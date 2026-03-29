@@ -63,11 +63,37 @@ export default function Navbar() {
   const white = scrolled || open;
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        white ? "bg-white shadow-sm" : "bg-transparent"
-      }`}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50">
+
+      {/* Top Bar */}
+      <div className="bg-[#1a2744]">
+        <div className="max-w-[1400px] mx-auto px-6 h-9 flex items-center justify-between">
+          <div />
+          <p className="text-white/70 text-xs tracking-widest">
+            A Church Full of Grace and Truth
+          </p>
+          <div className="flex items-center gap-2">
+            <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">
+              문의하기
+            </Link>
+            <Link
+              href="/login"
+              className="text-xs px-3 py-1 bg-[#2E7D32] text-white rounded-full font-bold hover:bg-[#1B5E20] transition-colors"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/register"
+              className="text-xs px-3 py-1 border border-white/60 text-white rounded-full font-bold hover:bg-white/10 transition-colors"
+            >
+              회원가입
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Nav */}
+      <div className={`transition-all duration-300 ${white ? "bg-white shadow-sm" : "bg-transparent"}`}>
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-[72px]">
 
         <Logo size="md" variant={white ? "dark" : "light"} />
@@ -181,6 +207,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
+      </div>{/* /Main Nav */}
     </header>
   );
 }
