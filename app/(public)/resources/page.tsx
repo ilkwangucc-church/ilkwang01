@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, Download, FileText } from "lucide-react";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "교재자료",
@@ -44,16 +45,12 @@ const materials = [
 export default function ResourcesPage() {
   return (
     <div className="min-h-screen">
-      {/* 헤더 */}
-      <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Resources</p>
-          <h1 className="text-4xl font-bold mb-4">교재자료</h1>
-          <p className="text-green-100 text-lg">
-            각 부서 교재와 성경공부 자료를 다운로드하세요
-          </p>
-        </div>
-      </section>
+      <PageHero
+        label="Resources"
+        title="교재자료"
+        subtitle="각 부서 교재와 성경공부 자료를 다운로드하세요"
+        image="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1800&auto=format&fit=crop&q=80"
+      />
 
       {/* 서브 메뉴 */}
       <section className="bg-white border-b py-4">

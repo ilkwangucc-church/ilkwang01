@@ -13,7 +13,7 @@ export default function SundaySchoolPage() {
         label="Children Ministry"
         title="유초등부"
         subtitle="하나님을 경험하며 자라는 유치부 · 아동부"
-        image="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1800&auto=format&fit=crop&q=80"
+        image="https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=1800&auto=format&fit=crop&q=80"
       />
 
       <section className="py-16 bg-white">

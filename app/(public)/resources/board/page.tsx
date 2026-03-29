@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { MessageSquare, Heart, Eye } from "lucide-react";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "나눔게시판",
@@ -23,16 +24,12 @@ const categories = ["전체", "소그룹", "기도", "도서", "청년부", "가
 export default function BoardPage() {
   return (
     <div className="min-h-screen">
-      {/* 헤더 */}
-      <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Sharing Board</p>
-          <h1 className="text-4xl font-bold mb-4">나눔게시판</h1>
-          <p className="text-green-100 text-lg">
-            말씀 묵상, 기도 제목, 교재 후기를 함께 나눕니다
-          </p>
-        </div>
-      </section>
+      <PageHero
+        label="Sharing Board"
+        title="나눔게시판"
+        subtitle="말씀 묵상, 기도 제목, 교재 후기를 함께 나눕니다"
+        image="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1800&auto=format&fit=crop&q=80"
+      />
 
       {/* 서브 메뉴 */}
       <section className="bg-white border-b py-4">
