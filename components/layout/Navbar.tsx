@@ -171,7 +171,7 @@ export default function Navbar() {
         {/* ── 메가 메뉴 (데스크탑) ── */}
         {activeItem?.sub && (
           <div
-            className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] z-50 shadow-2xl hidden lg:flex border-t-2 border-[#2E7D32] rounded-b-xl overflow-hidden"
+            className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] z-50 shadow-2xl hidden lg:flex rounded-xl overflow-hidden"
             onMouseEnter={keepMenu}
             onMouseLeave={closeMenu}
           >
