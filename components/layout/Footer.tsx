@@ -68,8 +68,8 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Nav cols: 교회소개 / 예배+소식 / 다음세대+커뮤니티 */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[120px] ml-auto pr-[30px]">
+        {/* Nav cols: 교회소개 / 예배말씀 / 다음세대+커뮤니티 / 교회소식 */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-[120px] ml-auto pr-[30px]">
 
           {/* 교회소개 */}
           <div>
@@ -87,25 +87,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 예배/말씀 + 교회소식 */}
+          {/* 예배/말씀 */}
           <div>
             <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
               예배/말씀
             </h4>
-            <ul className="space-y-2.5 text-sm mb-7">
-              {worshipLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-              교회소식
-            </h4>
             <ul className="space-y-2.5 text-sm">
-              {newsLinks.map((l) => (
+              {worshipLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
                     {l.label}
@@ -138,6 +126,22 @@ export default function Footer() {
                   블로그
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          {/* 교회소식 */}
+          <div>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              교회소식
+            </h4>
+            <ul className="space-y-2.5 text-sm">
+              {newsLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
