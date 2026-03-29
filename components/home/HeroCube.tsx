@@ -284,8 +284,11 @@ export default function HeroCube() {
             top: "50%", left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 50,
+            width: 350,
+            height: 350,
             background: "transparent",
             cursor: "pointer",
+            flexShrink: 0,
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -294,6 +297,7 @@ export default function HeroCube() {
             alt=""
             style={{
               width: 350, height: 350,
+              maxWidth: "none",
               objectFit: "cover", objectPosition: "center",
               border: "5px solid rgba(255,255,255,0.18)",
               borderRadius: 4,
