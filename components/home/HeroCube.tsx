@@ -182,14 +182,16 @@ export default function HeroCube() {
         <div
           onClick={() => setLightbox(null)}
           style={{
-            position: "fixed",
+            position: "absolute",
             inset: 0,
-            zIndex: 9999,
+            zIndex: 50,
             background: "rgba(0,0,0,0.88)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            borderRadius: 6,
             cursor: "pointer",
+            overflow: "hidden",
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
