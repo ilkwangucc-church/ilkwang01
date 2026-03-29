@@ -1,5 +1,5 @@
 import Link from "next/link";
-import HeroImageSlider from "./HeroImageSlider";
+import HeroCube from "./HeroCube";
 
 export default function HeroSection() {
   return (
@@ -68,9 +68,9 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Right: Image Slider */}
-        <div className="hidden lg:block flex-shrink-0 w-[480px]">
-          <HeroImageSlider />
+        {/* Right: 3D Cube */}
+        <div className="hidden lg:flex flex-shrink-0 w-[480px] items-center justify-center">
+          <HeroCube />
         </div>
       </div>
     </section>
