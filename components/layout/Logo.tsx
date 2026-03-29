@@ -16,7 +16,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
   return (
     <Link href="/" className="flex items-end select-none group" style={{ gap: 6, letterSpacing: 0 }}>
       {/* Icon */}
-      <div className="shrink-0" style={{ width: iconW, height: h }}>
+      <div className="shrink-0" style={{ width: iconW, height: h, marginBottom: 5 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo01.png"
