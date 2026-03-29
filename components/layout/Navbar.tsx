@@ -123,6 +123,7 @@ export default function Navbar() {
               >
                 <Link
                   href={item.href}
+                  onClick={() => setActiveMenu(null)}
                   className={`flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold transition-colors ${
                     white ? "text-[#1a2744] hover:text-[#2E7D32]" : "text-white/90 hover:text-white"
                   }`}
