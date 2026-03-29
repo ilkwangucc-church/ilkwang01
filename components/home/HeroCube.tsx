@@ -55,7 +55,8 @@ const VERT_ADJ = [
   [3, 4, 6],
 ];
 
-// 현재 회전값을 반영해 3D 꼭지점을 2D 화면 좌표로 변환
+// CSS transform: rotateX * rotateY * rotateZ 행렬 순서에 맞춰
+// 점에 적용하는 순서는 Rz → Ry → Rx
 function projectVertex(
   v: [number, number, number],
   rx: number, ry: number, rz: number
@@ -63,17 +64,17 @@ function projectVertex(
   const r = (d: number) => (d * Math.PI) / 180;
   let [x, y, z] = v;
 
-  // X축 회전
-  const cx = Math.cos(r(rx)), sx = Math.sin(r(rx));
-  [y, z] = [y * cx - z * sx, y * sx + z * cx];
+  // 1) Rz 먼저
+  const cz = Math.cos(r(rz)), sz = Math.sin(r(rz));
+  [x, y] = [x * cz - y * sz, x * sz + y * cz];
 
-  // Y축 회전
+  // 2) Ry
   const cy = Math.cos(r(ry)), sy = Math.sin(r(ry));
   [x, z] = [x * cy + z * sy, -x * sy + z * cy];
 
-  // Z축 회전
-  const cz = Math.cos(r(rz)), sz = Math.sin(r(rz));
-  [x, y] = [x * cz - y * sz, x * sz + y * cz];
+  // 3) Rx 마지막
+  const cx = Math.cos(r(rx)), sx = Math.sin(r(rx));
+  [y, z] = [y * cx - z * sx, y * sx + z * cx];
 
   // 원근 투영
   const d = SIZE * 2.8;
