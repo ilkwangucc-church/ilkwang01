@@ -34,7 +34,7 @@ export default function HistoryPage() {
             {/* 중앙선 */}
             <div className="absolute left-[80px] top-0 bottom-0 w-0.5 bg-[#2E7D32]/20 hidden md:block" />
 
-            <div className="space-y-8">
+            <div className="grid xl:grid-cols-2 xl:gap-x-16 gap-y-8">
               {timeline.map((item, i) => (
                 <div key={i} className="flex gap-6 items-start">
                   {/* 연도 */}

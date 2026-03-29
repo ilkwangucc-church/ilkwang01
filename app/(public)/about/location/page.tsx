@@ -57,7 +57,7 @@ export default function LocationPage() {
         {/* 예배 시간 */}
         <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] rounded-2xl p-8 text-white">
           <h3 className="font-nanum-extrabold text-2xl mb-6 text-center">예배 시간 안내</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
             {[
               { name: "주일 1부 예배", time: "오전 9:30" },
               { name: "주일 2부 예배", time: "오전 11:00" },

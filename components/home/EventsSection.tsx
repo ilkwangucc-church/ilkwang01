@@ -26,15 +26,24 @@ const events = [
     time: "오후 7:30 — 9:00",
     location: "일광교회 본당",
   },
+  {
+    day: "04",
+    month: "May",
+    year: "2026",
+    title: "어버이주일 감사예배",
+    time: "오전 11:00 — 12:30",
+    location: "일광교회 본당",
+  },
 ];
 
 export default function EventsSection() {
   return (
     <section className="py-24 bg-[#F8FAF8]">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-[380px_1fr] gap-16 xl:gap-24 items-start">
+
           {/* Left */}
-          <div>
+          <div className="xl:sticky xl:top-28">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
               THIS YEAR
             </p>
@@ -53,8 +62,8 @@ export default function EventsSection() {
             </Link>
           </div>
 
-          {/* Right: Events */}
-          <div className="space-y-4">
+          {/* Right: 2×2 그리드 (xl에서) */}
+          <div className="grid sm:grid-cols-1 xl:grid-cols-2 gap-4">
             {events.map((e) => (
               <div key={e.title} className="flex gap-5 bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 {/* Date Box */}
@@ -84,6 +93,7 @@ export default function EventsSection() {
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </section>

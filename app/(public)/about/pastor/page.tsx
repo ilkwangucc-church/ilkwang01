@@ -49,7 +49,7 @@ export default function PastorPage() {
           일광교회를 함께 섬기는 교역자 및 직원을 소개합니다.
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {staffSlots.map(({ id }) => (
             <div
               key={id}

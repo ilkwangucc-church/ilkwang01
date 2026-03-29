@@ -18,7 +18,7 @@ export default function SundaySchoolPage() {
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
             <div className="bg-yellow-50 rounded-2xl p-8">
               <div className="text-4xl mb-3">🌸</div>
               <h2 className="text-xl font-bold text-gray-900 mb-3">유치부 (5~7세)</h2>

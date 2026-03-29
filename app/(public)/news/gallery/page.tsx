@@ -53,7 +53,7 @@ export default function GalleryPage() {
         </div>
 
         {/* 갤러리 그리드 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {galleryImages.map((img) => (
             <div key={img.id} className="group relative rounded-xl overflow-hidden aspect-square shadow-sm hover:shadow-lg transition-all cursor-pointer">
               <img

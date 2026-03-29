@@ -4,8 +4,8 @@ import { fetchChannelVideos, ytWatch } from "@/lib/youtube";
 
 export default async function BlogPreview() {
   const videos = await fetchChannelVideos();
-  // 첫 번째는 LatestSermon에서 사용 → 2~4번째 영상 표시
-  const latest3 = videos.slice(1, 4);
+  // 첫 번째는 LatestSermon에서 사용 → 2~5번째 영상 표시
+  const latest3 = videos.slice(1, 5);
 
   return (
     <section className="py-24 bg-white">
@@ -24,7 +24,7 @@ export default async function BlogPreview() {
         </div>
 
         {/* Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {latest3.map((v) => (
             <a
               key={v.id}

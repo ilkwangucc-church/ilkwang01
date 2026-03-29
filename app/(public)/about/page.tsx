@@ -38,7 +38,7 @@ export default function AboutPage() {
 
       {/* ── 인사말 본문 ── */}
       <div className="max-w-[1400px] mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid md:grid-cols-2 xl:grid-cols-[2fr_3fr] gap-12 xl:gap-20 items-start">
 
           {/* 목사님 사진 */}
           <div className="relative">
@@ -106,7 +106,7 @@ export default function AboutPage() {
           <h2 className="font-nanum-extrabold text-2xl text-center text-gray-800 mb-10">
             학력 및 경력
           </h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 xl:gap-16">
             {/* 학력 */}
             <div className="bg-white rounded-xl p-6 shadow-sm">
               <h3 className="font-nanum-extrabold text-[#2E7D32] mb-4 flex items-center gap-2">

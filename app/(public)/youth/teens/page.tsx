@@ -29,7 +29,7 @@ export default function TeensPage() {
           </div>
 
           {/* 예배 정보 */}
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
             <div className="bg-indigo-50 rounded-2xl p-7">
               <h3 className="font-bold text-indigo-800 mb-4 text-lg">주일 예배</h3>
               <ul className="text-sm text-gray-700 space-y-2">

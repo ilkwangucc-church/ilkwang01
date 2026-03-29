@@ -55,7 +55,7 @@ export default function VisionPage() {
         {/* 추구하는 공동체 */}
         <section>
           <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-8">일광교회가 추구하는 공동체</h2>
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-1 xl:grid-cols-2 gap-4">
             {communities.map((c, i) => (
               <div key={c.name} className="flex gap-4 p-6 rounded-2xl bg-white border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all">
                 <div className="text-4xl shrink-0">{c.icon}</div>

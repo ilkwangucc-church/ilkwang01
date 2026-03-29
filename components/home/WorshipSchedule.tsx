@@ -14,9 +14,10 @@ export default function WorshipSchedule() {
   return (
     <section className="py-24 bg-[#F8FAF8]">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-[420px_1fr] gap-16 xl:gap-24 items-start">
+
           {/* Left */}
-          <div>
+          <div className="xl:sticky xl:top-28">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
               OUR MINISTRY
             </p>
@@ -35,11 +36,11 @@ export default function WorshipSchedule() {
             </Link>
           </div>
 
-          {/* Right: Service Grid */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Right: Service Grid — 2열 → xl에서 3열 */}
+          <div className="grid grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8">
             {services.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex flex-col gap-3">
-                <div className="w-12 h-12 rounded-xl border-2 border-[#1a2744]/10 bg-white flex items-center justify-center shadow-sm">
+              <div key={title} className="flex flex-col gap-3 bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 rounded-xl border-2 border-[#1a2744]/10 bg-[#F8FAF8] flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#1a2744]" />
                 </div>
                 <h3 className="text-sm font-bold text-[#1a2744]">{title}</h3>
@@ -47,6 +48,7 @@ export default function WorshipSchedule() {
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </section>

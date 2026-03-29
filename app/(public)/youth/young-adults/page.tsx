@@ -30,7 +30,7 @@ export default function YoungAdultsPage() {
           </div>
 
           {/* 모임 정보 */}
-          <div className="grid md:grid-cols-3 gap-5 mb-12">
+          <div className="grid md:grid-cols-3 xl:grid-cols-4 gap-5 mb-12">
             {[
               { icon: "🙏", title: "주일 예배", detail: "매 주일 오후 1:30\n3부 예배 함께 참여\n예배 후 청년 모임" },
               { icon: "📖", title: "금요 성경공부", detail: "매주 금요일 오후 7:30\n소그룹 말씀 나눔\n찬양 & 기도 포함" },
