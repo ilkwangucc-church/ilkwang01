@@ -7,7 +7,6 @@ export default function AboutSection() {
           "url('https://images.unsplash.com/photo-1564419320461-6870880221ad?w=1800&auto=format&fit=crop&q=80')",
       }}
     >
-      <div className="absolute inset-0 bg-[#1a2744]/85" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-16 items-center">
