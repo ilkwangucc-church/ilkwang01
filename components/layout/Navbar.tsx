@@ -138,7 +138,11 @@ export default function Navbar() {
           </Link>
           <Link
             href="/offering"
-            className="px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide border border-white/80 text-white hover:border-black hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
+            className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
+              white
+                ? "border border-black text-black hover:bg-black hover:text-white"
+                : "border border-white/80 text-white hover:border-black hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
+            }`}
           >
             온라인 헌금
           </Link>
