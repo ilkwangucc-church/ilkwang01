@@ -39,9 +39,9 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
           행복과 영원으로 초대하는
         </span>
         <span
-          className="font-noto-extrabold transition-colors duration-300"
+          className="font-noto-black transition-colors duration-300"
           style={{
-            fontSize: Math.round(h * 0.565) + 5,
+            fontSize: Math.round(h * 0.565) + 7,
             color: isLight ? "#ffffff" : "#1a2744",
             marginTop: Math.round(h * 0.15),
           }}
