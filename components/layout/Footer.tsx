@@ -96,16 +96,16 @@ export default function Footer() {
               예배/말씀
             </h4>
             <ul className="space-y-1 text-sm mb-7">
-              <li className="flex gap-3 text-gray-400">
+              <li className="flex gap-1 text-gray-400">
                 <span className="w-16 shrink-0">1부예배</span><span>09:30</span>
               </li>
-              <li className="flex gap-3 text-gray-400">
+              <li className="flex gap-1 text-gray-400">
                 <span className="w-16 shrink-0">2부예배</span><span>11:00</span>
               </li>
-              <li className="flex gap-3 text-gray-400">
+              <li className="flex gap-1 text-gray-400">
                 <span className="w-16 shrink-0">오후예배</span><span>13:30</span>
               </li>
-              <li className="flex gap-3 text-gray-400">
+              <li className="flex gap-1 text-gray-400">
                 <span className="w-16 shrink-0">수요예배</span><span>10:30</span>
               </li>
             </ul>
