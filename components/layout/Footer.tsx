@@ -69,7 +69,7 @@ export default function Footer() {
         </div>
 
         {/* Nav cols: 교회소개 / 예배+소식 / 다음세대+커뮤니티 */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[50px] ml-auto pr-[30px]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[120px] ml-auto pr-[30px]">
 
           {/* 교회소개 */}
           <div>
