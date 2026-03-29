@@ -23,7 +23,7 @@ const nav: NavItem[] = [
     sub: [
       { label: "인사말",        href: "/about",          desc: "담임목사 인사 및 교회 소개" },
       { label: "교회역사",      href: "/about/history",  desc: "1971년 설립부터 오늘까지의 역사" },
-      { label: "섬기는 사람들", href: "/about/pastor",   desc: "목사, 장로, 권사, 집사" },
+      { label: "섬기는 사람들", href: "/about/pastor",   desc: "교회를 섬겨주시는 분들입니다." },
       { label: "교회비전",      href: "/about/vision",   desc: "말씀과 기도, 선교의 비전" },
       { label: "오시는길",      href: "/about/location", desc: "서울 성북구 동소문로 212-68" },
     ],
