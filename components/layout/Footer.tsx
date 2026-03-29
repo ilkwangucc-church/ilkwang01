@@ -11,10 +11,13 @@ const aboutLinks = [
 ];
 
 
-const newsLinks = [
-  { label: "공지사항", href: "/news" },
-  { label: "행사안내", href: "/news/events" },
-  { label: "갤러리", href: "/news/gallery" },
+const sharingLinks = [
+  { label: "공지사항",   href: "/news" },
+  { label: "행사안내",   href: "/news/events" },
+  { label: "갤러리",     href: "/news/gallery" },
+  { label: "교재자료",   href: "/resources" },
+  { label: "나눔게시판", href: "/resources/board" },
+  { label: "커뮤니티",   href: "/blog" },
 ];
 
 const youthLinks = [
@@ -127,29 +130,19 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 교회소식 + 커뮤니티 */}
+          {/* 나눔과 소식 */}
           <div>
             <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
-              교회소식
+              나눔과 소식
             </h4>
-            <ul className="space-y-2.5 text-sm mb-7">
-              {newsLinks.map((l) => (
+            <ul className="space-y-2.5 text-sm">
+              {sharingLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
                     {l.label}
                   </Link>
                 </li>
               ))}
-            </ul>
-            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
-              커뮤니티
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                  블로그
-                </Link>
-              </li>
             </ul>
           </div>
 

@@ -25,23 +25,6 @@ const nav = [
     ],
   },
   {
-    label: "교회소식",
-    href: "/news",
-    sub: [
-      { label: "공지사항", href: "/news" },
-      { label: "행사안내", href: "/news/events" },
-      { label: "갤러리",   href: "/news/gallery" },
-    ],
-  },
-  {
-    label: "나눔과 교재",
-    href: "/resources",
-    sub: [
-      { label: "교재자료",   href: "/resources" },
-      { label: "나눔게시판", href: "/resources/board" },
-    ],
-  },
-  {
     label: "다음세대",
     href: "/youth",
     sub: [
@@ -50,7 +33,18 @@ const nav = [
       { label: "중고등부", href: "/youth/teens" },
     ],
   },
-  { label: "커뮤니티", href: "/blog" },
+  {
+    label: "나눔과 소식",
+    href: "/news",
+    sub: [
+      { label: "공지사항",   href: "/news" },
+      { label: "행사안내",   href: "/news/events" },
+      { label: "갤러리",     href: "/news/gallery" },
+      { label: "교재자료",   href: "/resources" },
+      { label: "나눔게시판", href: "/resources/board" },
+      { label: "커뮤니티",   href: "/blog" },
+    ],
+  },
 ];
 
 export default function Navbar() {
