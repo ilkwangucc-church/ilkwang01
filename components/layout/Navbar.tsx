@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Phone } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import Logo from "./Logo";
 
 const nav = [
@@ -72,21 +72,12 @@ export default function Navbar() {
           <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
             A Church Full of Grace and Truth
           </p>
-          {/* 오른쪽 버튼 */}
-          <div className="ml-auto flex items-center gap-2">
+          {/* 오른쪽 텍스트 */}
+          <div className="ml-auto flex items-center gap-4">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">
               문의하기
             </Link>
-            <Link
-              href="/login"
-              className="text-xs px-3 py-1 bg-[#2E7D32] text-white rounded-full font-bold hover:bg-[#1B5E20] transition-colors"
-            >
-              로그인
-            </Link>
-            <Link
-              href="/register"
-              className="text-xs px-3 py-1 border border-white/60 text-white rounded-full font-bold hover:bg-white/10 transition-colors"
-            >
+            <Link href="/register" className="text-white/70 hover:text-white text-xs transition-colors">
               회원가입
             </Link>
           </div>
@@ -137,17 +128,16 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right: Phone + CTA */}
+        {/* Right: Login + CTA */}
         <div className="hidden lg:flex items-center gap-4 ml-auto">
-          <a
-            href="tel:02-927-0691"
-            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+          <Link
+            href="/login"
+            className={`text-sm font-medium transition-colors ${
               white ? "text-[#1a2744] hover:text-[#2E7D32]" : "text-white/90 hover:text-white"
             }`}
           >
-            <Phone className="w-4 h-4" />
-            02-927-0691
-          </a>
+            로그인
+          </Link>
           <Link
             href="/offering"
             className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
