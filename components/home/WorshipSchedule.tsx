@@ -13,7 +13,7 @@ const services = [
 export default function WorshipSchedule() {
   return (
     <section className="py-24 bg-[#F8FAF8]">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}
           <div>

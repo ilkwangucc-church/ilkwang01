@@ -32,7 +32,7 @@ export default function GalleryPage() {
 
       {/* 서브메뉴 */}
       <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
           {[{ label: "공지사항", href: "/news" }, { label: "행사안내", href: "/news/events" }, { label: "갤러리", href: "/news/gallery" }].map((m, i) => (
             <Link key={m.label} href={m.href}
               className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 2 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
@@ -42,7 +42,7 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-12">
         {/* 카테고리 필터 */}
         <div className="flex gap-2 flex-wrap mb-8">
           {categories.map((c, i) => (

@@ -26,7 +26,7 @@ const youthLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#1a2744] text-gray-300">
-      <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
+      <div className="max-w-[1400px] mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
 
         {/* Col 1: Logo + About + Contact */}
         <div className="md:w-64 shrink-0">
@@ -159,7 +159,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
+        <div className="max-w-[1400px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
           <p>© {new Date().getFullYear()} 일광교회. All rights reserved.</p>
           <div className="flex gap-5">
             <Link href="/contact" className="hover:text-gray-300">문의하기</Link>

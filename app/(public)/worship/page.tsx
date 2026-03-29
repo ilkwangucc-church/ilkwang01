@@ -30,7 +30,7 @@ export default function WorshipPage() {
 
       {/* 서브메뉴 */}
       <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
           {["예배안내", "설교영상"].map((m, i) => (
             <Link key={m} href={i === 0 ? "/worship" : "/worship/sermons"}
               className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 0 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
@@ -40,7 +40,7 @@ export default function WorshipPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 예배 안내 */}
         <section className="mb-20">
           <h2 className="font-nanum-extrabold text-3xl text-gray-800 mb-8">예배 안내</h2>

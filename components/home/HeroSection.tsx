@@ -14,7 +14,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#0d1a2d]/92 via-[#0d1a2d]/70 to-[#0d1a2d]/25" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full flex items-center min-h-[800px]">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 w-full flex items-center min-h-[800px]">
         <div className="max-w-2xl">
           {/* Label */}
           <p className="text-[#a3c9a8] text-[22px] font-bold mb-2">

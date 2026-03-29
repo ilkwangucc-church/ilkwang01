@@ -9,7 +9,7 @@ export default function AboutSection() {
     >
       <div className="absolute inset-0 bg-[#1a2744]/85" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Left: Pastor Photo */}
           <div className="relative">

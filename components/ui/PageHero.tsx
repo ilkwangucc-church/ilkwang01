@@ -31,7 +31,7 @@ export default function PageHero({ label, title, subtitle, image }: PageHeroProp
       <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320]/85 via-[#0b1320]/45 to-[#0b1320]/25" />
 
       {/* 콘텐츠 (하단 왼쪽 정렬) */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-14">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pb-14">
         <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.3em] mb-4">
           {label}
         </p>

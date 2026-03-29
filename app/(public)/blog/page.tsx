@@ -24,7 +24,7 @@ export default function BlogPage() {
     <div>
       <PageHero label="Community" title="교회 커뮤니티" subtitle="각 부서의 소식과 나눔을 함께해 주세요" image="https://images.unsplash.com/photo-1536126750180-3c7d59643f99?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-12">
         {/* 부서 필터 */}
         <div className="flex gap-2 flex-wrap mb-8">
           {departments.map((d, i) => (

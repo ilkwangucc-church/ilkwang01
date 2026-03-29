@@ -74,7 +74,7 @@ export default function Navbar() {
         white ? "bg-white shadow-sm" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
+      <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-[72px]">
 
         <Logo size="md" variant={white ? "dark" : "light"} />
 

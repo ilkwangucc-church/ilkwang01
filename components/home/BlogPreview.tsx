@@ -9,7 +9,7 @@ export default async function BlogPreview() {
 
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-14">
           <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
