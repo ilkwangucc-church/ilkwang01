@@ -75,7 +75,6 @@ export default function Navbar() {
   const [open, setOpen]             = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled]     = useState(false);
-  const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -85,18 +84,6 @@ export default function Navbar() {
   }, []);
 
   const white = scrolled || open;
-
-  const openMenu  = (href: string) => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setActiveMenu(href);
-  };
-  const closeMenu = () => {
-    closeTimer.current = setTimeout(() => setActiveMenu(null), 150);
-  };
-  const keepMenu  = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-  };
-
   const activeItem = nav.find((n) => n.href === activeMenu);
 
   return (
@@ -125,12 +112,14 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
+          <nav
+            className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2"
+            onMouseLeave={() => setActiveMenu(null)}
+          >
             {nav.map((item) => (
               <div
                 key={item.href}
-                onMouseEnter={() => openMenu(item.href)}
-                onMouseLeave={closeMenu}
+                onMouseEnter={() => setActiveMenu(item.href)}
               >
                 <Link
                   href={item.href}
@@ -172,8 +161,8 @@ export default function Navbar() {
         {activeItem?.sub && (
           <div
             className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] z-50 shadow-2xl hidden lg:flex rounded-xl overflow-hidden"
-            onMouseEnter={keepMenu}
-            onMouseLeave={closeMenu}
+            onMouseEnter={() => setActiveMenu(activeMenu)}
+            onMouseLeave={() => setActiveMenu(null)}
           >
             {/* 왼쪽: 다크 그레이 — 피처드 */}
             <div className="w-52 shrink-0 bg-gray-700 px-6 py-7 flex flex-col justify-center">
@@ -203,7 +192,7 @@ export default function Navbar() {
               <div className={`grid gap-0.5 ${activeItem.sub.length > 3 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {activeItem.sub.map((s) => (
                   <Link
-                    key={s.href}
+                    key={s.label}
                     href={s.href}
                     onClick={() => setActiveMenu(null)}
                     className="group flex flex-col px-3 py-3 rounded-lg hover:bg-gray-100 transition-colors"
