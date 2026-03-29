@@ -22,7 +22,7 @@ export default function HeroSection() {
           </p>
 
           {/* Main Heading */}
-          <h1 className="text-[36px] font-black text-white leading-[1.15] mb-4">
+          <h1 className="text-[40px] font-black text-white leading-[1.15] mb-4">
             일광교회에 오신 것을<br />
             환영합니다
           </h1>
@@ -34,7 +34,7 @@ export default function HeroSection() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-5">
             <Link
               href="/about"
               className="px-8 py-4 bg-[#2E7D32] text-white font-bold text-base rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
@@ -50,7 +50,7 @@ export default function HeroSection() {
           </div>
 
           {/* Info bar */}
-          <div className="mt-14 flex flex-wrap gap-8">
+          <div className="flex flex-wrap gap-8">
             <div className="flex items-center gap-3 text-gray-300 text-base">
               <span className="w-5 h-5 rounded-full bg-[#2E7D32]/30 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-[#6dbf73]" />
