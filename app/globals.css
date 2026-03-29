@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@900&family=Black+Han+Sans&display=swap");
 
 /* =========================================
    일광교회 브랜드 컬러 시스템 v2
@@ -80,6 +80,7 @@ body {
 .font-nanum-bold     { font-family: "Nanum Gothic", sans-serif; font-weight: 700; }
 .font-nanum-extrabold{ font-family: "Nanum Gothic", sans-serif; font-weight: 800; }
 .font-noto-black     { font-family: "Noto Sans KR", sans-serif; font-weight: 900; }
+.font-black-han      { font-family: "Black Han Sans", sans-serif; font-weight: 400; }
 
 /* 부드러운 스크롤 */
 html { scroll-behavior: smooth; }
