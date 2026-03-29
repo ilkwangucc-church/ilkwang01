@@ -25,7 +25,8 @@ export const YOUTH_NAV: NavItem[] = [
 ];
 
 export const NEWS_NAV: NavItem[] = [
-  { label: "공지사항",   href: "/news" },
+  { label: "교회소식",   href: "/news" },
+  { label: "주보자료",   href: "/news/bulletin" },
   { label: "행사안내",   href: "/news/events" },
   { label: "갤러리",     href: "/news/gallery" },
   { label: "교재자료",   href: "/resources" },

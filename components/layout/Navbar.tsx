@@ -9,7 +9,7 @@ type NavItem = {
   label: string;
   href: string;
   sub?: SubItem[];
-  featured?: { title: string; desc: string };
+  featured?: { title: string; desc: string; viewAll?: string };
 };
 
 const nav: NavItem[] = [
@@ -59,14 +59,16 @@ const nav: NavItem[] = [
     featured: {
       title: "나눔과 소식",
       desc: "교회 소식과 성도들의 이야기를 함께 나눕니다.",
+      viewAll: "교회소식",
     },
     sub: [
-      { label: "공지사항",   href: "/news",            desc: "교회 주요 공지 및 소식" },
-      { label: "행사안내",   href: "/news/events",     desc: "각종 행사 및 프로그램 일정" },
-      { label: "갤러리",     href: "/news/gallery",    desc: "교회 행사 사진 모음" },
-      { label: "교재자료",   href: "/resources",       desc: "소그룹 및 교육 교재 자료" },
-      { label: "나눔게시판", href: "/resources/board", desc: "성도 간 나눔 및 교재 공유" },
-      { label: "커뮤니티",   href: "/blog",            desc: "묵상·기도·신앙 나눔 공간" },
+      { label: "교회소식",   href: "/news",              desc: "교회 주요 소식 및 공지" },
+      { label: "주보자료",   href: "/news/bulletin",     desc: "매주 주보 앞·뒷면 확인 및 다운로드" },
+      { label: "행사안내",   href: "/news/events",       desc: "각종 행사 및 프로그램 일정" },
+      { label: "갤러리",     href: "/news/gallery",      desc: "교회 행사 사진 모음" },
+      { label: "교재자료",   href: "/resources",         desc: "소그룹 및 교육 교재 자료" },
+      { label: "나눔게시판", href: "/resources/board",   desc: "성도 간 나눔 및 교재 공유" },
+      { label: "커뮤니티",   href: "/blog",              desc: "묵상·기도·신앙 나눔 공간" },
     ],
   },
 ];
@@ -191,7 +193,7 @@ export default function Navbar() {
                 onClick={() => setActiveMenu(null)}
                 className="mt-5 inline-flex items-center gap-1.5 text-[#6dbf73] text-sm font-semibold hover:text-white transition-colors"
               >
-                전체보기 <ArrowRight className="w-3.5 h-3.5" />
+                {activeItem.featured?.viewAll ?? "전체보기"} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
