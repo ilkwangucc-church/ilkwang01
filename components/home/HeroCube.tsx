@@ -20,6 +20,7 @@ const ALL_IMAGES = [
 
 const SIZE = 210;
 const HALF = SIZE / 2;
+const DOT = 4;
 
 const FACE_TRANSFORMS = [
   `translateZ(${HALF}px)`,
@@ -30,8 +31,19 @@ const FACE_TRANSFORMS = [
   `rotateX(90deg) translateZ(${HALF}px)`,
 ];
 
+// 큐브 2D 바운딩 코너 — 3D 컨텍스트 바깥에서 이동 (GPU 버그 방지)
+const CORNERS: [number, number][] = [
+  [0,    0   ],
+  [SIZE, 0   ],
+  [SIZE, SIZE],
+  [0,    SIZE],
+];
+const CORNERS_ADJ = [[1, 3], [0, 2], [1, 3], [0, 2]];
+
 export default function HeroCube() {
   const cubeRef = useRef<HTMLDivElement>(null);
+  const lampRef = useRef<HTMLDivElement>(null);
+  const lampCorner = useRef(0);
   const [faces, setFaces] = useState<string[]>(() =>
     [...ALL_IMAGES].sort(() => Math.random() - 0.5).slice(0, 6)
   );
@@ -50,11 +62,11 @@ export default function HeroCube() {
     cubeRef.current.style.transform = `rotateX(${x}deg) rotateY(${y}deg) rotateZ(${z}deg)`;
   };
 
-  // 자동 회전 ticker (입장 트랜지션 없음, 즉시 시작)
+  // 자동 회전
   useEffect(() => {
     const tick = () => {
       if (!isDragging.current) {
-        const spd = isHovering.current ? 2.2 : 0.28; // 천천히
+        const spd = isHovering.current ? 2.2 : 0.28;
         rot.current.x += 0.22 * spd;
         rot.current.y += 0.55 * spd;
         rot.current.z += 0.07 * spd;
@@ -86,8 +98,30 @@ export default function HeroCube() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 형광노랑 램프 — 2D 외부 배치 (3D 컨텍스트 분리로 GPU 번쩍임 버그 완전 차단)
+  useEffect(() => {
+    const lamp = lampRef.current;
+    if (!lamp) return;
+    const [ix, iy] = CORNERS[0];
+    gsap.set(lamp, { x: ix - DOT / 2, y: iy - DOT / 2 });
+    const move = () => {
+      const curr = lampCorner.current;
+      const next = CORNERS_ADJ[curr][Math.floor(Math.random() * 2)];
+      lampCorner.current = next;
+      const [tx, ty] = CORNERS[next];
+      gsap.to(lamp, {
+        x: tx - DOT / 2,
+        y: ty - DOT / 2,
+        duration: 4 + Math.random() * 3,
+        ease: "power2.inOut",
+        onComplete: move,
+      });
+    };
+    move();
+    return () => { gsap.killTweensOf(lamp); };
+  }, []);
 
-  // 이미지 순환 — 같은 이미지 2회 이상 노출 방지
+  // 이미지 순환
   useEffect(() => {
     const id = setInterval(() => {
       setFaces(prev => {
@@ -164,7 +198,6 @@ export default function HeroCube() {
                   userSelect: "none",
                 }}
               />
-              {/* 60% 검정 오버레이 */}
               <div style={{
                 position: "absolute",
                 inset: 0,
@@ -173,9 +206,24 @@ export default function HeroCube() {
               }} />
             </div>
           ))}
-
         </div>
       </div>
+
+      {/* 형광노랑 램프 — 3D 컨텍스트 완전 분리, GPU 번쩍임 없음 */}
+      <div
+        ref={lampRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: DOT,
+          height: DOT,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, #ffff00 30%, rgba(255,255,0,0.5) 60%, transparent 100%)",
+          pointerEvents: "none",
+          zIndex: 10,
+        }}
+      />
 
       {/* 모달 */}
       {lightbox && (
@@ -206,7 +254,6 @@ export default function HeroCube() {
               height: Math.round(SIZE / 2) * 3 - 30,
               objectFit: "cover",
               objectPosition: "center",
-              border: "1px solid rgba(255,255,255,0.06)",
               borderRadius: 4,
               display: "block",
             }}
