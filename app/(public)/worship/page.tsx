@@ -17,10 +17,10 @@ const services = [
 ];
 
 const sermons = [
-  { date: "2025.12.7", title: "바닥에서도 시작되는 하나님의 스토리", scripture: "창세기 39:1-6", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
-  { date: "2025.11.30", title: "감사가 넘치는 삶", scripture: "빌립보서 4:6-7", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
-  { date: "2025.11.23", title: "하나님의 은혜로 충분합니다", scripture: "고린도후서 12:9", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
-  { date: "2025.11.16", title: "믿음의 발걸음을 내딛으라", scripture: "히브리서 11:1-6", preacher: "신점일 목사", videoId: "dQw4w9WgXcQ" },
+  { date: "2025.12.7",  title: "바닥에서도 시작되는 하나님의 스토리", scripture: "창세기 39:1-6",    preacher: "신점일 목사", videoId: "HDT6y_97ZZY" },
+  { date: "2025.11.30", title: "광야에서 만난 연합의 능력",           scripture: "출애굽기 17:8-13", preacher: "신점일 목사", videoId: "GNSONodOirY" },
+  { date: "2025.11.16", title: "감사는 선택이 아닌 체질이다",         scripture: "골로새서 3:15-17", preacher: "신점일 목사", videoId: "-GpyxONySN0" },
+  { date: "2025.11.9",  title: "내게로 오라",                         scripture: "마태복음 11:28",   preacher: "신점일 목사", videoId: "vettJ40x1xE" },
 ];
 
 export default function WorshipPage() {
@@ -46,7 +46,7 @@ export default function WorshipPage() {
           <h2 className="font-nanum-extrabold text-3xl text-gray-800 mb-8">예배 안내</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map((s) => (
-              <div key={s.name} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all">
+              <div key={s.name} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all text-center">
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="font-nanum-extrabold text-gray-800 text-lg mb-1">{s.name}</h3>
                 <p className="text-[#2E7D32] font-nanum-extrabold text-xl mb-1">{s.time}</p>
