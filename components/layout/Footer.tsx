@@ -154,10 +154,6 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-[1400px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
           <p>© {new Date().getFullYear()} 일광교회. All rights reserved.</p>
-          <div className="flex gap-5">
-            <Link href="/contact" className="hover:text-gray-300">문의하기</Link>
-            <Link href="/admin" className="hover:text-gray-300">관리자</Link>
-          </div>
         </div>
       </div>
     </footer>
