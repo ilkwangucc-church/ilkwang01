@@ -35,6 +35,8 @@ export default async function LatestSermon() {
               allow="autoplay; encrypted-media; picture-in-picture; web-share"
               allowFullScreen
             />
+            {/* 유튜브 호버 UI(제목·동영상 더보기) 차단용 투명 오버레이 */}
+            <div className="absolute inset-0 z-10" />
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
