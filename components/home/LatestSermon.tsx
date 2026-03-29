@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { fetchChannelVideos, ytWatch, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
+import { fetchChannelVideos, ytWatch, YT_CHANNEL_URL } from "@/lib/youtube";
+import SermonStreamPlayer from "./SermonStreamPlayer";
 
 export default async function LatestSermon() {
   const videos = await fetchChannelVideos();
@@ -8,35 +9,13 @@ export default async function LatestSermon() {
   const videoId = latest?.id ?? "BVamVjzwBIo";
   const title = latest?.title ?? '2026.03.15. "지혜로운 마음" (시편 90편 1-17)';
 
-  const embedSrc = ytEmbed(videoId, {
-    autoplay: true,
-    mute: true,
-    loop: true,
-    controls: true,
-  });
-
   return (
     <section className="relative z-10 -mt-16">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
-          {/* ── 영상: 카드 전체 높이 cover (여백 없음) ── */}
+          {/* ── 영상: 35분~65분 구간 반복 ── */}
           <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[326px]">
-            <iframe
-              src={embedSrc}
-              title={title}
-              className="absolute"
-              style={{
-                width: "177.78%",
-                height: "100%",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-              allow="autoplay; encrypted-media; picture-in-picture; web-share"
-              allowFullScreen
-            />
-            {/* 유튜브 호버 UI(제목·동영상 더보기) 차단용 투명 오버레이 */}
-            <div className="absolute inset-0 z-10" />
+            <SermonStreamPlayer videoId={videoId} startSec={2100} endSec={3900} />
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
