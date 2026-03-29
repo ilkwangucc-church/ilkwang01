@@ -75,6 +75,7 @@ export default function Navbar() {
   const [open, setOpen]             = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled]     = useState(false);
+  const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -82,6 +83,15 @@ export default function Navbar() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /** 메가메뉴 닫힘 지연 — 마우스가 nav → 메가메뉴로 이동하는 시간 확보 */
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setActiveMenu(null), 200);
+  };
+  const cancelClose = () => {
+    if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; }
+  };
 
   const white = scrolled || open;
   const activeItem = nav.find((n) => n.href === activeMenu);
@@ -114,12 +124,12 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <nav
             className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2"
-            onMouseLeave={() => setActiveMenu(null)}
+            onMouseLeave={scheduleClose}
           >
             {nav.map((item) => (
               <div
                 key={item.href}
-                onMouseEnter={() => setActiveMenu(item.href)}
+                onMouseEnter={() => { cancelClose(); setActiveMenu(item.href); }}
               >
                 <Link
                   href={item.href}
@@ -162,8 +172,8 @@ export default function Navbar() {
         {activeItem?.sub && (
           <div
             className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] z-50 shadow-2xl hidden lg:flex rounded-xl overflow-hidden"
-            onMouseEnter={() => setActiveMenu(activeMenu)}
-            onMouseLeave={() => setActiveMenu(null)}
+            onMouseEnter={cancelClose}
+            onMouseLeave={scheduleClose}
           >
             {/* 왼쪽: 다크 그레이 — 피처드 */}
             <div className="w-52 shrink-0 bg-gray-700 px-6 py-7 flex flex-col justify-center">
