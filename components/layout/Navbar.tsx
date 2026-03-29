@@ -36,8 +36,10 @@ const nav: NavItem[] = [
       desc: "1부 09:30 · 2부 11:00\n오후 13:30 · 수요 10:30",
     },
     sub: [
-      { label: "예배안내", href: "/worship",         desc: "주일·수요·새벽기도회 예배 안내" },
-      { label: "설교영상", href: "/worship/sermons", desc: "유튜브 채널 설교 영상 모음" },
+      { label: "예배안내",   href: "/worship",         desc: "1·2부 주일예배, 오후예배, 수요예배 시간 및 장소 안내" },
+      { label: "설교영상",   href: "/worship/sermons", desc: "담임목사 주일 설교 전체 영상 — 유튜브 채널 아카이브" },
+      { label: "새벽기도회", href: "/worship",         desc: "월~토 오전 5:30 — 말씀과 기도로 하루를 여는 새벽 예배" },
+      { label: "수요예배",   href: "/worship",         desc: "매주 수요일 오전 10:30 — 주중 말씀 나눔과 기도 예배" },
     ],
   },
   {
@@ -48,9 +50,9 @@ const nav: NavItem[] = [
       desc: "미래 세대를 말씀으로 세우는 일광교회 다음세대 사역입니다.",
     },
     sub: [
-      { label: "유초등부", href: "/youth/sunday",       desc: "유치부~초등학생 주일학교 사역" },
-      { label: "중고등부", href: "/youth/teens",        desc: "중·고등학생 신앙 공동체" },
-      { label: "청년부",   href: "/youth/young-adults", desc: "대학생 및 20~30대 청년 모임" },
+      { label: "유초등부", href: "/youth/sunday",       desc: "유치부부터 초등학생까지 — 매 주일 말씀 안에서 자라가는 어린이 주일학교" },
+      { label: "중고등부", href: "/youth/teens",        desc: "중·고등학생이 함께 모이는 청소년 신앙 공동체 — 예배·소그룹·수련회" },
+      { label: "청년부",   href: "/youth/young-adults", desc: "대학생·20~30대 미혼 청년들의 주일 모임 — 금요 성경공부·소그룹 운영" },
     ],
   },
   {
