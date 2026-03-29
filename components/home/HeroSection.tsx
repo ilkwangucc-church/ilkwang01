@@ -6,7 +6,7 @@ export default function HeroSection() {
       {/* Background Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/Hero01.png"
+        src="https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1800&auto=format&fit=crop&q=80"
         alt="예배"
         className="absolute inset-0 w-full h-full object-cover"
       />
