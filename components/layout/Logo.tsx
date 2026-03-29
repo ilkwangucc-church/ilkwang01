@@ -26,7 +26,7 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
       </div>
 
       {/* Text */}
-      <div className="flex flex-col leading-none" style={{ paddingTop: 3 }}>
+      <div className="flex flex-col leading-none" style={{ paddingTop: 6 }}>
         <span
           className="font-nanum transition-colors duration-300"
           style={{
