@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { YTVideo } from "@/lib/youtube";
-import { ytWatch, ytEmbed } from "@/lib/youtube";
+import { ytEmbed } from "@/lib/youtube";
 
 export default function SermonCard({ video }: { video: YTVideo }) {
   const [playing, setPlaying] = useState(false);
@@ -60,17 +60,8 @@ export default function SermonCard({ video }: { video: YTVideo }) {
         <h3 className="font-bold text-[#1a2744] mb-2 line-clamp-2 group-hover:text-[#2E7D32] transition-colors text-sm">
           {video.title}
         </h3>
-        <div className="flex items-center justify-between text-xs text-gray-400">
+        <div className="flex items-center text-xs text-gray-400">
           <span>{video.publishedAt.slice(0, 10).replace(/-/g, ".")}</span>
-          <a
-            href={ytWatch(video.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="hover:text-[#2E7D32] transition-colors underline"
-          >
-            YouTube에서 보기
-          </a>
         </div>
       </div>
     </div>
