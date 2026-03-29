@@ -65,14 +65,15 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
 
-      {/* Top Bar */}
-      <div className="bg-[#1a2744]">
-        <div className="max-w-[1400px] mx-auto px-6 h-9 flex items-center justify-between">
-          <div />
-          <p className="text-white/70 text-xs tracking-widest">
+      {/* Top Bar — 스크롤 시 위로 사라짐 */}
+      <div className={`bg-[#1a2744] transition-transform duration-300 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
+        <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center">
+          {/* 절대 중앙 고정 텍스트 */}
+          <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
             A Church Full of Grace and Truth
           </p>
-          <div className="flex items-center gap-2">
+          {/* 오른쪽 버튼 */}
+          <div className="ml-auto flex items-center gap-2">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">
               문의하기
             </Link>

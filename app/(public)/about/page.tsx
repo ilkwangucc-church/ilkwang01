@@ -22,7 +22,7 @@ export default function AboutPage() {
       <PageHero label="Greeting" title="담임목사 인사말" subtitle="행복과 영원으로 초대하는 일광교회" image="https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[108px] z-40">
+      <div className="bg-white border-b sticky top-[72px] z-40">
         <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
           {submenu.map((m) => (
             <Link
