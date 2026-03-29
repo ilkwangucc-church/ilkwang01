@@ -61,7 +61,7 @@ export default function HeroSection() {
               <span className="w-5 h-5 rounded-full bg-[#2E7D32]/30 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-[#6dbf73]" />
               </span>
-              서울 성북구 길음역 인근
+              서울 성북구 동소문로 212-68
             </div>
           </div>
           </div>

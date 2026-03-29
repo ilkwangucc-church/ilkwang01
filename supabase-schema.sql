@@ -122,8 +122,8 @@ CREATE POLICY "공개 읽기" ON site_content FOR SELECT USING (TRUE);
 INSERT INTO site_content (section_key, content_type, value) VALUES
   ('hero_title', 'text', '행복과 영원으로 초대하는 교회'),
   ('hero_subtitle', 'text', '일광교회에 오신 것을 환영합니다'),
-  ('about_desc', 'text', '1971년 설립된 일광교회는 대한예수교장로회(합동) 소속으로 성북구 길음동에 위치합니다.'),
+  ('about_desc', 'text', '1971년 설립된 일광교회는 대한예수교장로회(합동) 소속으로 성북구 동소문로 212-68에 위치합니다.'),
   ('phone', 'text', '02-927-0691'),
-  ('address', 'text', '서울 성북구 길음동 (지하철 4호선 길음역 인근)'),
+  ('address', 'text', '서울 성북구 동소문로 212-68'),
   ('email', 'text', 'ilkwang@ilkwang.or.kr')
 ON CONFLICT (section_key) DO NOTHING;

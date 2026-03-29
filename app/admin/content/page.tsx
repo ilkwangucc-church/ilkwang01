@@ -27,7 +27,7 @@ const sections = [
     label: "연락처 정보",
     fields: [
       { name: "phone", label: "전화번호", value: "02-927-0691" },
-      { name: "address", label: "주소", value: "서울 성북구 길음동" },
+      { name: "address", label: "주소", value: "서울 성북구 동소문로 212-68" },
       { name: "email", label: "이메일", value: "ilkwang@ilkwang.or.kr" },
     ],
   },

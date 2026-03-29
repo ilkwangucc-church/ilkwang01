@@ -16,7 +16,7 @@ export default function ContactCTA() {
             </div>
             <div className="flex items-center gap-2 text-sm font-semibold">
               <MapPin className="w-5 h-5 text-[#2E7D32]" />
-              서울 성북구 길음동 (4호선 길음역 인근)
+              서울 성북구 동소문로 212-68
             </div>
           </div>
           <h2 className="text-3xl lg:text-4xl font-black text-[#1a2744] mb-2">

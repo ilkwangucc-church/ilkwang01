@@ -10,10 +10,6 @@ const aboutLinks = [
   { label: "오시는길", href: "/about/location" },
 ];
 
-const worshipLinks = [
-  { label: "예배안내", href: "/worship" },
-  { label: "설교영상", href: "/worship/sermons" },
-];
 
 const newsLinks = [
   { label: "공지사항", href: "/news" },
@@ -44,7 +40,7 @@ export default function Footer() {
           <ul className="space-y-2.5 text-sm text-gray-400">
             <li className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-[#6dbf73] shrink-0 mt-0.5" />
-              <span>서울 성북구 길음동<br />(4호선 길음역 인근)</span>
+              <span>서울 성북구 동소문로 212-68</span>
             </li>
             <li className="flex items-center gap-2.5">
               <Phone className="w-4 h-4 text-[#6dbf73] shrink-0" />
@@ -73,7 +69,7 @@ export default function Footer() {
 
           {/* 교회소개 */}
           <div>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
               교회소개
             </h4>
             <ul className="space-y-2.5 text-sm">
@@ -89,26 +85,38 @@ export default function Footer() {
 
           {/* 예배/말씀 */}
           <div>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
               예배/말씀
             </h4>
+            <ul className="space-y-2.5 text-sm mb-7">
+              <li className="flex gap-3 text-gray-400">
+                <span className="w-16 shrink-0">1부예배</span><span>09:30</span>
+              </li>
+              <li className="flex gap-3 text-gray-400">
+                <span className="w-16 shrink-0">2부예배</span><span>11:00</span>
+              </li>
+              <li className="flex gap-3 text-gray-400">
+                <span className="w-16 shrink-0">오후예배</span><span>13:30</span>
+              </li>
+              <li className="flex gap-3 text-gray-400">
+                <span className="w-16 shrink-0">수요예배</span><span>10:30</span>
+              </li>
+            </ul>
             <ul className="space-y-2.5 text-sm">
-              {worshipLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/worship/sermons" className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                  설교영상
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* 다음세대 + 커뮤니티 */}
+          {/* 다음세대 */}
           <div>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
               다음세대
             </h4>
-            <ul className="space-y-2.5 text-sm mb-7">
+            <ul className="space-y-2.5 text-sm">
               {youthLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
@@ -117,7 +125,23 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+          </div>
+
+          {/* 교회소식 + 커뮤니티 */}
+          <div>
+            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
+              교회소식
+            </h4>
+            <ul className="space-y-2.5 text-sm mb-7">
+              {newsLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
               커뮤니티
             </h4>
             <ul className="space-y-2.5 text-sm">
@@ -126,22 +150,6 @@ export default function Footer() {
                   블로그
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* 교회소식 */}
-          <div>
-            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-              교회소식
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              {newsLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
             </ul>
           </div>
 
