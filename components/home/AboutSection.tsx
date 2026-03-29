@@ -21,11 +21,6 @@ export default function AboutSection() {
                 className="w-full object-cover aspect-[3/4]"
               />
             </div>
-            {/* Name Badge */}
-            <div className="absolute bottom-6 left-6 bg-[#1a2744] px-5 py-3 rounded-lg">
-              <p className="text-[#6dbf73] text-sm font-bold">담임목사</p>
-              <p className="text-white font-black text-lg">일광교회 목사님</p>
-            </div>
           </div>
 
           {/* Right: Quote */}
