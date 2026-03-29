@@ -36,10 +36,8 @@ const nav: NavItem[] = [
       desc: "1부 09:30 · 2부 11:00\n오후 13:30 · 수요 10:30",
     },
     sub: [
-      { label: "예배안내",   href: "/worship",         desc: "1·2부 주일예배, 오후예배, 수요예배 시간 및 장소 안내" },
-      { label: "설교영상",   href: "/worship/sermons", desc: "담임목사 주일 설교 전체 영상 — 유튜브 채널 아카이브" },
-      { label: "새벽기도회", href: "/worship",         desc: "월~토 오전 5:30 — 말씀과 기도로 하루를 여는 새벽 예배" },
-      { label: "수요예배",   href: "/worship",         desc: "매주 수요일 오전 10:30 — 주중 말씀 나눔과 기도 예배" },
+      { label: "예배안내", href: "/worship",         desc: "1부 09:30 · 2부 11:00 · 오후 13:30 · 수요 10:30\n새벽기도 월~토 05:30 — 모든 예배 시간 및 장소 안내" },
+      { label: "설교영상", href: "/worship/sermons", desc: "담임목사 주일 설교 전체 영상\n유튜브 채널 @ilkwangucc 아카이브" },
     ],
   },
   {
@@ -213,7 +211,7 @@ export default function Navbar() {
                     <span className="font-bold text-gray-800 text-[14px] group-hover:text-[#2E7D32] transition-colors">
                       {s.label}
                     </span>
-                    <span className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.desc}</span>
+                    <span className="text-xs text-gray-500 mt-0.5 leading-relaxed whitespace-pre-line">{s.desc}</span>
                   </Link>
                 ))}
               </div>
