@@ -13,8 +13,8 @@ const galleryImages = [
   { id: 2, title: "추수감사주일", src: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&q=70", category: "예배" },
   { id: 3, title: "청년부 수련회", src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=70", category: "행사" },
   { id: 4, title: "교회 봉사활동", src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=500&q=70", category: "봉사" },
-  { id: 5, title: "찬양예배", src: "https://images.unsplash.com/photo-1520637836993-5730c1a53f8b?w=500&q=70", category: "예배" },
-  { id: 6, title: "어린이 성탄발표회", src: "https://images.unsplash.com/photo-1547247153-b3e42ca9c8f5?w=500&q=70", category: "다음세대" },
+  { id: 5, title: "찬양예배", src: "https://images.unsplash.com/photo-1579975096649-e773152b04cb?w=500&q=70", category: "예배" },
+  { id: 6, title: "어린이 성탄발표회", src: "https://images.unsplash.com/photo-1480735324602-e54f11cefc20?w=500&q=70", category: "다음세대" },
   { id: 7, title: "교회 야유회", src: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=500&q=70", category: "교제" },
   { id: 8, title: "주일 예배", src: "https://images.unsplash.com/photo-1438032005730-c779502df39b?w=500&q=70", category: "예배" },
   { id: 9, title: "선교 보고회", src: "https://images.unsplash.com/photo-1542397284385-6010376c5337?w=500&q=70", category: "선교" },
@@ -28,7 +28,7 @@ const categories = ["전체", "예배", "행사", "교제", "다음세대", "봉
 export default function GalleryPage() {
   return (
     <div>
-      <PageHero label="Gallery" title="갤러리" subtitle="일광교회의 소중한 순간들을 사진으로 담았습니다" image="https://images.unsplash.com/photo-1574091948895-4a4bc19c3b69?w=1800&auto=format&fit=crop&q=80" />
+      <PageHero label="Gallery" title="갤러리" subtitle="일광교회의 소중한 순간들을 사진으로 담았습니다" image="https://images.unsplash.com/photo-1522158637959-30385a09e0da?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
       <div className="bg-white border-b sticky top-[72px] z-40">

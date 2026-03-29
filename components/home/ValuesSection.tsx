@@ -7,7 +7,7 @@ const beliefs = [
     desc: "우리는 예수 그리스도를 유일한 구원자요 주님으로 믿습니다.",
   },
   {
-    img: "https://images.unsplash.com/photo-1544013434-93fc0d6a8f35?w=600&auto=format&fit=crop&q=80",
+    img: "https://images.unsplash.com/photo-1536126750180-3c7d59643f99?w=600&auto=format&fit=crop&q=80",
     title: "하나님은 사랑이시다",
     desc: "성경은 하나님이 세상을 사랑하사 독생자를 주셨다고 말씀합니다.",
   },

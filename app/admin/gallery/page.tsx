@@ -7,7 +7,7 @@ const images = [
   { id: 1, title: "2024 부활절 예배", date: "2024-03-31", category: "예배", url: "https://images.unsplash.com/photo-1565343182548-6df3c4bffe11?w=400&auto=format&fit=crop" },
   { id: 2, title: "청년부 수련회", date: "2024-03-28", category: "청년부", url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&auto=format&fit=crop" },
   { id: 3, title: "봄 부흥성회", date: "2024-03-25", category: "행사", url: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400&auto=format&fit=crop" },
-  { id: 4, title: "소그룹 모임", date: "2024-03-20", category: "소그룹", url: "https://images.unsplash.com/photo-1574091948895-4a4bc19c3b69?w=400&auto=format&fit=crop" },
+  { id: 4, title: "소그룹 모임", date: "2024-03-20", category: "소그룹", url: "https://images.unsplash.com/photo-1522158637959-30385a09e0da?w=400&auto=format&fit=crop" },
   { id: 5, title: "어린이날 예배", date: "2024-03-15", category: "어린이", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&auto=format&fit=crop" },
   { id: 6, title: "선교사 초청 강연", date: "2024-03-10", category: "선교", url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&auto=format&fit=crop" },
 ];

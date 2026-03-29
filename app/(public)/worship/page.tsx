@@ -26,7 +26,7 @@ const sermons = [
 export default function WorshipPage() {
   return (
     <div>
-      <PageHero label="Worship & Message" title="예배 / 말씀" subtitle="살아계신 하나님을 예배하고 그 말씀을 듣습니다" image="https://images.unsplash.com/photo-1520637836993-5730c1a53f8b?w=1800&auto=format&fit=crop&q=80" />
+      <PageHero label="Worship & Message" title="예배 / 말씀" subtitle="살아계신 하나님을 예배하고 그 말씀을 듣습니다" image="https://images.unsplash.com/photo-1579975096649-e773152b04cb?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 서브메뉴 */}
       <div className="bg-white border-b sticky top-[72px] z-40">
