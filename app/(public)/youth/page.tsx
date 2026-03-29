@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const departments = [
   {
-    name: "주일학교",
+    name: "유초등부",
     sub: "유치부 · 아동부",
     href: "/youth/sunday",
     color: "from-yellow-400 to-orange-400",
@@ -37,7 +37,7 @@ const departments = [
 export default function YouthPage() {
   return (
     <div className="min-h-screen">
-      <PageHero label="Next Generation" title="다음세대" subtitle="오늘의 아이들이 내일의 교회입니다 — 다음세대를 세우는 일광교회" image="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1800&auto=format&fit=crop&q=80" />
+      <PageHero label="Next Generation" title="다음세대" subtitle="오늘의 아이들이 내일의 교회입니다 — 다음세대를 세우는 일광교회" image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1800&auto=format&fit=crop&q=80" />
 
       {/* 비전 메시지 */}
       <section className="py-14 bg-white">
