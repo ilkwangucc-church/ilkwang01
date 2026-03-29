@@ -20,7 +20,7 @@ const ALL_IMAGES = [
 
 const SIZE = 210;
 const HALF = SIZE / 2;
-const DOT  = 12;
+const DOT  = 6;
 
 // 큐브 8개 꼭지점 (x, y, z) — cubeRef 내부 3D 좌표
 const VERTS: [number, number, number][] = [
@@ -118,7 +118,7 @@ export default function HeroCube() {
         x: tx - DOT / 2,
         y: ty - DOT / 2,
         z: tz,
-        duration: 0.9 + Math.random() * 0.6,
+        duration: 3.5 + Math.random() * 2,
         ease: "power2.inOut",
         onComplete: move,
       });
@@ -224,8 +224,7 @@ export default function HeroCube() {
               width: DOT,
               height: DOT,
               borderRadius: "50%",
-              background: "#ffff00",
-              boxShadow: "0 0 5px 2px #ffff00, 0 0 14px 6px rgba(255,255,0,0.75), 0 0 28px 12px rgba(255,255,0,0.35)",
+              background: "radial-gradient(circle, #ffff00 20%, rgba(255,255,0,0.7) 55%, rgba(255,255,0,0.2) 80%, transparent 100%)",
               pointerEvents: "none",
             }}
           />
@@ -253,11 +252,11 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width: SIZE - 24,
-              height: SIZE - 24,
+              width: Math.round(SIZE / 2),
+              height: Math.round(SIZE / 2),
               objectFit: "cover",
               objectPosition: "center",
-              border: "1px solid rgba(255,255,255,0.55)",
+              border: "0.5px solid rgba(255,255,255,0.25)",
               borderRadius: 4,
               display: "block",
             }}
