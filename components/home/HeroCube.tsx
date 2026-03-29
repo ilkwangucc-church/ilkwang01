@@ -177,19 +177,18 @@ export default function HeroCube() {
         </div>
       </div>
 
-      {/* 큐브 크기 내 모달 */}
+      {/* 모달 */}
       {lightbox && (
         <div
           onClick={() => setLightbox(null)}
           style={{
-            position: "absolute",
+            position: "fixed",
             inset: 0,
-            zIndex: 50,
+            zIndex: 9999,
             background: "rgba(0,0,0,0.88)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            borderRadius: 6,
             cursor: "pointer",
           }}
         >
@@ -198,8 +197,8 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width: Math.round(SIZE * 0.8),
-              height: Math.round(SIZE * 0.8),
+              width: Math.round(SIZE / 2) * 3,
+              height: Math.round(SIZE / 2) * 3,
               objectFit: "cover",
               objectPosition: "center",
               border: "1px solid rgba(255,255,255,0.06)",
