@@ -171,24 +171,24 @@ export default function Navbar() {
         {/* ── 메가 메뉴 (데스크탑) ── */}
         {activeItem?.sub && (
           <div
-            className="absolute top-full left-0 right-0 z-50 shadow-2xl hidden lg:flex border-t-2 border-[#2E7D32]"
+            className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] z-50 shadow-2xl hidden lg:flex border-t-2 border-[#2E7D32] rounded-b-xl overflow-hidden"
             onMouseEnter={keepMenu}
             onMouseLeave={closeMenu}
           >
-            {/* 왼쪽: 라이트 그레이 — 하위 메뉴 링크 */}
-            <div className="flex-1 bg-gray-100 px-12 py-8">
-              <p className="text-xs text-[#2E7D32] font-bold uppercase tracking-[0.2em] mb-5">
+            {/* 왼쪽: 미디엄 그레이 — 하위 메뉴 링크 */}
+            <div className="flex-1 bg-gray-200 px-8 py-7">
+              <p className="text-xs text-[#2E7D32] font-bold uppercase tracking-[0.2em] mb-4">
                 {activeItem.label}
               </p>
-              <div className={`grid gap-1 ${activeItem.sub.length > 3 ? "grid-cols-2 max-w-2xl" : "grid-cols-1 max-w-sm"}`}>
+              <div className={`grid gap-0.5 ${activeItem.sub.length > 3 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {activeItem.sub.map((s) => (
                   <Link
                     key={s.href}
                     href={s.href}
                     onClick={() => setActiveMenu(null)}
-                    className="group flex flex-col px-4 py-3.5 rounded-xl hover:bg-white transition-colors"
+                    className="group flex flex-col px-3 py-3 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <span className="font-bold text-gray-800 text-[15px] group-hover:text-[#2E7D32] transition-colors">
+                    <span className="font-bold text-gray-800 text-[14px] group-hover:text-[#2E7D32] transition-colors">
                       {s.label}
                     </span>
                     <span className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.desc}</span>
@@ -198,7 +198,7 @@ export default function Navbar() {
             </div>
 
             {/* 오른쪽: 다크 그레이 — 피처드 */}
-            <div className="w-72 shrink-0 bg-gray-600 px-8 py-8 flex flex-col justify-center">
+            <div className="w-52 shrink-0 bg-gray-700 px-6 py-7 flex flex-col justify-center">
               <span className="text-[#6dbf73] text-xs font-bold uppercase tracking-[0.2em] mb-3">
                 {activeItem.label}
               </span>
