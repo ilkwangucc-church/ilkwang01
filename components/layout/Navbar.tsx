@@ -1,48 +1,72 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import Logo from "./Logo";
 
-const nav = [
+type SubItem = { label: string; href: string; desc: string };
+type NavItem = {
+  label: string;
+  href: string;
+  sub?: SubItem[];
+  featured?: { title: string; desc: string };
+};
+
+const nav: NavItem[] = [
   {
     label: "교회소개",
     href: "/about",
+    featured: {
+      title: "일광교회 소개",
+      desc: "1971년 설립된 서울 성북구 대한예수교장로회(합동) 소속 교회입니다.",
+    },
     sub: [
-      { label: "인사말",        href: "/about" },
-      { label: "교회역사",      href: "/about/history" },
-      { label: "섬기는 사람들", href: "/about/pastor" },
-      { label: "교회비전",      href: "/about/vision" },
-      { label: "오시는길",      href: "/about/location" },
+      { label: "인사말",        href: "/about",          desc: "담임목사 인사 및 교회 소개" },
+      { label: "교회역사",      href: "/about/history",  desc: "1971년 설립부터 오늘까지의 역사" },
+      { label: "섬기는 사람들", href: "/about/pastor",   desc: "목사, 장로, 권사, 집사" },
+      { label: "교회비전",      href: "/about/vision",   desc: "말씀과 기도, 선교의 비전" },
+      { label: "오시는길",      href: "/about/location", desc: "서울 성북구 동소문로 212-68" },
     ],
   },
   {
     label: "예배/말씀",
     href: "/worship",
+    featured: {
+      title: "예배 시간 안내",
+      desc: "1부 09:30 · 2부 11:00\n오후 13:30 · 수요 10:30",
+    },
     sub: [
-      { label: "예배안내", href: "/worship" },
-      { label: "설교영상", href: "/worship/sermons" },
+      { label: "예배안내", href: "/worship",         desc: "주일·수요·새벽기도회 예배 안내" },
+      { label: "설교영상", href: "/worship/sermons", desc: "유튜브 채널 설교 영상 모음" },
     ],
   },
   {
     label: "다음세대",
     href: "/youth",
+    featured: {
+      title: "다음세대 사역",
+      desc: "미래 세대를 말씀으로 세우는 일광교회 다음세대 사역입니다.",
+    },
     sub: [
-      { label: "유초등부", href: "/youth/sunday" },
-      { label: "중고등부", href: "/youth/teens" },
-      { label: "청년부",   href: "/youth/young-adults" },
+      { label: "유초등부", href: "/youth/sunday",       desc: "유치부~초등학생 주일학교 사역" },
+      { label: "중고등부", href: "/youth/teens",        desc: "중·고등학생 신앙 공동체" },
+      { label: "청년부",   href: "/youth/young-adults", desc: "대학생 및 20~30대 청년 모임" },
     ],
   },
   {
     label: "나눔과 소식",
     href: "/news",
+    featured: {
+      title: "나눔과 소식",
+      desc: "교회 소식과 성도들의 이야기를 함께 나눕니다.",
+    },
     sub: [
-      { label: "공지사항",   href: "/news" },
-      { label: "행사안내",   href: "/news/events" },
-      { label: "갤러리",     href: "/news/gallery" },
-      { label: "교재자료",   href: "/resources" },
-      { label: "나눔게시판", href: "/resources/board" },
-      { label: "커뮤니티",   href: "/blog" },
+      { label: "공지사항",   href: "/news",            desc: "교회 주요 공지 및 소식" },
+      { label: "행사안내",   href: "/news/events",     desc: "각종 행사 및 프로그램 일정" },
+      { label: "갤러리",     href: "/news/gallery",    desc: "교회 행사 사진 모음" },
+      { label: "교재자료",   href: "/resources",       desc: "소그룹 및 교육 교재 자료" },
+      { label: "나눔게시판", href: "/resources/board", desc: "성도 간 나눔 및 교재 공유" },
+      { label: "커뮤니티",   href: "/blog",            desc: "묵상·기도·신앙 나눔 공간" },
     ],
   },
 ];
@@ -51,6 +75,7 @@ export default function Navbar() {
   const [open, setOpen]             = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled]     = useState(false);
+  const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -59,8 +84,20 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // 스크롤 내려가거나 모바일 메뉴 열리면 → 흰 배경
   const white = scrolled || open;
+
+  const openMenu  = (href: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setActiveMenu(href);
+  };
+  const closeMenu = () => {
+    closeTimer.current = setTimeout(() => setActiveMenu(null), 150);
+  };
+  const keepMenu  = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+
+  const activeItem = nav.find((n) => n.href === activeMenu);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -68,138 +105,160 @@ export default function Navbar() {
       {/* Top Bar — 모바일 숨김, 스크롤 시 위로 사라짐 */}
       <div className={`hidden md:block bg-[#1a2744] transition-transform duration-300 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center">
-          {/* 절대 중앙 고정 텍스트 */}
           <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
             A Church Full of Grace and Truth
           </p>
-          {/* 오른쪽 텍스트 */}
           <div className="ml-auto flex items-center gap-4">
-            <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">
-              문의하기
-            </Link>
-            <Link href="/register" className="text-white/70 hover:text-white text-xs transition-colors">
-              회원가입
-            </Link>
+            <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">문의하기</Link>
+            <Link href="/register" className="text-white/70 hover:text-white text-xs transition-colors">회원가입</Link>
           </div>
         </div>
       </div>
 
       {/* Main Nav */}
-      <div className={`transition-all duration-300 ${white ? "bg-white shadow-sm" : "bg-transparent"}`}>
-      <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
+      <div className={`relative transition-all duration-300 ${white ? "bg-white shadow-sm" : "bg-transparent"}`}>
+        <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
 
-        {/* 모바일: 중앙 고정 / 데스크탑: 왼쪽 */}
-        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none">
-          <Logo size="md" variant={white ? "dark" : "light"} />
-        </div>
+          {/* 모바일: 중앙 고정 / 데스크탑: 왼쪽 */}
+          <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none">
+            <Logo size="md" variant={white ? "dark" : "light"} />
+          </div>
 
-        {/* Desktop Nav — 컨테이너 정중앙 고정 */}
-        <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
-          {nav.map((item) => (
-            <div
-              key={item.href}
-              className="relative"
-              onMouseEnter={() => setActiveMenu(item.href)}
-              onMouseLeave={() => setActiveMenu(null)}
-            >
-              <Link
-                href={item.href}
-                className={`flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold transition-colors ${
-                  white
-                    ? "text-[#1a2744] hover:text-[#2E7D32]"
-                    : "text-white/90 hover:text-white"
-                }`}
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
+            {nav.map((item) => (
+              <div
+                key={item.href}
+                onMouseEnter={() => openMenu(item.href)}
+                onMouseLeave={closeMenu}
               >
-                {item.label}
-                {item.sub && <ChevronDown className="w-3.5 h-3.5 opacity-60" />}
-              </Link>
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-0.5 px-4 py-2 text-[15px] font-semibold transition-colors ${
+                    white ? "text-[#1a2744] hover:text-[#2E7D32]" : "text-white/90 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  {item.sub && <ChevronDown className="w-3.5 h-3.5 opacity-60" />}
+                </Link>
+              </div>
+            ))}
+          </nav>
 
-              {item.sub && activeMenu === item.href && (
-                <div className="absolute top-full left-0 w-44 bg-white rounded-b-xl shadow-xl border-t-2 border-[#2E7D32] py-2 z-50">
-                  {item.sub.map((s) => (
-                    <Link
-                      key={s.href}
-                      href={s.href}
-                      className="block px-5 py-2.5 text-sm text-[#1a2744] hover:bg-[#f0f4f0] hover:text-[#2E7D32] transition-colors"
-                    >
-                      {s.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-
-        {/* Right: Login + CTA */}
-        <div className="hidden lg:flex items-center gap-4 ml-auto">
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors"
-          >
-            로그인
-          </Link>
-          <Link
-            href="/offering"
-            className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
+          {/* Right: Login + CTA */}
+          <div className="hidden lg:flex items-center gap-4 ml-auto">
+            <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
+              로그인
+            </Link>
+            <Link href="/offering" className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
               white
                 ? "border border-black text-black"
                 : "border border-white/80 text-white hover:border-black hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
-            }`}
-          >
-            온라인 헌금
-          </Link>
-        </div>
-
-        {/* Mobile Hamburger — 오른쪽 끝 */}
-        <button
-          onClick={() => setOpen(!open)}
-          className={`lg:hidden ml-auto p-2 transition-colors ${white ? "text-[#1a2744]" : "text-white"}`}
-        >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {open && (
-        <div className="lg:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-1 shadow-lg">
-          {nav.map((item) => (
-            <div key={item.href}>
-              <Link
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="block py-2.5 text-[15px] font-semibold text-[#1a2744] border-b border-gray-100"
-              >
-                {item.label}
-              </Link>
-              {item.sub && (
-                <div className="pl-4 pt-1 pb-2 space-y-1">
-                  {item.sub.map((s) => (
-                    <Link
-                      key={s.href}
-                      href={s.href}
-                      onClick={() => setOpen(false)}
-                      className="block py-1.5 text-sm text-gray-500 hover:text-[#2E7D32]"
-                    >
-                      {s.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-          <div className="pt-3 flex items-center gap-3">
-            <a href="tel:02-927-0691" className="text-sm text-[#1a2744] font-medium">
-              📞 02-927-0691
-            </a>
-            <Link href="/offering" onClick={() => setOpen(false)}
-              className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded-[26px] font-bold">
+            }`}>
               온라인 헌금
             </Link>
           </div>
+
+          {/* Mobile Hamburger — 오른쪽 끝 */}
+          <button
+            onClick={() => setOpen(!open)}
+            className={`lg:hidden ml-auto p-2 transition-colors ${white ? "text-[#1a2744]" : "text-white"}`}
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
-      )}
-      </div>{/* /Main Nav */}
+
+        {/* ── 메가 메뉴 (데스크탑) ── */}
+        {activeItem?.sub && (
+          <div
+            className="absolute top-full left-0 right-0 z-50 shadow-2xl hidden lg:flex border-t-2 border-[#2E7D32]"
+            onMouseEnter={keepMenu}
+            onMouseLeave={closeMenu}
+          >
+            {/* 왼쪽: 라이트 그레이 — 하위 메뉴 링크 */}
+            <div className="flex-1 bg-gray-100 px-12 py-8">
+              <p className="text-xs text-[#2E7D32] font-bold uppercase tracking-[0.2em] mb-5">
+                {activeItem.label}
+              </p>
+              <div className={`grid gap-1 ${activeItem.sub.length > 3 ? "grid-cols-2 max-w-2xl" : "grid-cols-1 max-w-sm"}`}>
+                {activeItem.sub.map((s) => (
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    onClick={() => setActiveMenu(null)}
+                    className="group flex flex-col px-4 py-3.5 rounded-xl hover:bg-white transition-colors"
+                  >
+                    <span className="font-bold text-gray-800 text-[15px] group-hover:text-[#2E7D32] transition-colors">
+                      {s.label}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.desc}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* 오른쪽: 다크 그레이 — 피처드 */}
+            <div className="w-72 shrink-0 bg-gray-600 px-8 py-8 flex flex-col justify-center">
+              <span className="text-[#6dbf73] text-xs font-bold uppercase tracking-[0.2em] mb-3">
+                {activeItem.label}
+              </span>
+              <h3 className="text-white font-black text-xl leading-snug mb-3">
+                {activeItem.featured?.title}
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                {activeItem.featured?.desc}
+              </p>
+              <Link
+                href={activeItem.href}
+                onClick={() => setActiveMenu(null)}
+                className="mt-5 inline-flex items-center gap-1.5 text-[#6dbf73] text-sm font-semibold hover:text-white transition-colors"
+              >
+                전체보기 <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Menu */}
+        {open && (
+          <div className="lg:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-1 shadow-lg">
+            {nav.map((item) => (
+              <div key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="block py-2.5 text-[15px] font-semibold text-[#1a2744] border-b border-gray-100"
+                >
+                  {item.label}
+                </Link>
+                {item.sub && (
+                  <div className="pl-4 pt-1 pb-2 space-y-1">
+                    {item.sub.map((s) => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        onClick={() => setOpen(false)}
+                        className="block py-1.5 text-sm text-gray-500 hover:text-[#2E7D32]"
+                      >
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="pt-3 flex items-center gap-3">
+              <a href="tel:02-927-0691" className="text-sm text-[#1a2744] font-medium">
+                📞 02-927-0691
+              </a>
+              <Link href="/offering" onClick={() => setOpen(false)}
+                className="text-sm px-4 py-2 bg-[#2E7D32] text-white rounded-[26px] font-bold">
+                온라인 헌금
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
