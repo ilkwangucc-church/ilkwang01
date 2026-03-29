@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { fetchChannelVideos, ytWatch, YT_CHANNEL_URL } from "@/lib/youtube";
+import { ytWatch, YT_CHANNEL_URL } from "@/lib/youtube";
 import SermonStreamPlayer from "./SermonStreamPlayer";
 
 export default async function LatestSermon() {
-  const videos = await fetchChannelVideos();
-  // 3/15 설교 영상 고정 (라이브·성경봉독 영상 제외)
-  const target = videos.find((v) => v.id === "BVamVjzwBIo") ?? videos[0];
-  const videoId = target?.id ?? "BVamVjzwBIo";
-  const title = target?.title ?? '2026.03.15. "지혜로운 마음" (시편 90편 1-17)';
+  // 2026.03.15 설교 영상 고정 — 35분~65분 구간 반복
+  const videoId = "BVamVjzwBIo";
+  const title = '2026.03.15. "지혜로운 마음" (시편 90편 1-17)';
 
   return (
     <section className="relative z-10 -mt-16">
