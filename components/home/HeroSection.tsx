@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HeroImageSlider from "./HeroImageSlider";
 
 export default function HeroSection() {
   return (
@@ -14,8 +15,8 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-[#1a2744]/85" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 w-full flex items-center min-h-[800px]">
-        <div className="max-w-2xl">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 w-full flex items-center gap-12 min-h-[800px]">
+        <div className="max-w-2xl flex-1">
           {/* Label */}
           <p className="text-[#a3c9a8] text-[22px] font-bold mb-2">
             행복과 영원으로 초대하는
@@ -65,6 +66,11 @@ export default function HeroSection() {
             </div>
           </div>
           </div>
+        </div>
+
+        {/* Right: Image Slider */}
+        <div className="hidden lg:block flex-shrink-0 w-[480px]">
+          <HeroImageSlider />
         </div>
       </div>
     </section>
