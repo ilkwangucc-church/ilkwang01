@@ -41,7 +41,7 @@ export default function YouthPage() {
 
       {/* 비전 메시지 */}
       <section className="py-14 bg-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+        <div className="max-w-[1400px] mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">다음세대를 위한 사명</h2>
           <p className="text-gray-600 leading-relaxed">
             일광교회는 어린이와 청소년, 청년들이 <strong>하나님을 인격적으로 만나고</strong>,
@@ -54,7 +54,7 @@ export default function YouthPage() {
 
       {/* 부서 카드 */}
       <section className="py-12 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 grid md:grid-cols-3 gap-6">
+        <div className="max-w-[1400px] mx-auto px-4 grid md:grid-cols-3 gap-6">
           {departments.map((dept) => (
             <Link key={dept.href} href={dept.href} className="group block">
               <div className={`rounded-2xl bg-gradient-to-br ${dept.color} p-8 text-white mb-4 text-center group-hover:scale-105 transition-transform`}>
@@ -73,7 +73,7 @@ export default function YouthPage() {
 
       {/* 예배 시간 */}
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-10">부서별 예배 시간</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

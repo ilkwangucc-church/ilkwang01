@@ -80,7 +80,7 @@ export default async function BlogPostPage({ params }: Props) {
     <div className="min-h-screen bg-gray-50">
       {/* 뒤로가기 */}
       <div className="bg-white border-b py-3">
-        <div className="max-w-3xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#2E7D32] transition-colors">
             <ArrowLeft className="w-4 h-4" />
             커뮤니티
@@ -95,7 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
       >
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-3xl mx-auto px-4 pb-8 w-full">
+          <div className="max-w-[1400px] mx-auto px-4 pb-8 w-full">
             <span className="inline-block text-xs px-3 py-1 bg-[#2E7D32] text-white rounded-full mb-3">{post.dept}</span>
             <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{post.title}</h1>
           </div>
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       {/* 본문 */}
-      <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="max-w-[1400px] mx-auto px-4 py-10">
         <div className="bg-white rounded-2xl shadow-sm p-8 md:p-10">
           {/* 메타 */}
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">

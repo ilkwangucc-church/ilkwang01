@@ -29,7 +29,7 @@ export default function HistoryPage() {
 
       {/* 타임라인 */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <div className="relative">
             {/* 중앙선 */}
             <div className="absolute left-[80px] top-0 bottom-0 w-0.5 bg-[#2E7D32]/20 hidden md:block" />

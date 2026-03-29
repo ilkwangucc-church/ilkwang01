@@ -46,7 +46,7 @@ export default function NewsPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-12">
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
           {/* 헤더 */}
           <div className="grid grid-cols-12 bg-gray-50 border-b px-6 py-3 text-xs font-nanum-bold text-gray-500">

@@ -9,7 +9,7 @@ export default function TeensPage() {
   return (
     <div className="min-h-screen">
       <section className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-[1400px] mx-auto px-4 text-center">
           <p className="text-blue-200 text-sm mb-3 tracking-widest uppercase">Youth Ministry</p>
           <h1 className="text-4xl font-bold mb-4">중고등부</h1>
           <p className="text-blue-100 text-lg">정체성과 신앙을 함께 세워가는 청소년 공동체</p>
@@ -17,7 +17,7 @@ export default function TeensPage() {
       </section>
 
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           {/* 소개 */}
           <div className="max-w-2xl mx-auto text-center mb-14">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">청소년과 함께하는 교회</h2>

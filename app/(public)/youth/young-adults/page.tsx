@@ -10,7 +10,7 @@ export default function YoungAdultsPage() {
   return (
     <div className="min-h-screen">
       <section className="bg-gradient-to-br from-green-500 to-[#1B5E20] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-[1400px] mx-auto px-4 text-center">
           <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Young Adults</p>
           <h1 className="text-4xl font-bold mb-4">청년부</h1>
           <p className="text-green-100 text-lg">세상 속에서 그리스도인으로 — 일광 청년공동체</p>
@@ -18,7 +18,7 @@ export default function YoungAdultsPage() {
       </section>
 
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           {/* 비전 */}
           <div className="text-center max-w-2xl mx-auto mb-14">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">청년부 비전</h2>

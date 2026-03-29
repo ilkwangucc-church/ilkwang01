@@ -4,7 +4,7 @@ import { Phone, MapPin, Clock } from "lucide-react";
 export default function ContactCTA() {
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-6">
         <div className="bg-[#F8FAF8] rounded-2xl p-10 text-center shadow-sm">
           <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
             VISIT US

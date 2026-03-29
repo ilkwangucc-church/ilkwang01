@@ -46,7 +46,7 @@ export default function ResourcesPage() {
     <div className="min-h-screen">
       {/* 헤더 */}
       <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-[1400px] mx-auto px-4 text-center">
           <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Resources</p>
           <h1 className="text-4xl font-bold mb-4">교재자료</h1>
           <p className="text-green-100 text-lg">
@@ -57,7 +57,7 @@ export default function ResourcesPage() {
 
       {/* 서브 메뉴 */}
       <section className="bg-white border-b py-4">
-        <div className="max-w-5xl mx-auto px-4 flex gap-4 justify-center">
+        <div className="max-w-[1400px] mx-auto px-4 flex gap-4 justify-center">
           <Link href="/resources" className="px-5 py-2 rounded-full bg-[#2E7D32] text-white text-sm font-medium">교재자료</Link>
           <Link href="/resources/board" className="px-5 py-2 rounded-full border border-gray-300 text-gray-600 hover:border-[#2E7D32] hover:text-[#2E7D32] text-sm font-medium transition-colors">나눔게시판</Link>
         </div>
@@ -65,7 +65,7 @@ export default function ResourcesPage() {
 
       {/* 자료 목록 */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 space-y-10">
+        <div className="max-w-[1400px] mx-auto px-4 space-y-10">
           {materials.map((section) => (
             <div key={section.category}>
               <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 mb-4">
@@ -99,7 +99,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* 안내 */}
-        <div className="max-w-4xl mx-auto px-4 mt-10">
+        <div className="max-w-[1400px] mx-auto px-4 mt-10">
           <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded-xl p-5 text-sm text-gray-700">
             <strong className="text-[#2E7D32]">자료 요청 안내:</strong> 목록에 없는 자료가 필요하시면{" "}
             <Link href="/contact" className="text-[#2E7D32] underline">문의하기</Link>를 통해 연락 주시거나,

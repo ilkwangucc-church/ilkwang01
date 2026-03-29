@@ -44,7 +44,7 @@ export default function PastorPage() {
       </div>
 
       {/* 직원 소개 그리드 */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         <p className="text-center text-gray-500 mb-12">
           일광교회를 함께 섬기는 교역자 및 직원을 소개합니다.
         </p>

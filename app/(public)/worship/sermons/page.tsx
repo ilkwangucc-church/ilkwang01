@@ -22,7 +22,7 @@ export default async function SermonsPage() {
       {/* 최신 영상 하이라이트 */}
       {latest && (
         <section className="py-12 bg-white border-b">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="max-w-[1400px] mx-auto px-4">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-4 text-center">
               최신 설교 · 소리 없이 자동 재생
             </p>
@@ -44,7 +44,7 @@ export default async function SermonsPage() {
 
       {/* 전체 영상 목록 */}
       <section className="py-12">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <h2 className="text-2xl font-black text-[#1a2744] mb-8">
             전체 설교 목록
             <span className="ml-2 text-sm font-normal text-gray-400">({videos.length}편)</span>

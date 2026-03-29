@@ -12,7 +12,7 @@ export default function ContactPage() {
     <div>
       <PageHero label="Contact" title="문의하기" subtitle="궁금하신 점이 있으시면 언제든지 연락주세요" image="https://images.unsplash.com/photo-1542396601-dca920ea2807?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12">
           <div>
             <h2 className="font-nanum-extrabold text-2xl text-gray-800 mb-6">연락처 정보</h2>

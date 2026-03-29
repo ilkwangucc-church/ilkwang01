@@ -26,7 +26,7 @@ export default function OfferingPage() {
     <div>
       <PageHero label="Online Offering" title="온라인 헌금" subtitle="하나님께 드리는 예물을 온라인으로 드릴 수 있습니다" image="https://images.unsplash.com/photo-1564419320461-6870880221ad?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 안내 말씀 */}
         <div className="bg-[#E8F5E9] rounded-2xl p-8 mb-12 text-center">
           <p className="text-4xl mb-4">🙏</p>

@@ -11,7 +11,7 @@ export default function LocationPage() {
     <div>
       <PageHero label="Location" title="오시는 길" subtitle="서울특별시 성북구 동소문로 212-68 — 4호선 길음역 인근" image="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 지도 */}
         <div className="rounded-2xl overflow-hidden shadow-xl mb-12 aspect-video bg-gray-200">
           <iframe

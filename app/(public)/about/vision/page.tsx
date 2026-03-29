@@ -20,7 +20,7 @@ export default function VisionPage() {
     <div>
       <PageHero label="Vision" title="소개 & 비전" subtitle="하나님 중심·성경 중심·교회 중심의 개혁주의 신앙 위에 세워진 교회" image="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 교회 소개 */}
         <section className="mb-16">
           <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-6">일광교회 소개</h2>

@@ -85,7 +85,7 @@ export default function EventsPage() {
 
       {/* 행사 목록 */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
+        <div className="max-w-[1400px] mx-auto px-4 space-y-6">
           {events.map((event) => (
             <div
               key={event.id}

@@ -37,7 +37,7 @@ export default function AboutPage() {
       </div>
 
       {/* ── 인사말 본문 ── */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12 items-start">
 
           {/* 목사님 사진 */}
@@ -102,7 +102,7 @@ export default function AboutPage() {
 
       {/* ── 학력 및 경력 ── */}
       <div className="bg-[#F8FAF8] py-16">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <h2 className="font-nanum-extrabold text-2xl text-center text-gray-800 mb-10">
             학력 및 경력
           </h2>

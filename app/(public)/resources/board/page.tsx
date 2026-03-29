@@ -25,7 +25,7 @@ export default function BoardPage() {
     <div className="min-h-screen">
       {/* 헤더 */}
       <section className="bg-[#2E7D32] text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-[1400px] mx-auto px-4 text-center">
           <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Sharing Board</p>
           <h1 className="text-4xl font-bold mb-4">나눔게시판</h1>
           <p className="text-green-100 text-lg">
@@ -36,7 +36,7 @@ export default function BoardPage() {
 
       {/* 서브 메뉴 */}
       <section className="bg-white border-b py-4">
-        <div className="max-w-5xl mx-auto px-4 flex gap-4 justify-center">
+        <div className="max-w-[1400px] mx-auto px-4 flex gap-4 justify-center">
           <Link href="/resources" className="px-5 py-2 rounded-full border border-gray-300 text-gray-600 hover:border-[#2E7D32] hover:text-[#2E7D32] text-sm font-medium transition-colors">교재자료</Link>
           <Link href="/resources/board" className="px-5 py-2 rounded-full bg-[#2E7D32] text-white text-sm font-medium">나눔게시판</Link>
         </div>
@@ -44,7 +44,7 @@ export default function BoardPage() {
 
       {/* 필터 */}
       <section className="py-6 bg-gray-50 border-b">
-        <div className="max-w-4xl mx-auto px-4 flex gap-2 flex-wrap">
+        <div className="max-w-[1400px] mx-auto px-4 flex gap-2 flex-wrap">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -62,7 +62,7 @@ export default function BoardPage() {
 
       {/* 게시글 목록 */}
       <section className="py-8 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1400px] mx-auto px-4">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
             {posts.map((post, i) => (
               <div key={post.id} className={`px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${i !== posts.length - 1 ? "border-b border-gray-50" : ""}`}>
