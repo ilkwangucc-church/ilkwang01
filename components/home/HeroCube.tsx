@@ -20,7 +20,6 @@ const ALL_IMAGES = [
 
 const SIZE = 210;
 const HALF = SIZE / 2;
-const DOT  = 4;
 
 const FACE_TRANSFORMS: string[] = [
   `translateZ(${HALF}px)`,
@@ -31,72 +30,14 @@ const FACE_TRANSFORMS: string[] = [
   `rotateX(90deg)  translateZ(${HALF}px)`,
 ];
 
-// 큐브 8개 꼭지점 (중심 기준 3D 좌표)
-const VERTS_3D: [number, number, number][] = [
-  [-HALF, -HALF, -HALF],
-  [+HALF, -HALF, -HALF],
-  [+HALF, +HALF, -HALF],
-  [-HALF, +HALF, -HALF],
-  [-HALF, -HALF, +HALF],
-  [+HALF, -HALF, +HALF],
-  [+HALF, +HALF, +HALF],
-  [-HALF, +HALF, +HALF],
-];
-
-// 각 꼭지점에 연결된 인접 꼭지점 (모서리 기준)
-const VERT_ADJ = [
-  [1, 3, 4],
-  [0, 2, 5],
-  [1, 3, 6],
-  [0, 2, 7],
-  [0, 5, 7],
-  [1, 4, 6],
-  [2, 5, 7],
-  [3, 4, 6],
-];
-
-// CSS transform: rotateX * rotateY * rotateZ 행렬 순서에 맞춰
-// 점에 적용하는 순서는 Rz → Ry → Rx
-function projectVertex(
-  v: [number, number, number],
-  rx: number, ry: number, rz: number
-): [number, number] {
-  const r = (d: number) => (d * Math.PI) / 180;
-  let [x, y, z] = v;
-
-  // 1) Rz 먼저
-  const cz = Math.cos(r(rz)), sz = Math.sin(r(rz));
-  [x, y] = [x * cz - y * sz, x * sz + y * cz];
-
-  // 2) Ry
-  const cy = Math.cos(r(ry)), sy = Math.sin(r(ry));
-  [x, z] = [x * cy + z * sy, -x * sy + z * cy];
-
-  // 3) Rx 마지막
-  const cx = Math.cos(r(rx)), sx = Math.sin(r(rx));
-  [y, z] = [y * cx - z * sx, y * sx + z * cx];
-
-  // 원근 투영
-  const d = SIZE * 2.8;
-  const scale = d / (d - z);
-  return [HALF + x * scale, HALF + y * scale];
-}
-
 export default function HeroCube() {
   const cubeRef    = useRef<HTMLDivElement>(null);
-  const lampRef    = useRef<HTMLDivElement>(null);
   const rot        = useRef({ x: -15, y: 25, z: 0 });
   const isHover    = useRef(false);
   const isDrag     = useRef(false);
   const hasMoved   = useRef(false);
   const lastMouse  = useRef({ x: 0, y: 0 });
   const usageCnt   = useRef<Record<string, number>>({});
-
-  // 램프 이동 상태
-  const lampFrom   = useRef(0);
-  const lampTo     = useRef(1);
-  const lampT      = useRef(0);
-  const lampSpeed  = useRef(0.0035);
 
   const [imgs, setImgs] = useState<string[]>(() =>
     [...ALL_IMAGES].sort(() => Math.random() - 0.5).slice(0, 6)
@@ -143,40 +84,6 @@ export default function HeroCube() {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup",   onUp);
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 형광 노란 램프 — 매 프레임 회전 반영해 실제 꼭지점 위에 정확히 배치
-  useEffect(() => {
-    const lamp = lampRef.current;
-    if (!lamp) return;
-
-    const tick = () => {
-      lampT.current += lampSpeed.current;
-
-      if (lampT.current >= 1) {
-        lampT.current = 0;
-        lampFrom.current = lampTo.current;
-        const adj = VERT_ADJ[lampFrom.current];
-        lampTo.current = adj[Math.floor(Math.random() * adj.length)];
-        lampSpeed.current = 0.003 + Math.random() * 0.003;
-      }
-
-      const t = lampT.current;
-      // ease in-out
-      const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-
-      const { x: rx, y: ry, z: rz } = rot.current;
-      const [x0, y0] = projectVertex(VERTS_3D[lampFrom.current], rx, ry, rz);
-      const [x1, y1] = projectVertex(VERTS_3D[lampTo.current],   rx, ry, rz);
-
-      gsap.set(lamp, {
-        x: x0 + (x1 - x0) * e - DOT / 2,
-        y: y0 + (y1 - y0) * e - DOT / 2,
-      });
-    };
-
-    gsap.ticker.add(tick);
-    return () => { gsap.ticker.remove(tick); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 이미지 순환
@@ -262,18 +169,6 @@ export default function HeroCube() {
         </div>
       </div>
 
-      {/* 형광 노란 램프 — 매 프레임 실제 꼭지점 좌표 추적 */}
-      <div
-        ref={lampRef}
-        style={{
-          position: "absolute", top: 0, left: 0,
-          width: DOT, height: DOT,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, #ffff00 30%, rgba(255,255,0,0.45) 65%, transparent 100%)",
-          pointerEvents: "none",
-          zIndex: 5,
-        }}
-      />
 
       {/* 모달 */}
       {lightbox && (
