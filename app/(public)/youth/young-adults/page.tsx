@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "청년부",
@@ -9,13 +10,12 @@ export const metadata: Metadata = {
 export default function YoungAdultsPage() {
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-500 to-[#1B5E20] text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <p className="text-green-200 text-sm mb-3 tracking-widest uppercase">Young Adults</p>
-          <h1 className="text-4xl font-bold mb-4">청년부</h1>
-          <p className="text-green-100 text-lg">세상 속에서 그리스도인으로 — 일광 청년공동체</p>
-        </div>
-      </section>
+      <PageHero
+        label="Young Adults"
+        title="청년부"
+        subtitle="세상 속에서 그리스도인으로 — 일광 청년공동체"
+        image="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1800&auto=format&fit=crop&q=80"
+      />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
@@ -30,7 +30,7 @@ export default function YoungAdultsPage() {
           </div>
 
           {/* 모임 정보 */}
-          <div className="grid md:grid-cols-3 xl:grid-cols-4 gap-5 mb-12">
+          <div className="grid md:grid-cols-3 gap-5 mb-12 max-w-3xl mx-auto">
             {[
               { icon: "🙏", title: "주일 예배", detail: "매 주일 오후 1:30\n3부 예배 함께 참여\n예배 후 청년 모임" },
               { icon: "📖", title: "금요 성경공부", detail: "매주 금요일 오후 7:30\n소그룹 말씀 나눔\n찬양 & 기도 포함" },
@@ -45,8 +45,8 @@ export default function YoungAdultsPage() {
           </div>
 
           {/* 연간 행사 */}
-          <h2 className="text-xl font-bold mb-6">연간 주요 행사</h2>
-          <div className="grid sm:grid-cols-2 gap-4 mb-12">
+          <h2 className="text-xl font-bold mb-6 text-center">연간 주요 행사</h2>
+          <div className="grid sm:grid-cols-2 gap-4 mb-12 max-w-3xl mx-auto">
             {[
               { title: "봄 수련회", desc: "3박 4일 강원도 수련회 — 말씀, 찬양, 교제", badge: "4월" },
               { title: "전도 훈련 & 노방전도", desc: "길음 지역 노방전도 및 전도 훈련", badge: "5월" },

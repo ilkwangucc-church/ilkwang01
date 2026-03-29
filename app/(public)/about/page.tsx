@@ -38,7 +38,7 @@ export default function AboutPage() {
 
       {/* ── 인사말 본문 ── */}
       <div className="max-w-[1400px] mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 xl:grid-cols-[2fr_3fr] gap-12 xl:gap-20 items-start">
+        <div className="grid md:grid-cols-2 xl:grid-cols-[2fr_3fr] gap-12 xl:gap-20 items-center">
 
           {/* 목사님 사진 */}
           <div className="relative">
@@ -61,8 +61,9 @@ export default function AboutPage() {
 
             <p>
               사람들의 소원은 어린이나 어른이나{" "}
-              <strong className="text-[#2E7D32]">'행복'</strong>입니다.
-              그러나 어떻게 해야 행복할 수 있냐고 물으면 답이 없어 보입니다.
+              <strong className="text-[#2E7D32]">'행복'</strong>입니다.<br />
+              그러나 어떻게 해야 행복할 수 있냐고 물으면<br />
+              답이 없어 보입니다.
             </p>
             <p>
               많이 배우면 행복할까? 많이 가지면 행복할까?<br />
@@ -73,9 +74,10 @@ export default function AboutPage() {
             </p>
 
             <p>
-              사람들은 <strong className="text-[#2E7D32]">'영원'</strong>을 소망합니다.
-              천국에서 영원히 살고 싶은 마음으로 선행을 하기도 하고
-              때로 고행을 하기도 합니다. 진짜 이것들이 영원히 살게 해 줄까요?
+              사람들은 <strong className="text-[#2E7D32]">'영원'</strong>을 소망합니다.<br />
+              천국에서 영원히 살고 싶은 마음으로<br />
+              선행을 하기도 하고 때로 고행을 하기도 합니다.<br />
+              진짜 이것들이 영원히 살게 해 줄까요?
             </p>
             <p className="font-nanum-extrabold text-[#2E7D32] text-lg">
               여기 영원히 사는 길이 있습니다.

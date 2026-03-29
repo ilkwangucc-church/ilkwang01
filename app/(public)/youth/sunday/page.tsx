@@ -1,24 +1,24 @@
 import { Metadata } from "next";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
-  title: "주일학교",
-  description: "일광교회 주일학교 — 유치부 및 아동부 소개",
+  title: "유초등부",
+  description: "일광교회 유초등부 — 유치부 및 아동부 소개",
 };
 
 export default function SundaySchoolPage() {
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-yellow-400 to-orange-400 text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <p className="text-yellow-100 text-sm mb-3 tracking-widest uppercase">Sunday School</p>
-          <h1 className="text-4xl font-bold mb-4">주일학교</h1>
-          <p className="text-yellow-100 text-lg">하나님을 경험하며 자라는 유치부 · 아동부</p>
-        </div>
-      </section>
+      <PageHero
+        label="Children Ministry"
+        title="유초등부"
+        subtitle="하나님을 경험하며 자라는 유치부 · 아동부"
+        image="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1800&auto=format&fit=crop&q=80"
+      />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-3xl mx-auto">
             <div className="bg-yellow-50 rounded-2xl p-8">
               <div className="text-4xl mb-3">🌸</div>
               <h2 className="text-xl font-bold text-gray-900 mb-3">유치부 (5~7세)</h2>

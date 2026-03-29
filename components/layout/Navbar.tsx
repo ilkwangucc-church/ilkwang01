@@ -28,9 +28,9 @@ const nav = [
     label: "다음세대",
     href: "/youth",
     sub: [
-      { label: "주일학교", href: "/youth/sunday" },
-      { label: "청년부",   href: "/youth/young-adults" },
+      { label: "유초등부", href: "/youth/sunday" },
       { label: "중고등부", href: "/youth/teens" },
+      { label: "청년부",   href: "/youth/young-adults" },
     ],
   },
   {
@@ -132,19 +132,13 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-4 ml-auto">
           <Link
             href="/login"
-            className={`text-sm font-medium transition-colors ${
-              white ? "text-[#1a2744] hover:text-[#2E7D32]" : "text-white/90 hover:text-white"
-            }`}
+            className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors"
           >
             로그인
           </Link>
           <Link
             href="/offering"
-            className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
-              white
-                ? "bg-[#2E7D32] text-white hover:bg-[#1B5E20]"
-                : "border border-white/80 text-white hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
-            }`}
+            className="px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide border border-white/80 text-white hover:border-black hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
           >
             온라인 헌금
           </Link>

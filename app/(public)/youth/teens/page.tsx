@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "중고등부",
@@ -8,13 +9,12 @@ export const metadata: Metadata = {
 export default function TeensPage() {
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <p className="text-blue-200 text-sm mb-3 tracking-widest uppercase">Youth Ministry</p>
-          <h1 className="text-4xl font-bold mb-4">중고등부</h1>
-          <p className="text-blue-100 text-lg">정체성과 신앙을 함께 세워가는 청소년 공동체</p>
-        </div>
-      </section>
+      <PageHero
+        label="Youth Ministry"
+        title="중고등부"
+        subtitle="정체성과 신앙을 함께 세워가는 청소년 공동체"
+        image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1800&auto=format&fit=crop&q=80"
+      />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
@@ -29,7 +29,7 @@ export default function TeensPage() {
           </div>
 
           {/* 예배 정보 */}
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-2 gap-6 mb-12 max-w-3xl mx-auto">
             <div className="bg-indigo-50 rounded-2xl p-7">
               <h3 className="font-bold text-indigo-800 mb-4 text-lg">주일 예배</h3>
               <ul className="text-sm text-gray-700 space-y-2">
@@ -51,7 +51,7 @@ export default function TeensPage() {
 
           {/* 프로그램 */}
           <h2 className="text-xl font-bold mb-6 text-center">연간 주요 프로그램</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 max-w-3xl mx-auto">
             {[
               { period: "3월", event: "신학기 환영 예배 및 신입생 OT" },
               { period: "5월", event: "청소년 축제 (지역 청소년 초청 전도 행사)" },

@@ -29,7 +29,8 @@ export default function HeroSection() {
 
           {/* Body */}
           <p className="text-gray-300 text-[20px] leading-snug mb-8 max-w-xl">
-            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고, 모든 사람이 하나님의 사랑 안에서 새로운 삶을 시작하도록 돕는 것입니다.
+            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고, 모든 사람이 하나님의 사랑 안에서 새로운 삶을<br />
+            시작하도록 돕는 것입니다.
           </p>
 
           {/* CTA Buttons + Info bar */}

@@ -15,7 +15,7 @@ export default function LocationPage() {
         {/* 지도 */}
         <div className="rounded-2xl overflow-hidden shadow-xl mb-12 aspect-video bg-gray-200">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3161.8!2d127.0267!3d37.5935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357cbcf0!2z7ISc7Jq47Yq567OE7IucIOyEseuCqOq1rCDrtoTshozroZzroZwgMjEyLTY4!5e0!3m2!1sko!2skr!4v1"
+            src="https://maps.google.com/maps?q=서울특별시+성북구+동소문로+212-68&hl=ko&z=17&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}

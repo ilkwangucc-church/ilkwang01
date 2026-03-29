@@ -21,9 +21,9 @@ const sharingLinks = [
 ];
 
 const youthLinks = [
-  { label: "주일학교", href: "/youth/sunday" },
-  { label: "청년부", href: "/youth/young-adults" },
+  { label: "유초등부", href: "/youth/sunday" },
   { label: "중고등부", href: "/youth/teens" },
+  { label: "청년부",   href: "/youth/young-adults" },
 ];
 
 export default function Footer() {
@@ -91,7 +91,7 @@ export default function Footer() {
             <h4 className="font-black text-white text-[19px] uppercase tracking-widest mb-5">
               예배/말씀
             </h4>
-            <ul className="space-y-2.5 text-sm mb-7">
+            <ul className="space-y-1 text-sm mb-7">
               <li className="flex gap-3 text-gray-400">
                 <span className="w-16 shrink-0">1부예배</span><span>09:30</span>
               </li>
