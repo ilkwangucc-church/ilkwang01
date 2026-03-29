@@ -183,7 +183,11 @@ export default function HeroCube() {
           onClick={() => setLightbox(null)}
           style={{
             position: "absolute",
-            inset: 0,
+            width: Math.round(SIZE / 2) * 3,
+            height: Math.round(SIZE / 2) * 3,
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             zIndex: 50,
             background: "rgba(0,0,0,0.88)",
             display: "flex",
@@ -191,7 +195,6 @@ export default function HeroCube() {
             justifyContent: "center",
             borderRadius: 6,
             cursor: "pointer",
-            overflow: "hidden",
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -199,8 +202,8 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width: Math.round(SIZE / 2) * 3,
-              height: Math.round(SIZE / 2) * 3,
+              width: Math.round(SIZE / 2) * 3 - 30,
+              height: Math.round(SIZE / 2) * 3 - 30,
               objectFit: "cover",
               objectPosition: "center",
               border: "1px solid rgba(255,255,255,0.06)",
