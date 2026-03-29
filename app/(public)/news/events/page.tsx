@@ -1,3 +1,6 @@
+// ISR: 2시간
+export const revalidate = 7200;
+
 import { Metadata } from "next";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";

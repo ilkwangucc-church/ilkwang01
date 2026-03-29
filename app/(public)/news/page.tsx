@@ -1,3 +1,6 @@
+// ISR: 1시간
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, Pin } from "lucide-react";

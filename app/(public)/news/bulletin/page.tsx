@@ -1,3 +1,6 @@
+// ISR: 주보 업로드 시 on-demand 재검증
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";

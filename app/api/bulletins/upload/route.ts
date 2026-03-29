@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, readFile, mkdir } from "fs/promises";
 import path from "path";
+import { revalidateTag } from "next/cache";
+import { delCached } from "@/lib/object-cache";
+import { CACHE_TAGS } from "@/lib/cache";
 
 const ALLOWED_DOC = [".hwp", ".doc", ".docx", ".pdf", ".ppt", ".pptx"];
 const ALLOWED_IMG = [".jpg", ".jpeg", ".png", ".webp"];
@@ -100,6 +103,10 @@ export async function POST(req: NextRequest) {
     }
 
     await writeFile(dataPath, JSON.stringify(bulletins, null, 2), "utf-8");
+
+    // 캐시 무효화 (Next.js Data Cache + Object Cache)
+    revalidateTag(CACHE_TAGS.bulletins, {});
+    await delCached("bulletins:list");
 
     return NextResponse.json({ success: true, bulletin: entry });
   } catch (err) {

@@ -1,3 +1,6 @@
+// ISR: 2시간
+export const revalidate = 7200;
+
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";

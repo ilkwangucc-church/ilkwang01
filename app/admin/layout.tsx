@@ -4,19 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FileText, Users, BookOpen,
-  Bell, Image, DollarSign, Menu, X, Settings, LogOut, BookMarked
+  Bell, Image, DollarSign, Menu, X, Settings, LogOut, BookMarked, Zap
 } from "lucide-react";
 
 const navItems = [
-  { label: "대시보드", href: "/admin", icon: LayoutDashboard },
-  { label: "콘텐츠 관리", href: "/admin/content", icon: FileText },
-  { label: "주보 관리", href: "/admin/bulletins", icon: BookMarked },
-  { label: "성도(교적) 관리", href: "/admin/members", icon: Users },
-  { label: "설교/미디어", href: "/admin/sermons", icon: BookOpen },
-  { label: "공지/게시판", href: "/admin/notices", icon: Bell },
-  { label: "갤러리 관리", href: "/admin/gallery", icon: Image },
-  { label: "헌금 현황", href: "/admin/offerings", icon: DollarSign },
-  { label: "사이트 설정", href: "/admin/settings", icon: Settings },
+  { label: "대시보드",      href: "/admin",            icon: LayoutDashboard },
+  { label: "콘텐츠 관리",   href: "/admin/content",    icon: FileText },
+  { label: "주보 관리",     href: "/admin/bulletins",  icon: BookMarked },
+  { label: "성도(교적) 관리", href: "/admin/members",  icon: Users },
+  { label: "설교/미디어",   href: "/admin/sermons",    icon: BookOpen },
+  { label: "공지/게시판",   href: "/admin/notices",    icon: Bell },
+  { label: "갤러리 관리",   href: "/admin/gallery",    icon: Image },
+  { label: "헌금 현황",     href: "/admin/offerings",  icon: DollarSign },
+  { label: "캐시 관리",     href: "/admin/cache",      icon: Zap },
+  { label: "사이트 설정",   href: "/admin/settings",   icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
