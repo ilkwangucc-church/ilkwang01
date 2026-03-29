@@ -6,12 +6,12 @@ export default function HeroSection() {
       {/* Background Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1800&auto=format&fit=crop&q=80"
+        src="/c01/Hero001.jpeg"
         alt="예배"
         className="absolute inset-0 w-full h-full object-cover"
       />
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0d1a2d]/92 via-[#0d1a2d]/70 to-[#0d1a2d]/25" />
+      <div className="absolute inset-0 bg-[#1a2744]/85" />
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 w-full flex items-center min-h-[800px]">
@@ -28,8 +28,8 @@ export default function HeroSection() {
 
           {/* Body */}
           <p className="text-gray-300 text-[20px] leading-snug mb-8 max-w-xl">
-            살아계신 하나님을 예배하고, 예수 그리스도의 제자로 훈련되어,<br className="hidden sm:block" />
-            성령의 능력으로 사랑하고 전도하고 섬기는 교회입니다.
+            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고,<br className="hidden sm:block" />
+            모든 사람이 하나님의 사랑 안에서 새로운 삶을 시작하도록 돕는 것입니다.
           </p>
 
           {/* CTA Buttons + Info bar */}
