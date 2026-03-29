@@ -9,6 +9,7 @@ export default function HeroSection() {
       <img
         src="/c01/Hero001.jpeg"
         alt="예배"
+        loading="eager"
         className="absolute inset-0 w-full h-full object-cover"
       />
       {/* Dark Overlay */}

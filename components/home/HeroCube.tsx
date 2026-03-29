@@ -145,7 +145,7 @@ export default function HeroCube() {
                 borderRadius: 6,
                 border: "2px solid rgba(255,255,255,0.2)",
                 cursor: "pointer",
-                background: "#000",
+                background: "#1a2744",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type YTPlayer = {
   getCurrentTime: () => number;
@@ -24,9 +24,10 @@ export default function SermonStreamPlayer({
   startSec?: number;
   endSec?: number;
 }) {
-  const innerRef = useRef<HTMLDivElement>(null);
+  const innerRef  = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     /* 구간 감시 타이머 */
@@ -59,6 +60,7 @@ export default function SermonStreamPlayer({
             e.target.seekTo(startSec, true);
             e.target.playVideo();
             startLoop(e.target);
+            setReady(true);
           },
         },
       });
@@ -99,6 +101,19 @@ export default function SermonStreamPlayer({
       >
         <div ref={innerRef} style={{ width: "100%", height: "100%" }} />
       </div>
+
+      {/* 썸네일 오버레이 — 플레이어 준비 전 검정 배경 방지 */}
+      <div
+        className="absolute inset-0 z-20 transition-opacity duration-700"
+        style={{
+          backgroundImage: `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: ready ? 0 : 1,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* YouTube 호버 UI 차단 */}
       <div className="absolute inset-0 z-10" />
     </>
