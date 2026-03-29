@@ -175,7 +175,27 @@ export default function Navbar() {
             onMouseEnter={keepMenu}
             onMouseLeave={closeMenu}
           >
-            {/* 왼쪽: 미디엄 그레이 — 하위 메뉴 링크 */}
+            {/* 왼쪽: 다크 그레이 — 피처드 */}
+            <div className="w-52 shrink-0 bg-gray-700 px-6 py-7 flex flex-col justify-center">
+              <span className="text-[#6dbf73] text-xs font-bold uppercase tracking-[0.2em] mb-3">
+                {activeItem.label}
+              </span>
+              <h3 className="text-white font-black text-xl leading-snug mb-3">
+                {activeItem.featured?.title}
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                {activeItem.featured?.desc}
+              </p>
+              <Link
+                href={activeItem.href}
+                onClick={() => setActiveMenu(null)}
+                className="mt-5 inline-flex items-center gap-1.5 text-[#6dbf73] text-sm font-semibold hover:text-white transition-colors"
+              >
+                전체보기 <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* 오른쪽: 미디엄 그레이 — 하위 메뉴 링크 */}
             <div className="flex-1 bg-gray-200 px-8 py-7">
               <p className="text-xs text-[#2E7D32] font-bold uppercase tracking-[0.2em] mb-4">
                 {activeItem.label}
@@ -195,26 +215,6 @@ export default function Navbar() {
                   </Link>
                 ))}
               </div>
-            </div>
-
-            {/* 오른쪽: 다크 그레이 — 피처드 */}
-            <div className="w-52 shrink-0 bg-gray-700 px-6 py-7 flex flex-col justify-center">
-              <span className="text-[#6dbf73] text-xs font-bold uppercase tracking-[0.2em] mb-3">
-                {activeItem.label}
-              </span>
-              <h3 className="text-white font-black text-xl leading-snug mb-3">
-                {activeItem.featured?.title}
-              </h3>
-              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                {activeItem.featured?.desc}
-              </p>
-              <Link
-                href={activeItem.href}
-                onClick={() => setActiveMenu(null)}
-                className="mt-5 inline-flex items-center gap-1.5 text-[#6dbf73] text-sm font-semibold hover:text-white transition-colors"
-              >
-                전체보기 <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
             </div>
           </div>
         )}
