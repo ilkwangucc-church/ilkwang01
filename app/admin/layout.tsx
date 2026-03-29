@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FileText, Users, BookOpen,
-  Bell, Image, DollarSign, Menu, X, Settings, LogOut
+  Bell, Image, DollarSign, Menu, X, Settings, LogOut, BookMarked
 } from "lucide-react";
 
 const navItems = [
   { label: "대시보드", href: "/admin", icon: LayoutDashboard },
   { label: "콘텐츠 관리", href: "/admin/content", icon: FileText },
+  { label: "주보 관리", href: "/admin/bulletins", icon: BookMarked },
   { label: "성도(교적) 관리", href: "/admin/members", icon: Users },
   { label: "설교/미디어", href: "/admin/sermons", icon: BookOpen },
   { label: "공지/게시판", href: "/admin/notices", icon: Bell },

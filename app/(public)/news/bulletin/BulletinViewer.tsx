@@ -1,87 +1,32 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Download, FileText } from "lucide-react";
 
-/* ── 주보 데이터 타입 ─────────────────────────────────────
-   실제 운영 시 /public/bulletins/ 폴더에
-   YYYY-MM-DD-1.jpg (앞면), YYYY-MM-DD-2.jpg (뒷면), YYYY-MM-DD.hwp 저장
-──────────────────────────────────────────────────────── */
+/* ── 주보 데이터 타입 ─────────────────────────────────────────
+   /public/bulletins/ 폴더에 파일 저장
+   이미지: YYYY-MM-DD-1.jpg (앞면), YYYY-MM-DD-2.jpg (뒷면)
+   문서:   YYYY-MM-DD.hwp / .doc / .docx / .pdf / .ppt / .pptx
+─────────────────────────────────────────────────────────── */
 type Bulletin = {
   id: number;
-  date: string;        // "2026-03-29"
-  highlights: string[]; // 주요 사항
-  front: string;       // 앞면 이미지 경로
-  back: string;        // 뒷면 이미지 경로
-  hwp?: string;        // HWP 다운로드 경로
+  date: string;
+  highlights: string[];
+  front: string;
+  back: string;
+  file?: string;
+  fileType?: string;
 };
-
-const bulletins: Bulletin[] = [
-  {
-    id: 1,
-    date: "2026-03-29",
-    highlights: [
-      "설교: 「하나님의 은혜」 (에베소서 2:8-9) — 신점일 목사",
-      "부활주일 예배 안내 (4월 5일 오전 9:30 · 11:00)",
-      "청년부 봄 수련회 신청 마감 (4월 7일까지)",
-    ],
-    front: "/bulletins/2026-03-29-1.jpg",
-    back:  "/bulletins/2026-03-29-2.jpg",
-    hwp:   "/bulletins/2026-03-29.hwp",
-  },
-  {
-    id: 2,
-    date: "2026-03-22",
-    highlights: [
-      "설교: 「생명의 말씀」 (요한복음 6:63) — 신점일 목사",
-      "고난주간 특별새벽기도회 (3월 30일 ~ 4월 4일, 오전 5:30)",
-      "어린이 주일학교 부활절 달걀 봉사 모집 (접수 중)",
-    ],
-    front: "/bulletins/2026-03-22-1.jpg",
-    back:  "/bulletins/2026-03-22-2.jpg",
-    hwp:   "/bulletins/2026-03-22.hwp",
-  },
-  {
-    id: 3,
-    date: "2026-03-15",
-    highlights: [
-      "설교: 「지혜로운 마음」 (시편 90:1-17) — 신점일 목사",
-      "2026년 정기 공동의회 결과 보고",
-      "소그룹 성경공부 신청 접수 (3월 22일까지)",
-    ],
-    front: "/bulletins/2026-03-15-1.jpg",
-    back:  "/bulletins/2026-03-15-2.jpg",
-    hwp:   "/bulletins/2026-03-15.hwp",
-  },
-  {
-    id: 4,
-    date: "2026-03-08",
-    highlights: [
-      "설교: 「믿음의 기도」 (야고보서 5:13-16) — 신점일 목사",
-      "3·1절 기념 특별예배 감사 인사",
-      "구역 성경공부 교재 배부 안내",
-    ],
-    front: "/bulletins/2026-03-08-1.jpg",
-    back:  "/bulletins/2026-03-08-2.jpg",
-    hwp:   "/bulletins/2026-03-08.hwp",
-  },
-  {
-    id: 5,
-    date: "2026-03-01",
-    highlights: [
-      "설교: 「자유를 향한 부르심」 (갈라디아서 5:1) — 신점일 목사",
-      "3·1절 기념 특별예배 (3월 1일 오전 11:00)",
-      "2025년 연간 결산 보고서 배부",
-    ],
-    front: "/bulletins/2026-03-01-1.jpg",
-    back:  "/bulletins/2026-03-01-2.jpg",
-    hwp:   "/bulletins/2026-03-01.hwp",
-  },
-];
 
 /* 날짜 포맷 */
 const fmt = (d: string) => {
   const [y, m, day] = d.split("-");
   return `${y}년 ${parseInt(m)}월 ${parseInt(day)}일`;
+};
+
+/* 파일 타입별 레이블 */
+const fileLabel = (type?: string) => {
+  if (!type) return "다운로드";
+  return type.toUpperCase();
 };
 
 /* 이미지 로드 실패 시 회색 placeholder SVG */
@@ -95,7 +40,24 @@ const PLACEHOLDER = (label: string) =>
   )}`;
 
 export default function BulletinViewer() {
-  const [selected, setSelected] = useState<Bulletin | null>(null);
+  const [bulletins, setBulletins] = useState<Bulletin[]>([]);
+  const [selected, setSelected]   = useState<Bulletin | null>(null);
+  const [loading, setLoading]     = useState(true);
+
+  useEffect(() => {
+    fetch("/api/bulletins")
+      .then((r) => r.json())
+      .then((data) => { setBulletins(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-[1400px] mx-auto px-4 py-12 text-center text-gray-400">
+        불러오는 중…
+      </div>
+    );
+  }
 
   return (
     <>
@@ -104,17 +66,23 @@ export default function BulletinViewer() {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
           {/* 목록 헤더 */}
-          <div className="hidden sm:grid sm:grid-cols-[160px_1fr_100px] bg-[#1a2744] px-6 py-3 text-xs font-bold text-white/70 uppercase tracking-wider">
+          <div className="hidden sm:grid sm:grid-cols-[160px_1fr_120px] bg-[#1a2744] px-6 py-3 text-xs font-bold text-white/70 uppercase tracking-wider">
             <div>날짜</div>
             <div>주요 내용</div>
-            <div className="text-center">HWP</div>
+            <div className="text-center">문서</div>
           </div>
+
+          {bulletins.length === 0 && (
+            <div className="px-6 py-10 text-center text-gray-400 text-sm">
+              등록된 주보가 없습니다.
+            </div>
+          )}
 
           {bulletins.map((b, idx) => (
             <div
               key={b.id}
               onClick={() => setSelected(b)}
-              className={`flex flex-col sm:grid sm:grid-cols-[160px_1fr_100px] items-start px-6 py-5 cursor-pointer transition-colors hover:bg-[#F1F8E9] group ${idx < bulletins.length - 1 ? "border-b border-gray-100" : ""}`}
+              className={`flex flex-col sm:grid sm:grid-cols-[160px_1fr_120px] items-start px-6 py-5 cursor-pointer transition-colors hover:bg-[#F1F8E9] group ${idx < bulletins.length - 1 ? "border-b border-gray-100" : ""}`}
             >
               {/* 날짜 */}
               <div className="mb-2 sm:mb-0 shrink-0">
@@ -133,19 +101,19 @@ export default function BulletinViewer() {
                 ))}
               </div>
 
-              {/* HWP 다운로드 */}
+              {/* 문서 다운로드 */}
               <div
                 className="mt-3 sm:mt-0 self-center flex items-center justify-center shrink-0"
                 onClick={(e) => e.stopPropagation()}
               >
-                {b.hwp && (
+                {b.file && (
                   <a
-                    href={b.hwp}
+                    href={b.file}
                     download
                     className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#2E7D32] font-semibold transition-colors py-1.5 px-3 rounded-lg hover:bg-[#E8F5E9]"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    다운로드
+                    {fileLabel(b.fileType)}
                   </a>
                 )}
               </div>
@@ -154,7 +122,7 @@ export default function BulletinViewer() {
         </div>
 
         <p className="text-xs text-gray-400 mt-4 text-center">
-          * 주보를 클릭하면 앞·뒷면을 확인할 수 있습니다. HWP 파일은 한글 뷰어로 열어주세요.
+          * 주보를 클릭하면 앞·뒷면을 확인할 수 있습니다.
         </p>
       </div>
 
@@ -182,14 +150,14 @@ export default function BulletinViewer() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {selected.hwp && (
+                {selected.file && (
                   <a
-                    href={selected.hwp}
+                    href={selected.file}
                     download
                     className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
-                    HWP 다운로드
+                    {fileLabel(selected.fileType)} 다운로드
                   </a>
                 )}
                 <button
@@ -249,14 +217,14 @@ export default function BulletinViewer() {
               <p className="text-xs text-gray-400">
                 이미지를 길게 누르거나 우클릭하여 저장할 수 있습니다.
               </p>
-              {selected.hwp && (
+              {selected.file && (
                 <a
-                  href={selected.hwp}
+                  href={selected.file}
                   download
                   className="sm:hidden flex items-center gap-1.5 text-sm font-semibold text-[#2E7D32] hover:underline"
                 >
                   <Download className="w-4 h-4" />
-                  HWP 다운로드
+                  {fileLabel(selected.fileType)} 다운로드
                 </a>
               )}
             </div>

@@ -62,7 +62,6 @@ const nav: NavItem[] = [
       viewAll: "교회소식",
     },
     sub: [
-      { label: "교회소식",   href: "/news",              desc: "교회 주요 소식 및 공지" },
       { label: "주보자료",   href: "/news/bulletin",     desc: "매주 주보 앞·뒷면 확인 및 다운로드" },
       { label: "행사안내",   href: "/news/events",       desc: "각종 행사 및 프로그램 일정" },
       { label: "갤러리",     href: "/news/gallery",      desc: "교회 행사 사진 모음" },
