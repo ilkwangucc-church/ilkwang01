@@ -32,11 +32,11 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
 
         {/* Col 1: Logo + About + Contact */}
-        <div className="md:w-64 shrink-0">
+        <div className="md:w-64 shrink-0 flex flex-col items-center md:items-start">
           <div className="mb-2">
             <Logo size="md" variant="light" />
           </div>
-          <p className="text-sm text-gray-400 leading-tight mb-5">
+          <p className="text-sm text-gray-400 leading-tight mb-5 text-center md:text-left">
             대한예수교장로회(합동) 소속<br />
             1971년 설립된 서울 성북구 일광교회
           </p>
@@ -64,11 +64,15 @@ export default function Footer() {
                 유튜브 채널
               </a>
             </li>
+            <li className="flex items-center gap-2.5 md:hidden">
+              <span className="w-4 h-4 text-[#6dbf73] shrink-0 flex items-center justify-center text-xs">→</span>
+              <Link href="/contact" className="hover:text-white">문의하기</Link>
+            </li>
           </ul>
         </div>
 
-        {/* Nav cols: 교회소개 / 예배말씀 / 다음세대+커뮤니티 / 교회소식 */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-[120px] ml-auto pr-[30px]">
+        {/* Nav cols: 교회소개 / 예배말씀 / 다음세대+커뮤니티 / 교회소식 — 모바일 숨김 */}
+        <div className="hidden md:grid md:grid-cols-4 gap-[120px] ml-auto pr-[30px]">
 
           {/* 교회소개 */}
           <div>

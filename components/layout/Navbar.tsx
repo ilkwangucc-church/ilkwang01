@@ -65,8 +65,8 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
 
-      {/* Top Bar — 스크롤 시 위로 사라짐 */}
-      <div className={`bg-[#1a2744] transition-transform duration-300 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
+      {/* Top Bar — 모바일 숨김, 스크롤 시 위로 사라짐 */}
+      <div className={`hidden md:block bg-[#1a2744] transition-transform duration-300 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center">
           {/* 절대 중앙 고정 텍스트 */}
           <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
@@ -88,7 +88,10 @@ export default function Navbar() {
       <div className={`transition-all duration-300 ${white ? "bg-white shadow-sm" : "bg-transparent"}`}>
       <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
 
-        <Logo size="md" variant={white ? "dark" : "light"} />
+        {/* 모바일: 중앙 고정 / 데스크탑: 왼쪽 */}
+        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none">
+          <Logo size="md" variant={white ? "dark" : "light"} />
+        </div>
 
         {/* Desktop Nav — 컨테이너 정중앙 고정 */}
         <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
@@ -148,10 +151,10 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger — 오른쪽 끝 */}
         <button
           onClick={() => setOpen(!open)}
-          className={`lg:hidden p-2 transition-colors ${white ? "text-[#1a2744]" : "text-white"}`}
+          className={`lg:hidden ml-auto p-2 transition-colors ${white ? "text-[#1a2744]" : "text-white"}`}
         >
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
