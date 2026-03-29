@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { fetchChannelVideos, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
 import SermonCard from "./SermonCard";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { WORSHIP_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "설교영상 | 일광교회",
@@ -18,6 +19,7 @@ export default async function SermonsPage() {
   return (
     <div className="min-h-screen bg-[#F8FAF8]">
       <PageHero label="Sermons" title="설교영상" subtitle="하나님의 말씀, 언제 어디서나 다시 들을 수 있습니다" image="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={WORSHIP_NAV} />
 
       {/* 최신 영상 하이라이트 */}
       {latest && (

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { YOUTH_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "다음세대",
@@ -38,6 +39,7 @@ export default function YouthPage() {
   return (
     <div className="min-h-screen">
       <PageHero label="Next Generation" title="다음세대" subtitle="오늘의 아이들이 내일의 교회입니다 — 다음세대를 세우는 일광교회" image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={YOUTH_NAV} />
 
       {/* 비전 메시지 */}
       <section className="py-14 bg-white">

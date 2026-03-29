@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "행사안내",
@@ -82,6 +83,7 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen">
       <PageHero label="Events" title="행사안내" subtitle="일광교회의 다양한 행사와 모임에 초대합니다" image="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={NEWS_NAV} />
 
       {/* 행사 목록 */}
       <section className="py-16 bg-gray-50">

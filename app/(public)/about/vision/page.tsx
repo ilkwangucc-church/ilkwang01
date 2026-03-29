@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { ABOUT_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "소개&비전",
@@ -19,6 +20,7 @@ export default function VisionPage() {
   return (
     <div>
       <PageHero label="Vision" title="소개 & 비전" subtitle="하나님 중심·성경 중심·교회 중심의 개혁주의 신앙 위에 세워진 교회" image="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={ABOUT_NAV} />
 
       <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 교회 소개 */}

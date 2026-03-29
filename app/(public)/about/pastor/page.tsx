@@ -1,20 +1,12 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import { UserCircle2 } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { ABOUT_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "섬기는 사람들 | 일광교회",
   description: "일광교회를 함께 섬기는 교역자 및 직원을 소개합니다.",
 };
-
-const submenu = [
-  { label: "인사말",       href: "/about" },
-  { label: "소개&비전",    href: "/about/vision" },
-  { label: "섬기는 사람들", href: "/about/pastor" },
-  { label: "예배안내",     href: "/about/worship-info" },
-  { label: "오시는길",     href: "/about/location" },
-];
 
 // 8개 빈 카드 (관리자에서 채울 예정)
 const staffSlots = Array.from({ length: 8 }, (_, i) => ({ id: i + 1 }));
@@ -23,25 +15,7 @@ export default function PastorPage() {
   return (
     <div>
       <PageHero label="Our Team" title="섬기는 사람들" subtitle="일광교회를 함께 섬기는 교역자 및 직원을 소개합니다" image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1800&auto=format&fit=crop&q=80" />
-
-      {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
-          {submenu.map((m) => (
-            <Link
-              key={m.href}
-              href={m.href}
-              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 transition-colors ${
-                m.href === "/about/pastor"
-                  ? "border-[#2E7D32] text-[#2E7D32]"
-                  : "border-transparent text-gray-500 hover:text-[#2E7D32]"
-              }`}
-            >
-              {m.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <StickySubNav items={ABOUT_NAV} />
 
       {/* 직원 소개 그리드 */}
       <div className="max-w-[1400px] mx-auto px-4 py-16">

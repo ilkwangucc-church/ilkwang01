@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { YOUTH_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "청년부",
@@ -16,6 +17,7 @@ export default function YoungAdultsPage() {
         subtitle="세상 속에서 그리스도인으로 — 일광 청년공동체"
         image="https://images.unsplash.com/photo-1563902341721-029085ad9347?w=1800&auto=format&fit=crop&q=80"
       />
+      <StickySubNav items={YOUTH_NAV} />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">

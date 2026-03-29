@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { YOUTH_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "유초등부",
@@ -15,6 +16,7 @@ export default function SundaySchoolPage() {
         subtitle="하나님을 경험하며 자라는 유치부 · 아동부"
         image="https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=1800&auto=format&fit=crop&q=80"
       />
+      <StickySubNav items={YOUTH_NAV} />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">

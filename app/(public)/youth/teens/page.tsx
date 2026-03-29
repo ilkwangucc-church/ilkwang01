@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { YOUTH_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "중고등부",
@@ -15,6 +16,7 @@ export default function TeensPage() {
         subtitle="정체성과 신앙을 함께 세워가는 청소년 공동체"
         image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1800&auto=format&fit=crop&q=80"
       />
+      <StickySubNav items={YOUTH_NAV} />
 
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">

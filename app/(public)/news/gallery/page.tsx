@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "갤러리",
@@ -30,17 +30,7 @@ export default function GalleryPage() {
     <div>
       <PageHero label="Gallery" title="갤러리" subtitle="일광교회의 소중한 순간들을 사진으로 담았습니다" image="https://images.unsplash.com/photo-1522158637959-30385a09e0da?w=1800&auto=format&fit=crop&q=80" />
 
-      {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
-          {[{ label: "공지사항", href: "/news" }, { label: "행사안내", href: "/news/events" }, { label: "갤러리", href: "/news/gallery" }].map((m, i) => (
-            <Link key={m.label} href={m.href}
-              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 2 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
-              {m.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <StickySubNav items={NEWS_NAV} />
 
       <div className="max-w-[1400px] mx-auto px-4 py-12">
         {/* 카테고리 필터 */}

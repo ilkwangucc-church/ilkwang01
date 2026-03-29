@@ -1,40 +1,18 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { ABOUT_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "인사말 | 일광교회",
   description: "일광교회 담임목사 신점일 목사의 인사말과 약력을 소개합니다.",
 };
 
-const submenu = [
-  { label: "인사말",   href: "/about" },
-  { label: "소개&비전", href: "/about/vision" },
-  { label: "섬기는 사람들", href: "/about/pastor" },
-  { label: "예배안내", href: "/about/worship-info" },
-  { label: "오시는길", href: "/about/location" },
-];
-
 export default function AboutPage() {
   return (
     <div>
       <PageHero label="Greeting" title="담임목사 인사말" subtitle="행복과 영원으로 초대하는 일광교회" image="https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1800&auto=format&fit=crop&q=80" />
-
-      {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
-          {submenu.map((m) => (
-            <Link
-              key={m.href}
-              href={m.href}
-              className="py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 border-[#2E7D32] text-[#2E7D32]"
-            >
-              {m.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <StickySubNav items={ABOUT_NAV} />
 
       {/* ── 인사말 본문 ── */}
       <div className="max-w-[1400px] mx-auto px-4 py-16">

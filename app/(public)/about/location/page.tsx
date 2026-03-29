@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { ABOUT_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "오시는길",
@@ -10,6 +11,7 @@ export default function LocationPage() {
   return (
     <div>
       <PageHero label="Location" title="오시는 길" subtitle="서울특별시 성북구 동소문로 212-68 — 4호선 길음역 인근" image="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={ABOUT_NAV} />
 
       <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 지도 */}

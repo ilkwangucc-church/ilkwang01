@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, Pin } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "교회소식",
@@ -30,21 +31,7 @@ export default function NewsPage() {
     <div>
       <PageHero label="News" title="교회 소식" subtitle="일광교회의 소식과 공지사항을 전합니다" image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1800&auto=format&fit=crop&q=80" />
 
-      {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
-          {[
-            { label: "공지사항", href: "/news" },
-            { label: "행사안내", href: "/news/events" },
-            { label: "갤러리", href: "/news/gallery" },
-          ].map((m, i) => (
-            <Link key={m.label} href={m.href}
-              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 0 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
-              {m.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <StickySubNav items={NEWS_NAV} />
 
       <div className="max-w-[1400px] mx-auto px-4 py-12">
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">

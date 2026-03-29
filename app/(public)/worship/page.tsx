@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { WORSHIP_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "예배/말씀",
@@ -28,17 +29,7 @@ export default function WorshipPage() {
     <div>
       <PageHero label="Worship & Message" title="예배 / 말씀" subtitle="살아계신 하나님을 예배하고 그 말씀을 듣습니다" image="https://images.unsplash.com/photo-1579975096649-e773152b04cb?w=1800&auto=format&fit=crop&q=80" />
 
-      {/* 서브메뉴 */}
-      <div className="bg-white border-b sticky top-[72px] z-40">
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
-          {["예배안내", "설교영상"].map((m, i) => (
-            <Link key={m} href={i === 0 ? "/worship" : "/worship/sermons"}
-              className={`py-4 px-5 text-sm font-nanum-bold whitespace-nowrap border-b-2 ${i === 0 ? "border-[#2E7D32] text-[#2E7D32]" : "border-transparent text-gray-500 hover:text-[#2E7D32]"}`}>
-              {m}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <StickySubNav items={WORSHIP_NAV} />
 
       <div className="max-w-[1400px] mx-auto px-4 py-16">
         {/* 예배 안내 */}

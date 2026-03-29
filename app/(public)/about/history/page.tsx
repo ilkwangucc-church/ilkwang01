@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import StickySubNav, { ABOUT_NAV } from "@/components/ui/StickySubNav";
 
 export const metadata: Metadata = {
   title: "교회역사",
@@ -26,6 +27,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen">
       <PageHero label="History" title="교회역사" subtitle="1971년부터 지금까지 — 하나님의 신실하심으로 걸어온 발자취" image="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1800&auto=format&fit=crop&q=80" />
+      <StickySubNav items={ABOUT_NAV} />
 
       {/* 타임라인 */}
       <section className="py-20 bg-gray-50">
