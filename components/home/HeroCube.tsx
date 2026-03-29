@@ -18,8 +18,23 @@ const ALL_IMAGES = [
   "/c01/fc3b6e792e02781b375bca118a8f6fcf.jpeg",
 ];
 
-const SIZE = 300;
+const SIZE = 210;
 const HALF = SIZE / 2;
+const DOT  = 12;
+
+// 큐브 8개 꼭지점 (x, y, z) — cubeRef 내부 3D 좌표
+const VERTS: [number, number, number][] = [
+  [0,    0,    -HALF], // 0: 뒤-상-좌
+  [SIZE, 0,    -HALF], // 1: 뒤-상-우
+  [SIZE, SIZE, -HALF], // 2: 뒤-하-우
+  [0,    SIZE, -HALF], // 3: 뒤-하-좌
+  [0,    0,    +HALF], // 4: 앞-상-좌
+  [SIZE, 0,    +HALF], // 5: 앞-상-우
+  [SIZE, SIZE, +HALF], // 6: 앞-하-우
+  [0,    SIZE, +HALF], // 7: 앞-하-좌
+];
+// 각 꼭지점에 연결된 3개의 인접 꼭지점
+const ADJ = [[1,3,4],[0,2,5],[1,3,6],[0,2,7],[0,5,7],[1,4,6],[2,5,7],[3,4,6]];
 
 const FACE_TRANSFORMS = [
   `translateZ(${HALF}px)`,
@@ -31,8 +46,9 @@ const FACE_TRANSFORMS = [
 ];
 
 export default function HeroCube() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
+  const lampRef = useRef<HTMLDivElement>(null);
+  const lampVert = useRef(0);
   const [faces, setFaces] = useState<string[]>(() =>
     [...ALL_IMAGES].sort(() => Math.random() - 0.5).slice(0, 6)
   );
@@ -44,7 +60,6 @@ export default function HeroCube() {
   const hasMoved = useRef(false);
   const lastMouse = useRef({ x: 0, y: 0 });
   const usageCount = useRef<Record<string, number>>({});
-  const rotActive = useRef(false);
 
   const applyRot = () => {
     if (!cubeRef.current) return;
@@ -52,35 +67,17 @@ export default function HeroCube() {
     cubeRef.current.style.transform = `rotateX(${x}deg) rotateY(${y}deg) rotateZ(${z}deg)`;
   };
 
-  // 입장 애니메이션 + 자동 회전 ticker
+  // 자동 회전 ticker (입장 트랜지션 없음, 즉시 시작)
   useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-
-    // 시작: 상단 전화번호 위치에서 아주 작게
-    gsap.set(el, { scale: 0.07, x: 80, y: -680, opacity: 1 });
-
-    // 빠르게 곡선으로 떨어지며 커짐
-    gsap.to(el, {
-      scale: 1,
-      x: 0,
-      y: 0,
-      duration: 0.82,
-      ease: "power3.out",
-      delay: 0.15,
-      onComplete: () => { rotActive.current = true; },
-    });
-
     const tick = () => {
-      if (!isDragging.current && rotActive.current) {
-        const spd = isHovering.current ? 3.5 : 0.6;
-        rot.current.x += 0.25 * spd;
-        rot.current.y += 0.62 * spd;
-        rot.current.z += 0.09 * spd;
+      if (!isDragging.current) {
+        const spd = isHovering.current ? 2.2 : 0.28; // 천천히
+        rot.current.x += 0.22 * spd;
+        rot.current.y += 0.55 * spd;
+        rot.current.z += 0.07 * spd;
         applyRot();
       }
     };
-
     gsap.ticker.add(tick);
     return () => { gsap.ticker.remove(tick); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -106,6 +103,30 @@ export default function HeroCube() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 형광노랑 램프 — 꼭지점 → 꼭지점 이동
+  useEffect(() => {
+    const lamp = lampRef.current;
+    if (!lamp) return;
+    const [ix, iy, iz] = VERTS[0];
+    gsap.set(lamp, { x: ix - DOT / 2, y: iy - DOT / 2, z: iz });
+    const move = () => {
+      const curr = lampVert.current;
+      const next = ADJ[curr][Math.floor(Math.random() * 3)];
+      lampVert.current = next;
+      const [tx, ty, tz] = VERTS[next];
+      gsap.to(lamp, {
+        x: tx - DOT / 2,
+        y: ty - DOT / 2,
+        z: tz,
+        duration: 0.9 + Math.random() * 0.6,
+        ease: "power2.inOut",
+        onComplete: move,
+      });
+    };
+    move();
+    return () => { gsap.killTweensOf(lamp); };
+  }, []);
+
   // 이미지 순환 — 같은 이미지 2회 이상 노출 방지
   useEffect(() => {
     const id = setInterval(() => {
@@ -130,11 +151,11 @@ export default function HeroCube() {
   }, []);
 
   return (
-    <>
+    <div style={{ position: "relative", width: SIZE, height: SIZE }}>
+      {/* 큐브 */}
       <div
-        ref={wrapperRef}
         className="cursor-grab active:cursor-grabbing select-none"
-        style={{ width: SIZE, height: SIZE, perspective: `${SIZE * 2.8}px`, opacity: 0 }}
+        style={{ width: SIZE, height: SIZE, perspective: `${SIZE * 2.8}px` }}
         onMouseEnter={() => { isHovering.current = true; }}
         onMouseLeave={() => { isHovering.current = false; }}
         onMouseDown={(e) => {
@@ -165,7 +186,7 @@ export default function HeroCube() {
                 backfaceVisibility: "hidden",
                 overflow: "hidden",
                 borderRadius: 6,
-                border: "2.5px solid rgba(255,255,255,0.2)",
+                border: "2px solid rgba(255,255,255,0.2)",
                 cursor: "pointer",
               }}
             >
@@ -183,32 +204,66 @@ export default function HeroCube() {
                   userSelect: "none",
                 }}
               />
+              {/* 60% 검정 오버레이 */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.6)",
+                pointerEvents: "none",
+              }} />
             </div>
           ))}
+
+          {/* 형광노랑 램프 */}
+          <div
+            ref={lampRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: DOT,
+              height: DOT,
+              borderRadius: "50%",
+              background: "#ffff00",
+              boxShadow: "0 0 5px 2px #ffff00, 0 0 14px 6px rgba(255,255,0,0.75), 0 0 28px 12px rgba(255,255,0,0.35)",
+              pointerEvents: "none",
+            }}
+          />
         </div>
       </div>
 
-      {/* 확대 보기 */}
+      {/* 큐브 크기 내 모달 */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setLightbox(null)}
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 50,
+            background: "rgba(0,0,0,0.88)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={lightbox}
-            alt="확대 이미지"
-            className="max-w-[88vw] max-h-[88vh] rounded-2xl shadow-2xl object-contain"
-            onClick={e => e.stopPropagation()}
+            alt=""
+            style={{
+              width: SIZE - 24,
+              height: SIZE - 24,
+              objectFit: "cover",
+              objectPosition: "center",
+              border: "1px solid rgba(255,255,255,0.55)",
+              borderRadius: 4,
+              display: "block",
+            }}
           />
-          <button
-            className="absolute top-5 right-8 text-white text-5xl leading-none hover:opacity-60 transition-opacity"
-            onClick={() => setLightbox(null)}
-          >
-            ×
-          </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
