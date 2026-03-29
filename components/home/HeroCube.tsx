@@ -198,8 +198,8 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width: Math.round(SIZE / 4),
-              height: Math.round(SIZE / 4),
+              width: Math.round(SIZE * 0.8),
+              height: Math.round(SIZE * 0.8),
               objectFit: "cover",
               objectPosition: "center",
               border: "1px solid rgba(255,255,255,0.06)",
