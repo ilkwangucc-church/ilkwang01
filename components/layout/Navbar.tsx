@@ -95,12 +95,12 @@ export default function Navbar() {
 
       {/* Main Nav */}
       <div className={`transition-all duration-300 ${white ? "bg-white shadow-sm" : "bg-transparent"}`}>
-      <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-[72px]">
+      <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
 
         <Logo size="md" variant={white ? "dark" : "light"} />
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center">
+        {/* Desktop Nav — 컨테이너 정중앙 고정 */}
+        <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
           {nav.map((item) => (
             <div
               key={item.href}
@@ -138,7 +138,7 @@ export default function Navbar() {
         </nav>
 
         {/* Right: Phone + CTA */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4 ml-auto">
           <a
             href="tel:02-927-0691"
             className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${

@@ -29,8 +29,7 @@ export default function HeroSection() {
 
           {/* Body */}
           <p className="text-gray-300 text-[20px] leading-snug mb-8 max-w-xl">
-            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고,<br className="hidden sm:block" />
-            모든 사람이 하나님의 사랑 안에서 새로운 삶을 시작하도록 돕는 것입니다.
+            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고, 모든 사람이 하나님의 사랑 안에서 새로운 삶을 시작하도록 돕는 것입니다.
           </p>
 
           {/* CTA Buttons + Info bar */}
@@ -38,13 +37,13 @@ export default function HeroSection() {
           <div className="flex flex-wrap gap-4 mb-5">
             <Link
               href="/about"
-              className="px-6 py-[10px] bg-[#2E7D32] text-white font-bold text-base rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
+              className="inline-flex items-center justify-center px-6 py-[10px] bg-[#2E7D32] text-white font-bold text-base rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"
             >
               교회 소개 보기
             </Link>
             <Link
               href="/worship/sermons"
-              className="px-6 py-[10px] border-2 border-white text-white font-bold text-base rounded-[26px] hover:bg-white hover:text-[#1a2744] transition-colors tracking-wide"
+              className="inline-flex items-center justify-center px-6 py-[10px] border-2 border-white text-white font-bold text-base rounded-[26px] hover:bg-white hover:text-[#1a2744] transition-colors tracking-wide"
             >
               설교 영상 보기
             </Link>
