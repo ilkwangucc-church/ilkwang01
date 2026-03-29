@@ -14,7 +14,7 @@ export default function YoungAdultsPage() {
         label="Young Adults"
         title="청년부"
         subtitle="세상 속에서 그리스도인으로 — 일광 청년공동체"
-        image="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1800&auto=format&fit=crop&q=80"
+        image="https://images.unsplash.com/photo-1563902341721-029085ad9347?w=1800&auto=format&fit=crop&q=80"
       />
 
       <section className="py-16 bg-white">
