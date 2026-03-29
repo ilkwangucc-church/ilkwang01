@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[900px] flex items-center overflow-hidden">
+    <section className="relative min-h-[800px] flex items-center overflow-hidden">
       {/* Background Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -14,7 +14,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#0d1a2d]/92 via-[#0d1a2d]/70 to-[#0d1a2d]/25" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full flex items-center min-h-[900px]">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full flex items-center min-h-[800px]">
         <div className="max-w-2xl">
           {/* Label */}
           <p className="text-[#a3c9a8] text-[22px] font-bold mb-2">
