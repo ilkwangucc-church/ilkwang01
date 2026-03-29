@@ -30,10 +30,10 @@ const youthLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#1a2744] text-gray-300">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
 
         {/* Col 1: Logo + About + Contact */}
-        <div className="md:col-span-1">
+        <div className="md:w-64 shrink-0">
           <div className="mb-2">
             <Logo size="md" variant="light" />
           </div>
@@ -68,74 +68,79 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Col 2: 교회소개 */}
-        <div>
-          <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-            교회소개
-          </h4>
-          <ul className="space-y-2.5 text-sm">
-            {aboutLinks.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Nav cols: 교회소개 / 예배+소식 / 다음세대+커뮤니티 */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
 
-        {/* Col 3: 예배/말씀 + 교회소식 */}
-        <div>
-          <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-            예배/말씀
-          </h4>
-          <ul className="space-y-2.5 text-sm mb-7">
-            {worshipLinks.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-            교회소식
-          </h4>
-          <ul className="space-y-2.5 text-sm">
-            {newsLinks.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {/* 교회소개 */}
+          <div>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              교회소개
+            </h4>
+            <ul className="space-y-2.5 text-sm">
+              {aboutLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Col 4: 다음세대 + 커뮤니티 */}
-        <div>
-          <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-            다음세대
-          </h4>
-          <ul className="space-y-2.5 text-sm mb-7">
-            {youthLinks.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                  {l.label}
+          {/* 예배/말씀 + 교회소식 */}
+          <div>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              예배/말씀
+            </h4>
+            <ul className="space-y-2.5 text-sm mb-7">
+              {worshipLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              교회소식
+            </h4>
+            <ul className="space-y-2.5 text-sm">
+              {newsLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 다음세대 + 커뮤니티 */}
+          <div>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              다음세대
+            </h4>
+            <ul className="space-y-2.5 text-sm mb-7">
+              {youthLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
+              커뮤니티
+            </h4>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <Link href="/blog" className="text-gray-400 hover:text-[#6dbf73] transition-colors">
+                  블로그
                 </Link>
               </li>
-            ))}
-          </ul>
-          <h4 className="font-black text-white text-sm uppercase tracking-widest mb-5">
-            커뮤니티
-          </h4>
-          <ul className="space-y-2.5 text-sm">
-            <li>
-              <Link href="/blog" className="text-gray-400 hover:text-[#6dbf73] transition-colors">
-                블로그
-              </Link>
-            </li>
-          </ul>
+            </ul>
+          </div>
+
         </div>
 
       </div>
