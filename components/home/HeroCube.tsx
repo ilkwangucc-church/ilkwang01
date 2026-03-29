@@ -22,7 +22,7 @@ const SIZE = 210;
 const HALF = SIZE / 2;
 const DOT  = 4;
 
-const FACES: string[] = [
+const FACE_TRANSFORMS: string[] = [
   `translateZ(${HALF}px)`,
   `rotateY(180deg) translateZ(${HALF}px)`,
   `rotateY(90deg)  translateZ(${HALF}px)`,
@@ -31,29 +31,71 @@ const FACES: string[] = [
   `rotateX(90deg)  translateZ(${HALF}px)`,
 ];
 
-// 램프가 큐브 테두리를 따라 이동하는 8개 지점 (2D, 3D 컨텍스트 완전 분리)
-const LAMP_PTS: [number, number][] = [
-  [24,        24       ],
-  [HALF,      12       ],
-  [SIZE - 24, 24       ],
-  [SIZE - 12, HALF     ],
-  [SIZE - 24, SIZE - 24],
-  [HALF,      SIZE - 12],
-  [24,        SIZE - 24],
-  [12,        HALF     ],
+// 큐브 8개 꼭지점 (중심 기준 3D 좌표)
+const VERTS_3D: [number, number, number][] = [
+  [-HALF, -HALF, -HALF],
+  [+HALF, -HALF, -HALF],
+  [+HALF, +HALF, -HALF],
+  [-HALF, +HALF, -HALF],
+  [-HALF, -HALF, +HALF],
+  [+HALF, -HALF, +HALF],
+  [+HALF, +HALF, +HALF],
+  [-HALF, +HALF, +HALF],
 ];
-const LAMP_ADJ = [[1,7],[0,2],[1,3],[2,4],[3,5],[4,6],[5,7],[6,0]];
+
+// 각 꼭지점에 연결된 인접 꼭지점 (모서리 기준)
+const VERT_ADJ = [
+  [1, 3, 4],
+  [0, 2, 5],
+  [1, 3, 6],
+  [0, 2, 7],
+  [0, 5, 7],
+  [1, 4, 6],
+  [2, 5, 7],
+  [3, 4, 6],
+];
+
+// 현재 회전값을 반영해 3D 꼭지점을 2D 화면 좌표로 변환
+function projectVertex(
+  v: [number, number, number],
+  rx: number, ry: number, rz: number
+): [number, number] {
+  const r = (d: number) => (d * Math.PI) / 180;
+  let [x, y, z] = v;
+
+  // X축 회전
+  const cx = Math.cos(r(rx)), sx = Math.sin(r(rx));
+  [y, z] = [y * cx - z * sx, y * sx + z * cx];
+
+  // Y축 회전
+  const cy = Math.cos(r(ry)), sy = Math.sin(r(ry));
+  [x, z] = [x * cy + z * sy, -x * sy + z * cy];
+
+  // Z축 회전
+  const cz = Math.cos(r(rz)), sz = Math.sin(r(rz));
+  [x, y] = [x * cz - y * sz, x * sz + y * cz];
+
+  // 원근 투영
+  const d = SIZE * 2.8;
+  const scale = d / (d - z);
+  return [HALF + x * scale, HALF + y * scale];
+}
 
 export default function HeroCube() {
-  const cubeRef  = useRef<HTMLDivElement>(null);
-  const lampRef  = useRef<HTMLDivElement>(null);
-  const lampIdx  = useRef(0);
-  const rot       = useRef({ x: -15, y: 25, z: 0 });
-  const isHover   = useRef(false);
-  const isDrag    = useRef(false);
-  const hasMoved  = useRef(false);
-  const lastMouse = useRef({ x: 0, y: 0 });
-  const usageCnt  = useRef<Record<string, number>>({});
+  const cubeRef    = useRef<HTMLDivElement>(null);
+  const lampRef    = useRef<HTMLDivElement>(null);
+  const rot        = useRef({ x: -15, y: 25, z: 0 });
+  const isHover    = useRef(false);
+  const isDrag     = useRef(false);
+  const hasMoved   = useRef(false);
+  const lastMouse  = useRef({ x: 0, y: 0 });
+  const usageCnt   = useRef<Record<string, number>>({});
+
+  // 램프 이동 상태
+  const lampFrom   = useRef(0);
+  const lampTo     = useRef(1);
+  const lampT      = useRef(0);
+  const lampSpeed  = useRef(0.0035);
 
   const [imgs, setImgs] = useState<string[]>(() =>
     [...ALL_IMAGES].sort(() => Math.random() - 0.5).slice(0, 6)
@@ -102,28 +144,39 @@ export default function HeroCube() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 형광 노란 램프 — preserve-3d 바깥에 배치해 히어로 번쩍임 완전 차단
+  // 형광 노란 램프 — 매 프레임 회전 반영해 실제 꼭지점 위에 정확히 배치
   useEffect(() => {
     const lamp = lampRef.current;
     if (!lamp) return;
-    const [ix, iy] = LAMP_PTS[0];
-    gsap.set(lamp, { x: ix - DOT / 2, y: iy - DOT / 2 });
-    const move = () => {
-      const curr = lampIdx.current;
-      const next = LAMP_ADJ[curr][Math.floor(Math.random() * 2)];
-      lampIdx.current = next;
-      const [tx, ty] = LAMP_PTS[next];
-      gsap.to(lamp, {
-        x: tx - DOT / 2,
-        y: ty - DOT / 2,
-        duration: 4 + Math.random() * 3,
-        ease: "power2.inOut",
-        onComplete: move,
+
+    const tick = () => {
+      lampT.current += lampSpeed.current;
+
+      if (lampT.current >= 1) {
+        lampT.current = 0;
+        lampFrom.current = lampTo.current;
+        const adj = VERT_ADJ[lampFrom.current];
+        lampTo.current = adj[Math.floor(Math.random() * adj.length)];
+        lampSpeed.current = 0.003 + Math.random() * 0.003;
+      }
+
+      const t = lampT.current;
+      // ease in-out
+      const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+      const { x: rx, y: ry, z: rz } = rot.current;
+      const [x0, y0] = projectVertex(VERTS_3D[lampFrom.current], rx, ry, rz);
+      const [x1, y1] = projectVertex(VERTS_3D[lampTo.current],   rx, ry, rz);
+
+      gsap.set(lamp, {
+        x: x0 + (x1 - x0) * e - DOT / 2,
+        y: y0 + (y1 - y0) * e - DOT / 2,
       });
     };
-    move();
-    return () => { gsap.killTweensOf(lamp); };
-  }, []);
+
+    gsap.ticker.add(tick);
+    return () => { gsap.ticker.remove(tick); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 이미지 순환
   useEffect(() => {
@@ -149,7 +202,6 @@ export default function HeroCube() {
   }, []);
 
   return (
-    /* isolation: isolate — 히어로 배경과 GPU 레이어 완전 분리 */
     <div style={{ position: "relative", width: SIZE, height: SIZE, isolation: "isolate" }}>
 
       {/* 큐브 */}
@@ -171,10 +223,9 @@ export default function HeroCube() {
             width: SIZE, height: SIZE,
             position: "relative",
             transformStyle: "preserve-3d",
-            /* willChange 제거 — GPU 레이어 강제 생성 없앰 (번쩍임 원인) */
           }}
         >
-          {FACES.map((tr, i) => (
+          {FACE_TRANSFORMS.map((tr, i) => (
             <div
               key={i}
               onClick={() => { if (!hasMoved.current) setLightbox(imgs[i]); }}
@@ -186,7 +237,7 @@ export default function HeroCube() {
                 borderRadius: 6,
                 border: "2px solid rgba(255,255,255,0.2)",
                 cursor: "pointer",
-                background: "#000", /* 번쩍임 방지: 흰 배경 없앰 */
+                background: "#000",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -210,7 +261,7 @@ export default function HeroCube() {
         </div>
       </div>
 
-      {/* 형광 노란 램프 — 3D 컨텍스트 완전 분리 */}
+      {/* 형광 노란 램프 — 매 프레임 실제 꼭지점 좌표 추적 */}
       <div
         ref={lampRef}
         style={{
@@ -229,14 +280,10 @@ export default function HeroCube() {
           onClick={() => setLightbox(null)}
           style={{
             position: "absolute",
-            width: 380,
-            height: 380,
             top: "50%", left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 50,
-            background: "rgba(0,0,0,0.9)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            borderRadius: 6,
+            background: "transparent",
             cursor: "pointer",
           }}
         >
@@ -245,8 +292,7 @@ export default function HeroCube() {
             src={lightbox}
             alt=""
             style={{
-              width:  350,
-              height: 350,
+              width: 350, height: 350,
               objectFit: "cover", objectPosition: "center",
               border: "5px solid rgba(255,255,255,0.18)",
               borderRadius: 4,
