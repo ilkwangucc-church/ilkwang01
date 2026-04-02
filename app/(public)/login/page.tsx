@@ -33,12 +33,12 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">이메일</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">아이디 / 이메일</label>
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="아이디 또는 이메일 입력"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/40 focus:border-[#2E7D32] text-sm transition-colors"
               />
