@@ -77,6 +77,7 @@ export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled]     = useState(false);
   const [visible, setVisible]       = useState(true);
+  const [topBarGone, setTopBarGone] = useState(false); // 한번 숨으면 복귀 안 함
   const lastScrollY                 = useRef(0);
   const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -84,6 +85,7 @@ export default function Navbar() {
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 30);
+      if (y > 30) setTopBarGone(true); // 한번만 true, 절대 false로 되돌리지 않음
 
       // 최상단 근처면 항상 노출
       if (y < 80) {
@@ -126,7 +128,7 @@ export default function Navbar() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out ${visible ? "translate-y-0" : "-translate-y-full"}`}>
 
       {/* Top Bar — 모바일 숨김, 스크롤 시 위로 사라짐 */}
-      <div className={`hidden md:block bg-[#1a2744] transition-transform duration-300 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
+      <div className={`hidden md:block bg-[#1a2744] transition-transform duration-300 ${topBarGone ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center">
           <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
             A Church Full of Grace and Truth
