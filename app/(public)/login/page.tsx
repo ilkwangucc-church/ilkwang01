@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "@/components/layout/Logo";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const router = useRouter();
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -13,10 +15,34 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    // TODO: Supabase Auth signIn
-    await new Promise((r) => setTimeout(r, 800));
-    setError("현재 회원 서비스를 준비 중입니다. 곧 오픈됩니다.");
-    setLoading(false);
+
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: identifier.trim(), password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.error || "아이디/이메일 또는 비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      // 로그인 성공 — 사용자 정보 저장 후 대시보드로 이동
+      sessionStorage.setItem("admin_user", JSON.stringify({
+        username: data.username,
+        role: data.role,
+        displayName: data.displayName,
+      }));
+
+      router.push("/dashboard");
+    } catch {
+      setError("서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -36,8 +62,8 @@ export default function LoginPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">아이디 / 이메일</label>
               <input
                 type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="아이디 또는 이메일 입력"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/40 focus:border-[#2E7D32] text-sm transition-colors"
@@ -56,7 +82,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+              <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
                 {error}
               </div>
             )}
