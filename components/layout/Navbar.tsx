@@ -84,11 +84,25 @@ export default function Navbar() {
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 30);
-      if (y > lastScrollY.current && y > 80) {
-        setVisible(false);   // 다운 스크롤 → 숨김
-      } else {
-        setVisible(true);    // 업 스크롤 or 최상단 → 노출
+
+      // 최상단 근처면 항상 노출
+      if (y < 80) {
+        setVisible(true);
+        lastScrollY.current = y;
+        return;
       }
+
+      const diff = y - lastScrollY.current;
+
+      // 10px 미만 미세 움직임은 무시 → 반복 깜빡임 방지
+      if (Math.abs(diff) < 10) return;
+
+      if (diff > 0) {
+        setVisible(false);  // 다운 스크롤 → 숨김
+      } else {
+        setVisible(true);   // 업 스크롤 → 노출
+      }
+
       lastScrollY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
