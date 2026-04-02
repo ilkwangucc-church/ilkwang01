@@ -5,17 +5,60 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, BookUser, Award, MessageSquare,
   Video, Monitor, Heart, Building2, FileStack,
-  Bell, CalendarDays, BookOpen, BookMarked, Image as GalleryIcon, DollarSign,
-  Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight
+  Bell, CalendarDays, BookOpen, BookMarked, Image as GalleryIcon,
+  Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight,
+  Camera, GraduationCap, FolderOpen, Users2, PenLine,
+  Link2, HeartHandshake, BookText, Newspaper,
 } from "lucide-react";
 import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
 
-interface NavGroup {
+interface NavItem {
   label: string;
-  items: { label: string; href: string; icon: React.ComponentType<{ className?: string }> }[];
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
-const navGroups: NavGroup[] = [
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+// 커뮤니티 그룹 — 모든 회원에게 표시
+const communityGroups: NavGroup[] = [
+  {
+    label: "예배·말씀",
+    items: [
+      { label: "성경통독",   href: "/dashboard/bible",   icon: BookText },
+      { label: "설교 보기",  href: "/dashboard/sermons", icon: BookOpen },
+    ],
+  },
+  {
+    label: "성장·교육",
+    items: [
+      { label: "교회교육", href: "/dashboard/education", icon: GraduationCap },
+      { label: "자료실",   href: "/dashboard/resources", icon: FolderOpen },
+    ],
+  },
+  {
+    label: "교제·소통",
+    items: [
+      { label: "성도의 하루",  href: "/dashboard/daily",       icon: Camera },
+      { label: "부서나눔",     href: "/dashboard/dept-share",  icon: Users2 },
+      { label: "부서별 블로그", href: "/dashboard/blog",        icon: PenLine },
+      { label: "상담신청",     href: "/dashboard/counseling",  icon: HeartHandshake },
+    ],
+  },
+  {
+    label: "안내",
+    items: [
+      { label: "행사안내",     href: "/dashboard/events",     icon: CalendarDays },
+      { label: "부서별 인스타", href: "/dashboard/instagram",  icon: Link2 },
+    ],
+  },
+];
+
+// 관리 그룹 — 5단계(교역자) 이상에게만 표시
+const adminGroups: NavGroup[] = [
   {
     label: "회원 · 교인",
     items: [
@@ -27,23 +70,22 @@ const navGroups: NavGroup[] = [
   {
     label: "웹사이트 콘텐츠",
     items: [
-      { label: "홈 화면 수정",       href: "/dashboard/hero",        icon: Monitor },
-      { label: "섬기는 사람들",      href: "/dashboard/ministers",   icon: Heart },
-      { label: "부서 소개 수정",     href: "/dashboard/departments", icon: Building2 },
-      { label: "미디어 관리",        href: "/dashboard/media",       icon: Video },
-      { label: "페이지 관리",        href: "/dashboard/pages",       icon: FileStack },
+      { label: "홈 화면 수정",   href: "/dashboard/hero",        icon: Monitor },
+      { label: "섬기는 사람들",  href: "/dashboard/ministers",   icon: Heart },
+      { label: "부서 소개 수정", href: "/dashboard/departments", icon: Building2 },
+      { label: "미디어 관리",    href: "/dashboard/media",       icon: Video },
+      { label: "페이지 관리",    href: "/dashboard/pages",       icon: FileStack },
     ],
   },
   {
     label: "교회 운영",
     items: [
-      { label: "문의 접수함",  href: "/dashboard/contacts",                    icon: MessageSquare },
-      { label: "공지안내",     href: "/dashboard/notices/announcements",        icon: Bell },
-      { label: "행사안내",     href: "/dashboard/notices/events",               icon: CalendarDays },
-      { label: "설교/미디어",  href: "/dashboard/sermons",                      icon: BookOpen },
-      { label: "주보 관리",    href: "/dashboard/bulletins", icon: BookMarked },
-      { label: "갤러리 관리",  href: "/dashboard/gallery",   icon: GalleryIcon },
-      { label: "헌금 현황",    href: "/dashboard/offerings", icon: DollarSign },
+      { label: "문의 접수함", href: "/dashboard/contacts",                 icon: MessageSquare },
+      { label: "공지안내",    href: "/dashboard/notices/announcements",    icon: Bell },
+      { label: "행사 관리",   href: "/dashboard/notices/events",          icon: CalendarDays },
+      { label: "주보 관리",   href: "/dashboard/bulletins",               icon: BookMarked },
+      { label: "갤러리 관리", href: "/dashboard/gallery",                 icon: GalleryIcon },
+      { label: "뉴스레터",    href: "/dashboard/sermons",                 icon: Newspaper },
     ],
   },
   {
@@ -61,13 +103,69 @@ interface AdminUser {
   displayName: string;
 }
 
+function NavGroupSection({
+  group,
+  openGroups,
+  toggleGroup,
+  isActive,
+  setSidebarOpen,
+}: {
+  group: NavGroup;
+  openGroups: Record<string, boolean>;
+  toggleGroup: (label: string) => void;
+  isActive: (href: string) => boolean;
+  setSidebarOpen: (v: boolean) => void;
+}) {
+  return (
+    <div className="mb-1">
+      <button
+        onClick={() => toggleGroup(group.label)}
+        className="w-full flex items-center justify-between px-5 py-1.5 text-[15px] font-semibold text-gray-400 hover:text-gray-200 transition-colors"
+      >
+        {group.label}
+        {openGroups[group.label]
+          ? <ChevronDown className="w-3 h-3" />
+          : <ChevronRight className="w-3 h-3" />
+        }
+      </button>
+      {openGroups[group.label] && (
+        <div>
+          {group.items.map((item) => {
+            const active = isActive(item.href);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-5 py-2 text-[14px] transition-colors mx-2 rounded-lg ${
+                  active
+                    ? "bg-[#2E7D32] text-white"
+                    : "text-gray-400 hover:text-white hover:bg-gray-800"
+                }`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "회원 · 교인": true,
-    "웹사이트 콘텐츠": true,
+    "예배·말씀": true,
+    "성장·교육": false,
+    "교제·소통": true,
+    "안내": false,
+    "회원 · 교인": false,
+    "웹사이트 콘텐츠": false,
     "교회 운영": false,
     "시스템": false,
   });
@@ -80,12 +178,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    // sessionStorage에서 사용자 정보 로드
     const stored = sessionStorage.getItem("admin_user");
     if (stored) {
       try { setAdminUser(JSON.parse(stored)); } catch { /* noop */ }
     }
-    // 서버에서도 확인
     fetch("/api/admin/auth/me")
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.username) setAdminUser(data); })
@@ -125,7 +221,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-end select-none"
             style={{ gap: 6, letterSpacing: 0 }}
           >
-            {/* 아이콘: 176×248 비율 유지, 30% 축소 */}
             <div className="shrink-0" style={{ width: 20, height: 28, marginBottom: 3 }}>
               <img
                 src="/logo01.png"
@@ -133,7 +228,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 style={{ width: 20, height: 28, objectFit: "contain", display: "block" }}
               />
             </div>
-            {/* 텍스트 */}
             <div className="flex flex-col items-start leading-none" style={{ paddingTop: 6 }}>
               <span
                 className="font-nanum"
@@ -164,7 +258,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="min-w-0">
                 <p className="text-white text-xs font-medium truncate">{adminUser.displayName || adminUser.username}</p>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${ROLE_COLORS[adminUser.role] || "bg-gray-700 text-gray-300"}`}>
-                  {ROLE_LABELS[adminUser.role] || "관리자"}
+                  {ROLE_LABELS[adminUser.role] || "회원"}
                 </span>
               </div>
             </div>
@@ -173,57 +267,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* 네비게이션 */}
         <nav className="flex-1 overflow-y-auto py-3">
-          {/* 대시보드 */}
+          {/* 홈 */}
           <Link
             href="/dashboard"
             onClick={() => setSidebarOpen(false)}
             className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors mx-2 rounded-lg mb-1 ${
-              isActive("/dashboard") && pathname === "/dashboard"
+              pathname === "/dashboard"
                 ? "bg-[#2E7D32] text-white"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
             }`}
           >
             <LayoutDashboard className="w-4 h-4 shrink-0" />
-            대시보드
+            홈
           </Link>
 
-          {/* 그룹 메뉴 */}
-          {navGroups.map((group) => (
-            <div key={group.label} className="mb-1">
-              <button
-                onClick={() => toggleGroup(group.label)}
-                className="w-full flex items-center justify-between px-5 py-1.5 text-[15px] font-semibold text-gray-400 hover:text-gray-200 transition-colors"
-              >
-                {group.label}
-                {openGroups[group.label]
-                  ? <ChevronDown className="w-3 h-3" />
-                  : <ChevronRight className="w-3 h-3" />
-                }
-              </button>
-              {openGroups[group.label] && (
-                <div>
-                  {group.items.map((item) => {
-                    const active = isActive(item.href);
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center gap-3 px-5 py-2 text-[14px] transition-colors mx-2 rounded-lg ${
-                          active
-                            ? "bg-[#2E7D32] text-white"
-                            : "text-gray-400 hover:text-white hover:bg-gray-800"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 shrink-0" />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+          {/* 커뮤니티 그룹 — 모든 회원 */}
+          {communityGroups.map((group) => (
+            <NavGroupSection
+              key={group.label}
+              group={group}
+              openGroups={openGroups}
+              toggleGroup={toggleGroup}
+              isActive={isActive}
+              setSidebarOpen={setSidebarOpen}
+            />
+          ))}
+
+          {/* 관리자 구분선 */}
+          <div className="mx-5 my-3 border-t border-gray-700" />
+          <p className="px-5 py-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">관리자</p>
+          {adminGroups.map((group) => (
+            <NavGroupSection
+              key={group.label}
+              group={group}
+              openGroups={openGroups}
+              toggleGroup={toggleGroup}
+              isActive={isActive}
+              setSidebarOpen={setSidebarOpen}
+            />
           ))}
         </nav>
 
