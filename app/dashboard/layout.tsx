@@ -117,40 +117,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         lg:relative lg:translate-x-0 lg:flex
       `}>
         {/* 로고 헤더 */}
-        <div className="h-16 flex items-center px-4 border-b border-gray-800 shrink-0">
-          {/* 인덱스 페이지 로고 100% 동일 — size md(h=40), light variant */}
+        <div className="h-16 flex items-center justify-center px-4 border-b border-gray-800 shrink-0 relative">
           <Link
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-end select-none flex-1 min-w-0"
-            style={{ gap: 8, letterSpacing: 0 }}
+            className="flex items-end select-none"
+            style={{ gap: 6, letterSpacing: 0 }}
           >
-            {/* 아이콘: 176×248 비율 유지 */}
-            <div className="shrink-0" style={{ width: 29, height: 40, marginBottom: 5 }}>
+            {/* 아이콘: 176×248 비율 유지, 30% 축소 */}
+            <div className="shrink-0" style={{ width: 20, height: 28, marginBottom: 3 }}>
               <img
                 src="/logo01.png"
                 alt="일광교회"
-                style={{ width: 29, height: 40, objectFit: "contain", display: "block" }}
+                style={{ width: 20, height: 28, objectFit: "contain", display: "block" }}
               />
             </div>
             {/* 텍스트 */}
-            <div className="flex flex-col items-start leading-none" style={{ paddingTop: 9 }}>
+            <div className="flex flex-col items-start leading-none" style={{ paddingTop: 6 }}>
               <span
                 className="font-nanum"
-                style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", letterSpacing: "0.03em" }}
+                style={{ fontSize: 8, color: "rgba(255,255,255,0.75)", letterSpacing: "0.03em" }}
               >
                 행복과 영원으로 초대하는
               </span>
               <span
                 className="font-noto-black"
-                style={{ fontSize: 29, color: "#ffffff", marginTop: 6 }}
+                style={{ fontSize: 20, color: "#ffffff", marginTop: 4 }}
               >
                 일광교회
               </span>
             </div>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="ml-2 lg:hidden text-gray-400 hover:text-white shrink-0">
+          <button onClick={() => setSidebarOpen(false)} className="absolute right-4 lg:hidden text-gray-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>
