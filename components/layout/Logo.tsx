@@ -26,14 +26,13 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
       </div>
 
       {/* Text */}
-      <div className="flex flex-col leading-none" style={{ paddingTop: 9 }}>
+      <div className="flex flex-col items-center leading-none" style={{ paddingTop: 9 }}>
         <span
           className="font-nanum transition-colors duration-300"
           style={{
             fontSize: Math.round(h * 0.275),
             color: isLight ? "rgba(255,255,255,0.85)" : "#4b5563",
             letterSpacing: "0.03em",
-            marginLeft: 2,
           }}
         >
           행복과 영원으로 초대하는
