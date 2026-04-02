@@ -31,12 +31,14 @@ export default function SermonStreamPlayer({
 
   useEffect(() => {
     /* 구간 감시 타이머 */
+    /* 구간 감시 타이머 — 범위 벗어나면 시작점으로 이동 후 재생 */
     const startLoop = (p: YTPlayer) => {
       timerRef.current = setInterval(() => {
         try {
           const t = p.getCurrentTime();
           if (t >= endSec || t < startSec - 3) {
             p.seekTo(startSec, true);
+            p.playVideo();
           }
         } catch { /* ignore */ }
       }, 500);
@@ -62,9 +64,31 @@ export default function SermonStreamPlayer({
             startLoop(e.target);
             setReady(true);
           },
+          /* 일시정지(2)·종료(0) 감지 → 즉시 구간 시작점부터 재생 재개 */
+          onStateChange: (e: { data: number; target: YTPlayer }) => {
+            if (e.data === 0 || e.data === 2) {
+              setTimeout(() => {
+                try {
+                  e.target.seekTo(startSec, true);
+                  e.target.playVideo();
+                } catch { /* ignore */ }
+              }, 200);
+            }
+          },
         },
       });
     };
+
+    /* 탭 비활성 후 복귀 시 강제 재생 재개 */
+    const handleVisibility = () => {
+      if (!document.hidden && playerRef.current) {
+        try {
+          playerRef.current.seekTo(startSec, true);
+          playerRef.current.playVideo();
+        } catch { /* ignore */ }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
 
     if (window.YT?.loaded) {
       initPlayer();
@@ -81,6 +105,7 @@ export default function SermonStreamPlayer({
     }
 
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
       if (timerRef.current) clearInterval(timerRef.current);
       try { playerRef.current?.destroy(); } catch { /* ignore */ }
     };
