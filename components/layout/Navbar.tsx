@@ -176,7 +176,7 @@ export default function Navbar() {
             <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
               로그인
             </Link>
-            <Link href="/offering" className={`px-5 py-2.5 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
+            <Link href="/offering" className={`px-4 py-2 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
               white
                 ? "border border-black text-black"
                 : "border border-white/80 text-white hover:border-black hover:bg-white hover:text-[#1a2744] backdrop-blur-sm"
