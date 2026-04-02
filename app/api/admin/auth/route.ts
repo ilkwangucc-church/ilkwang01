@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { hashPassword, createSessionToken } from "@/lib/adminAuth";
 
-function getSupabaseAdmin() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+/** 관리자 계정 목록 (환경변수 또는 기본값) */
+function getAdminAccounts() {
+  return [
+    {
+      username: "webmaster",
+      email: "webmaster@ilkwang.or.kr",
+      passwordHash: hashPassword(process.env.ADMIN_PASSWORD || "@Herosws413105l5"),
+      role: 7,
+      displayName: "최고관리자",
+      isActive: true,
+    },
+  ];
 }
 
 /** POST /api/admin/auth — 로그인 */
@@ -18,34 +24,25 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = hashPassword(password);
-    const supabase = getSupabaseAdmin();
     const id = identifier.trim();
-
-    // 이메일 형식이면 email 컬럼으로, 아니면 username 컬럼으로 조회
     const isEmail = id.includes("@");
-    const { data, error } = await supabase
-      .from("admin_accounts")
-      .select("username, email, password_hash, role, display_name, is_active")
-      .eq(isEmail ? "email" : "username", isEmail ? id.toLowerCase() : id)
-      .single();
 
-    if (error || !data || !data.is_active || data.password_hash !== passwordHash) {
+    // 계정 목록에서 일치하는 계정 찾기
+    const account = getAdminAccounts().find((a) =>
+      isEmail ? a.email === id.toLowerCase() : a.username === id
+    );
+
+    if (!account || !account.isActive || account.passwordHash !== passwordHash) {
       return NextResponse.json({ error: "아이디/이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
     }
 
-    // 마지막 로그인 시간 업데이트
-    await supabase
-      .from("admin_accounts")
-      .update({ last_login: new Date().toISOString() })
-      .eq("username", data.username);
-
-    const token = createSessionToken(data.username, data.role, data.display_name || data.username);
+    const token = createSessionToken(account.username, account.role, account.displayName);
 
     const response = NextResponse.json({
       success: true,
-      username: data.username,
-      role: data.role,
-      displayName: data.display_name,
+      username: account.username,
+      role: account.role,
+      displayName: account.displayName,
     });
 
     response.cookies.set("admin_session", token, {
@@ -59,8 +56,7 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (err) {
     console.error("Admin auth error:", err);
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: "서버 오류가 발생했습니다.", debug: msg }, { status: 500 });
+    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }
 }
 
