@@ -12,29 +12,32 @@ function getSupabaseAdmin() {
 /** POST /api/admin/auth — 로그인 */
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
-    if (!email || !password) {
-      return NextResponse.json({ error: "이메일과 비밀번호를 입력해주세요." }, { status: 400 });
+    const { identifier, password } = await req.json();
+    if (!identifier || !password) {
+      return NextResponse.json({ error: "아이디/이메일과 비밀번호를 입력해주세요." }, { status: 400 });
     }
 
     const passwordHash = hashPassword(password);
     const supabase = getSupabaseAdmin();
+    const id = identifier.trim();
 
+    // 이메일 형식이면 email 컬럼으로, 아니면 username 컬럼으로 조회
+    const isEmail = id.includes("@");
     const { data, error } = await supabase
       .from("admin_accounts")
       .select("username, email, password_hash, role, display_name, is_active")
-      .eq("email", email.trim().toLowerCase())
+      .eq(isEmail ? "email" : "username", isEmail ? id.toLowerCase() : id)
       .single();
 
     if (error || !data || !data.is_active || data.password_hash !== passwordHash) {
-      return NextResponse.json({ error: "이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
+      return NextResponse.json({ error: "아이디/이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
     }
 
     // 마지막 로그인 시간 업데이트
     await supabase
       .from("admin_accounts")
       .update({ last_login: new Date().toISOString() })
-      .eq("email", email.trim().toLowerCase());
+      .eq("username", data.username);
 
     const token = createSessionToken(data.username, data.role, data.display_name || data.username);
 
