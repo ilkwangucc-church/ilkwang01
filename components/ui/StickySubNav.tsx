@@ -31,7 +31,7 @@ export const NEWS_NAV: NavItem[] = [
   { label: "갤러리",     href: "/news/gallery" },
   { label: "교재자료",   href: "/resources" },
   { label: "나눔게시판", href: "/resources/board" },
-  { label: "커뮤니티",   href: "/blog" },
+  { label: "커뮤니티",   href: "/news/community" },
 ];
 
 export default function StickySubNav({ items }: { items: NavItem[] }) {

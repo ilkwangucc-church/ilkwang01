@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, BookUser, Award, MessageSquare,
   Video, Monitor, Heart, Building2, FileStack,
-  Bell, BookOpen, BookMarked, Image, DollarSign,
+  Bell, CalendarDays, BookOpen, BookMarked, Image as GalleryIcon, DollarSign,
   Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight
 } from "lucide-react";
 import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
@@ -37,11 +37,12 @@ const navGroups: NavGroup[] = [
   {
     label: "교회 운영",
     items: [
-      { label: "문의 접수함",  href: "/dashboard/contacts",  icon: MessageSquare },
-      { label: "공지/게시판",  href: "/dashboard/notices",   icon: Bell },
-      { label: "설교/미디어",  href: "/dashboard/sermons",   icon: BookOpen },
+      { label: "문의 접수함",  href: "/dashboard/contacts",                    icon: MessageSquare },
+      { label: "공지안내",     href: "/dashboard/notices/announcements",        icon: Bell },
+      { label: "행사안내",     href: "/dashboard/notices/events",               icon: CalendarDays },
+      { label: "설교/미디어",  href: "/dashboard/sermons",                      icon: BookOpen },
       { label: "주보 관리",    href: "/dashboard/bulletins", icon: BookMarked },
-      { label: "갤러리 관리",  href: "/dashboard/gallery",   icon: Image },
+      { label: "갤러리 관리",  href: "/dashboard/gallery",   icon: GalleryIcon },
       { label: "헌금 현황",    href: "/dashboard/offerings", icon: DollarSign },
     ],
   },
@@ -116,14 +117,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         lg:relative lg:translate-x-0 lg:flex
       `}>
         {/* 로고 헤더 */}
-        <div className="h-16 flex items-center px-5 border-b border-gray-800 shrink-0">
-          <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-8 h-8 bg-[#2E7D32] rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0">일</div>
-            <div className="min-w-0">
-              <p className="font-bold text-white text-sm leading-tight truncate">일광교회</p>
-              <p className="text-gray-400 text-[10px]">관리자 패널</p>
+        <div className="h-16 flex items-center px-4 border-b border-gray-800 shrink-0">
+          {/* 인덱스 페이지 로고 100% 동일 — size md(h=40), light variant */}
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-end select-none flex-1 min-w-0"
+            style={{ gap: 8, letterSpacing: 0 }}
+          >
+            {/* 아이콘: 176×248 비율 유지 */}
+            <div className="shrink-0" style={{ width: 29, height: 40, marginBottom: 5 }}>
+              <img
+                src="/logo01.png"
+                alt="일광교회"
+                style={{ width: 29, height: 40, objectFit: "contain", display: "block" }}
+              />
             </div>
-          </div>
+            {/* 텍스트 */}
+            <div className="flex flex-col items-start leading-none" style={{ paddingTop: 9 }}>
+              <span
+                className="font-nanum"
+                style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", letterSpacing: "0.03em" }}
+              >
+                행복과 영원으로 초대하는
+              </span>
+              <span
+                className="font-noto-black"
+                style={{ fontSize: 29, color: "#ffffff", marginTop: 6 }}
+              >
+                일광교회
+              </span>
+            </div>
+          </Link>
           <button onClick={() => setSidebarOpen(false)} className="ml-2 lg:hidden text-gray-400 hover:text-white shrink-0">
             <X className="w-5 h-5" />
           </button>
@@ -167,7 +193,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div key={group.label} className="mb-1">
               <button
                 onClick={() => toggleGroup(group.label)}
-                className="w-full flex items-center justify-between px-5 py-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-300 transition-colors"
+                className="w-full flex items-center justify-between px-5 py-1.5 text-[15px] font-semibold text-gray-400 hover:text-gray-200 transition-colors"
               >
                 {group.label}
                 {openGroups[group.label]
@@ -185,7 +211,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         key={item.href}
                         href={item.href}
                         onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center gap-3 px-5 py-2 text-sm transition-colors mx-2 rounded-lg ${
+                        className={`flex items-center gap-3 px-5 py-2 text-[14px] transition-colors mx-2 rounded-lg ${
                           active
                             ? "bg-[#2E7D32] text-white"
                             : "text-gray-400 hover:text-white hover:bg-gray-800"

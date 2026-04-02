@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Search, UserCheck, UserX, ChevronDown } from "lucide-react";
+import { Search, UserCheck, UserX, ChevronDown, X } from "lucide-react";
 import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
 
 const MEMBERS = [
@@ -14,11 +14,24 @@ const MEMBERS = [
   { id: 8, name: "최성도", email: "choi@email.com", phone: "010-7890-1234", role: 2, dept: "-",    matched: false, joined: "2025-02-10" },
 ];
 
+interface NewMember {
+  name: string;
+  email: string;
+  phone: string;
+  role: number;
+  dept: string;
+}
+
+const EMPTY_NEW: NewMember = { name: "", email: "", phone: "", role: 1, dept: "" };
+
 export default function MembersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(0);
   const [editId, setEditId] = useState<number | null>(null);
   const [members, setMembers] = useState(MEMBERS);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newMember, setNewMember] = useState<NewMember>(EMPTY_NEW);
+  const [addError, setAddError] = useState("");
 
   const filtered = members.filter((m) => {
     const matchSearch = !search || m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
@@ -31,6 +44,28 @@ export default function MembersPage() {
     setEditId(null);
   }
 
+  function handleAddSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newMember.name.trim()) { setAddError("이름을 입력해 주세요."); return; }
+    if (!newMember.email.trim() && !newMember.phone.trim()) {
+      setAddError("이메일 또는 휴대폰 번호 중 하나는 입력해야 합니다."); return;
+    }
+    const newId = Math.max(...members.map(m => m.id)) + 1;
+    setMembers(prev => [...prev, {
+      id: newId,
+      name: newMember.name.trim(),
+      email: newMember.email.trim() || "-",
+      phone: newMember.phone.trim() || "-",
+      role: newMember.role,
+      dept: newMember.dept.trim() || "-",
+      matched: false,
+      joined: new Date().toISOString().slice(0, 10),
+    }]);
+    setNewMember(EMPTY_NEW);
+    setAddError("");
+    setShowAddModal(false);
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -38,7 +73,10 @@ export default function MembersPage() {
           <h1 className="text-2xl font-bold text-gray-900">회원 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 7단계 등급 관리</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
+        <button
+          onClick={() => { setShowAddModal(true); setAddError(""); setNewMember(EMPTY_NEW); }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
+        >
           + 회원 추가
         </button>
       </div>
@@ -162,6 +200,94 @@ export default function MembersPage() {
           })}
         </div>
       </div>
+
+      {/* 회원 추가 모달 */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h2 className="text-lg font-bold text-gray-900">회원 추가</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
+              {addError && (
+                <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{addError}</p>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">이름 <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={newMember.name}
+                  onChange={e => setNewMember(p => ({ ...p, name: e.target.value }))}
+                  placeholder="홍길동"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">이메일 <span className="text-gray-400 text-xs">(이메일 또는 휴대폰 중 하나 필수)</span></label>
+                <input
+                  type="email"
+                  value={newMember.email}
+                  onChange={e => setNewMember(p => ({ ...p, email: e.target.value }))}
+                  placeholder="example@email.com"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">휴대폰</label>
+                <input
+                  type="tel"
+                  value={newMember.phone}
+                  onChange={e => setNewMember(p => ({ ...p, phone: e.target.value }))}
+                  placeholder="010-0000-0000"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">등급</label>
+                  <select
+                    value={newMember.role}
+                    onChange={e => setNewMember(p => ({ ...p, role: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none"
+                  >
+                    {Object.entries(ROLE_LABELS).map(([v, label]) => (
+                      <option key={v} value={v}>{v}단계 · {label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">부서 <span className="text-gray-400 text-xs">(선택)</span></label>
+                  <input
+                    type="text"
+                    value={newMember.dept}
+                    onChange={e => setNewMember(p => ({ ...p, dept: e.target.value }))}
+                    placeholder="예: 청년부"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
+                >
+                  추가 완료
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
