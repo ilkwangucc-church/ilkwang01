@@ -16,8 +16,8 @@ export default function AboutSection() {
             <div className="rounded-2xl overflow-hidden shadow-2xl max-w-md mx-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=80"
-                alt="담임목사"
+                src="https://images.unsplash.com/photo-1609834265520-03b1a0b68276?w=800&auto=format&fit=crop&q=80"
+                alt="소외된 이웃 돕기"
                 className="w-full object-cover aspect-[3/4]"
               />
             </div>
