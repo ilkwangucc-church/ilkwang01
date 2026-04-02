@@ -118,13 +118,13 @@ export default function Navbar() {
         <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
 
           {/* 모바일: 중앙 고정 / 데스크탑: 왼쪽 */}
-          <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none">
+          <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none lg:shrink-0">
             <Logo size="md" variant={white ? "dark" : "light"} />
           </div>
 
           {/* Desktop Nav */}
           <nav
-            className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2"
+            className="hidden lg:flex flex-1 items-center justify-center"
             onMouseLeave={scheduleClose}
           >
             {nav.map((item) => (
@@ -147,7 +147,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right: Login + CTA */}
-          <div className="hidden lg:flex items-center gap-4 ml-auto">
+          <div className="hidden lg:flex items-center gap-4 shrink-0">
             <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
               로그인
             </Link>
