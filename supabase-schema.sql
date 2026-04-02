@@ -127,3 +127,118 @@ INSERT INTO site_content (section_key, content_type, value) VALUES
   ('address', 'text', '서울 성북구 동소문로 212-68'),
   ('email', 'text', 'ilkwang@ilkwang.or.kr')
 ON CONFLICT (section_key) DO NOTHING;
+
+-- ═══════════════════════════════════════════════════════════════
+-- 추가 테이블 (v2 — 관리자 대시보드 고도화)
+-- ═══════════════════════════════════════════════════════════════
+
+-- 9. 관리자 계정 (admin_accounts)
+-- 웹마스터 등 사이트 관리 전용 계정 (일반 회원과 분리)
+CREATE TABLE IF NOT EXISTS admin_accounts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE,             -- 이메일 방식 로그인
+  password_hash TEXT NOT NULL,
+  role SMALLINT NOT NULL DEFAULT 7,
+  -- 역할: 1=일반회원 2=성도 3=제직 4=당회원 5=교역자 6=담임목사 7=최고관리자
+  display_name TEXT NOT NULL DEFAULT '관리자',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  last_login TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- webmaster 계정 삽입
+-- email: webmaster@ilkwang.or.kr  /  password: @Herosws413105l5
+-- SHA256(@Herosws413105l5 + ilkwang_salt_2026)
+INSERT INTO admin_accounts (username, email, password_hash, role, display_name) VALUES
+  ('webmaster', 'webmaster@ilkwang.or.kr', '6beb97e2db6dedd29b9e8cade609c8ee105380600a46d70198b4eb7a827dc3fd', 7, '최고관리자')
+ON CONFLICT (username) DO NOTHING;
+
+-- 10. 문의 접수 (contact_submissions)
+CREATE TABLE IF NOT EXISTS contact_submissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT,
+  email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 11. 섬기는 사람들 (ministers)
+CREATE TABLE IF NOT EXISTS ministers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  title TEXT NOT NULL,         -- 담임목사, 교육목사, 전도사, 장로 등
+  department TEXT,             -- 소속 부서
+  image_url TEXT,
+  bio TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 기본 데이터
+INSERT INTO ministers (name, title, department, sort_order) VALUES
+  ('강성원', '담임목사', '교역자', 1),
+  ('김○○', '교육목사', '교역자', 2),
+  ('이○○', '전도사', '교역자', 3)
+ON CONFLICT DO NOTHING;
+
+-- 12. 부서 소개 (departments)
+CREATE TABLE IF NOT EXISTS departments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  leader_name TEXT,
+  meeting_time TEXT,
+  image_url TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 기본 데이터
+INSERT INTO departments (name, description, sort_order) VALUES
+  ('1부 예배', '주일 1부 예배 (오전 9시)', 1),
+  ('2부 예배', '주일 2부 예배 (오전 11시)', 2),
+  ('청년부', '20-30대 청년 공동체', 3),
+  ('중고등부', '중학생·고등학생 공동체', 4),
+  ('주일학교', '어린이 주일학교', 5),
+  ('선교부', '국내외 선교 사역', 6)
+ON CONFLICT DO NOTHING;
+
+-- 13. 증명서 발급 이력 (certificates)
+CREATE TABLE IF NOT EXISTS certificates (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  member_name TEXT NOT NULL,
+  cert_type TEXT NOT NULL,     -- 등록, 세례, 혼인, 봉사, 출석
+  issued_by TEXT NOT NULL DEFAULT '일광교회',
+  issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  purpose TEXT,                -- 사용 목적
+  notes TEXT,
+  church_member_id UUID REFERENCES church_members(id),
+  issued_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- church_members 테이블에 추가 필드 (없으면 추가)
+ALTER TABLE church_members ADD COLUMN IF NOT EXISTS baptism_date DATE;
+ALTER TABLE church_members ADD COLUMN IF NOT EXISTS membership_date DATE;
+ALTER TABLE church_members ADD COLUMN IF NOT EXISTS role SMALLINT NOT NULL DEFAULT 2;
+-- 역할: 1=일반회원 2=성도 3=제직 4=당회원 5=교역자 6=담임목사 7=최고관리자
+
+-- members 테이블 role 범위 확장 (1~7)
+-- (기존 컬럼 주석만 업데이트, 구조는 동일)
+COMMENT ON COLUMN members.role IS '1=일반회원 2=성도 3=제직 4=당회원 5=교역자 6=담임목사 7=최고관리자';
+
+-- RLS 설정
+ALTER TABLE admin_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ministers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE departments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE certificates ENABLE ROW LEVEL SECURITY;
+
+-- 공개 읽기 정책
+CREATE POLICY "공개 읽기" ON ministers FOR SELECT USING (is_active = TRUE);
+CREATE POLICY "공개 읽기" ON departments FOR SELECT USING (is_active = TRUE);

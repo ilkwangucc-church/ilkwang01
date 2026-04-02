@@ -1,11 +1,15 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Logo from "@/components/layout/Logo";
 import { Lock, Mail } from "lucide-react";
+import { Suspense } from "react";
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/admin";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,15 +19,34 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    // TODO: Supabase Auth — 관리자 등급(role=5) 확인
-    await new Promise((r) => setTimeout(r, 600));
-    // 임시 데모 로그인
-    if (email === "admin@ilkwang.or.kr" && password === "admin1234") {
-      router.push("/admin");
-    } else {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.error || "이메일 또는 비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      // 로그인 성공 — 세션 정보 저장 후 리다이렉트
+      sessionStorage.setItem("admin_user", JSON.stringify({
+        username: data.username,
+        role: data.role,
+        displayName: data.displayName,
+      }));
+
+      router.push(redirect);
+    } catch {
+      setError("서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -49,8 +72,9 @@ export default function AdminLoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@ilkwang.or.kr"
+                  placeholder="관리자 이메일 입력"
                   required
+                  autoComplete="email"
                   className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent"
                 />
               </div>
@@ -65,6 +89,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  autoComplete="current-password"
                   className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent"
                 />
               </div>
@@ -84,12 +109,16 @@ export default function AdminLoginPage() {
               {loading ? "로그인 중..." : "관리자 로그인"}
             </button>
           </form>
-
-          <p className="mt-4 text-center text-xs text-gray-500">
-            데모: admin@ilkwang.or.kr / admin1234
-          </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
