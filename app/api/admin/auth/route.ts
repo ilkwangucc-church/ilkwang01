@@ -59,7 +59,8 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (err) {
     console.error("Admin auth error:", err);
-    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "서버 오류가 발생했습니다.", debug: msg }, { status: 500 });
   }
 }
 
