@@ -14,9 +14,8 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900">외부 서비스 연동 상태</h2>
         {[
-          { name: "Supabase", status: "미연동", desc: "DB, Auth, Storage", color: "text-red-500" },
+          { name: "Brevo (이메일)", status: "연동완료 ✅", desc: "비밀번호 찾기 / 알림 이메일 자동 발송", color: "text-green-600" },
           { name: "YouTube API", status: "미연동", desc: "ilwangucc 채널 자동 연동", color: "text-red-500" },
-          { name: "Resend (이메일)", status: "미연동", desc: "컨택폼 이메일 자동전송", color: "text-red-500" },
           { name: "Coolsms (문자)", status: "미연동", desc: "컨택폼 SMS 자동전송", color: "text-red-500" },
         ].map((s) => (
           <div key={s.name} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-b-0">
@@ -57,19 +56,23 @@ export default function SettingsPage() {
       <div className="bg-gray-50 rounded-xl border border-gray-200 p-5">
         <h3 className="font-semibold text-gray-700 mb-3 text-sm">.env.local 설정 가이드</h3>
         <pre className="text-xs text-gray-600 bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto leading-relaxed">
-{`NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
-SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
+{`# ── Brevo (이메일) ─────────────────────────────
+BREVO_API_KEY=xkeysib-xxx...
+BREVO_FROM_EMAIL=noreply@ilkwang.or.kr
+BREVO_FROM_NAME=일광교회
+NEXT_PUBLIC_BASE_URL=https://ilkwang01.vercel.app
 
+# ── YouTube API ────────────────────────────────
 YOUTUBE_API_KEY=AIzaSy...
 YOUTUBE_CHANNEL_ID=UCxxx...
 
-RESEND_API_KEY=re_xxx...
-RESEND_FROM=noreply@ilkwang.or.kr
-
+# ── Coolsms (문자) ─────────────────────────────
 COOLSMS_API_KEY=xxx
 COOLSMS_API_SECRET=xxx
-COOLSMS_SENDER=02-927-0691`}
+COOLSMS_SENDER=02-927-0691
+
+# ── 캐시 재검증 ────────────────────────────────
+REVALIDATION_SECRET=ilkwang-cache-2026`}
         </pre>
       </div>
     </div>
