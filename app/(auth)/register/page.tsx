@@ -52,13 +52,13 @@ export default function RegisterPage() {
               <div className="flex flex-col items-center mb-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo01.png" alt="일광교회" className="h-10 w-auto mb-2" />
-                <span className="font-nanum text-[11px] text-gray-500 tracking-wide">행복과 영원으로 초대하는</span>
-                <span className="font-noto-black text-[22px] text-[#1a2744]" style={{ marginTop: 6 }}>일광교회</span>
+                <span className="font-nanum text-[11px] text-gray-500 tracking-wide leading-none">행복과 영원으로 초대하는</span>
+                <span className="font-noto-black text-[22px] text-[#1a2744] leading-none">일광교회</span>
               </div>
             </div>
             <div className="w-full rounded-xl overflow-hidden mt-3 mb-2">
               <div className="bg-gray-200 px-5 py-2.5 text-center">
-                <span className="text-gray-700 text-sm font-semibold">회원가입</span>
+                <span className="text-gray-700 text-base font-semibold">회원가입</span>
               </div>
               <div className="bg-gray-100 px-5 py-2 text-center">
                 <span className="text-gray-500 text-xs">일광교회 성도 포털에 오신 것을 환영합니다</span>
