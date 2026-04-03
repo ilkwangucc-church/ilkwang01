@@ -65,7 +65,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3 mt-[15px]">
               {[
                 { label: "이름", name: "name", type: "text", placeholder: "홍길동" },
                 { label: "이메일", name: "email", type: "email", placeholder: "your@email.com" },

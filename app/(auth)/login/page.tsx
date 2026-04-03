@@ -49,7 +49,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 10 }}>
+          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 0 }}>
             <div className="text-center mb-8">
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,7 +67,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5 mt-[15px]">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">아이디 / 이메일</label>
                 <input
