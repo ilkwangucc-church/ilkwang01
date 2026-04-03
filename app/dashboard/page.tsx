@@ -79,7 +79,7 @@ export default function CommunityHome() {
       <div className="relative rounded-2xl overflow-hidden min-h-[180px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1438032005730-a0e73c6d1f98?auto=format&fit=crop&w=1600&q=80"
+          src="https://images.unsplash.com/photo-1548407260-da850faa41e3?auto=format&fit=crop&w=1600&q=80"
           alt="교회"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -120,26 +120,6 @@ export default function CommunityHome() {
           ))}
         </div>
       </div>
-
-      {/* 관리자 통계 — 상단 4칸 */}
-      {isAdmin && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {STATS.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div key={s.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${s.color}`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">{s.label}</p>
-                  <p className="text-xl font-bold text-gray-900">{s.value}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       {/* 메인 3-컬럼 그리드 */}
       <div className="grid lg:grid-cols-3 gap-6">
@@ -243,7 +223,7 @@ export default function CommunityHome() {
         <div className="relative rounded-2xl overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1481627834876-b7833e8f5dc5?auto=format&fit=crop&w=800&q=80"
+            src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=800&q=80"
             alt="성경"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -295,9 +275,36 @@ export default function CommunityHome() {
         </div>
       </div>
 
-      {/* 관리자 요약 — 5단계 이상만 */}
+      {/* ─── 관리자 전용 영역 (5단계 이상만 표시) ─── */}
       {isAdmin && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+        <div className="space-y-4">
+          {/* 구분선 */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 border-t border-dashed border-gray-200" />
+            <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">관리자 전용</span>
+            <div className="flex-1 border-t border-dashed border-gray-200" />
+          </div>
+
+          {/* 관리자 통계 4칸 */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {STATS.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${s.color}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">{s.label}</p>
+                    <p className="text-xl font-bold text-gray-900">{s.value}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 관리자 빠른 메뉴 */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <h2 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Bell className="w-4 h-4 text-gray-500" /> 관리자 빠른 메뉴
           </h2>
@@ -319,6 +326,7 @@ export default function CommunityHome() {
               <div><p className="text-xs text-gray-500">부서나눔</p><p className="font-bold text-gray-900">새 글 5건</p></div>
             </Link>
           </div>
+        </div>
         </div>
       )}
     </div>

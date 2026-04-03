@@ -28,7 +28,7 @@ const POSTS = [
   { id: 5, dept: "예배부",  author: "정예배", avatar: "정", color: "bg-green-100 text-green-700",
     title: "부활절 예배 준비 안내",
     preview: "부활절 예배 준비를 위한 각 부서 역할 분담 안내입니다. 확인 후 담당자에게 연락 주세요. 모두 함께 아름다운 부활절 예배를 드려요.",
-    image: "https://images.unsplash.com/photo-1438032005730-a0e73c6d1f98?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1548407260-da850faa41e3?auto=format&fit=crop&w=600&q=80",
     date: "2026-03-26", likes: 15, comments: 4 },
   { id: 6, dept: "교육부",  author: "박교육", avatar: "박", color: "bg-teal-100 text-teal-700",
     title: "어린이 주일학교 교사 모집",

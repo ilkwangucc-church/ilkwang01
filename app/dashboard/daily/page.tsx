@@ -8,11 +8,11 @@ const INIT_FEED: {
 }[] = [
   { id: 1, name: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", time: "오늘 오전 8:24",
     text: "오늘도 말씀으로 하루를 시작합니다 🙏 아침 묵상 중 시편 23편이 큰 위로가 되었어요. 여호와는 나의 목자시니 내게 부족함이 없으리로다.",
-    image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5dc5?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=600&q=80",
     likes: 12, comments: 3 },
   { id: 2, name: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", time: "오늘 오전 7:58",
     text: "새벽 기도 후 아침 노을이 너무 아름다웠어요 ☀️ 하나님의 창조가 이렇게 아름다울 수가 없네요. 오늘 하루도 감사합니다!",
-    image: "https://images.unsplash.com/photo-1500534314209-a157658a3073?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=600&q=80",
     likes: 18, comments: 5 },
   { id: 3, name: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", time: "어제 오후 9:12",
     text: "소그룹 모임에서 큰 은혜를 받았습니다. 함께 기도해 주신 분들께 감사드려요 💛 말씀을 나누는 시간이 정말 귀하게 느껴집니다.",

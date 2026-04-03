@@ -83,7 +83,7 @@ export default function BiblePage() {
       <div className="relative rounded-2xl overflow-hidden h-44">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1481627834876-b7833e8f5dc5?auto=format&fit=crop&w=1400&q=80"
+          src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1400&q=80"
           alt="성경"
           className="absolute inset-0 w-full h-full object-cover"
         />

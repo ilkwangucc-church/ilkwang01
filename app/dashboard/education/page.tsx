@@ -63,7 +63,7 @@ export default function EducationPage() {
       <div className="relative rounded-2xl overflow-hidden h-44">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1400&q=80"
+          src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1400&q=80"
           alt="교육"
           className="absolute inset-0 w-full h-full object-cover"
         />
