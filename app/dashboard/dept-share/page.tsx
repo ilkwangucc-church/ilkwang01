@@ -18,7 +18,7 @@ const POSTS = [
   { id: 3, dept: "봉사부",  author: "최봉사", avatar: "최", color: "bg-amber-100 text-amber-700",
     title: "4월 봉사 일정 공유",
     preview: "4월 봉사 일정을 공유드립니다. 참여 가능하신 분들은 댓글 남겨주세요! 지역사회를 섬기는 소중한 기회입니다.",
-    image: null,
+    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
     date: "2026-03-30", likes: 12, comments: 14 },
   { id: 4, dept: "새가족부", author: "김환영", avatar: "김", color: "bg-rose-100 text-rose-700",
     title: "3월 새가족 환영 모임",

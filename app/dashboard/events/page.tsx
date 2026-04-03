@@ -121,21 +121,19 @@ export default function EventsPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1B5E20]/90 to-[#2E7D32]/60" />
-        <div className="relative z-10 p-6 h-full flex flex-col justify-between">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                <CalendarDays className="w-6 h-6" /> 행사안내
-              </h1>
-              <p className="text-green-200 text-sm mt-0.5">일광교회 2026년 상반기 행사 일정</p>
-            </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-colors border border-white/30">
-              <Plus className="w-4 h-4" /> 행사 등록
-            </button>
+        <div className="absolute inset-0 z-10 p-6 flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <CalendarDays className="w-6 h-6" /> 행사안내
+            </h1>
+            <p className="text-green-200 text-sm mt-0.5">일광교회 2026년 상반기 행사 일정</p>
+            <p className="text-white/80 text-xs mt-2">
+              다가오는 교회 행사와 일정을 확인하고 미리 준비하세요
+            </p>
           </div>
-          <p className="text-white/80 text-xs max-w-lg">
-            다가오는 교회 행사와 일정을 확인하고 미리 준비하세요 — 부활절 연합예배, 봄 부흥성회, 각 부서 행사
-          </p>
+          <button className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-colors border border-white/30">
+            <Plus className="w-4 h-4" /> 행사 등록
+          </button>
         </div>
       </div>
 

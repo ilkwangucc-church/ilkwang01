@@ -103,9 +103,9 @@ export default function InstagramPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/90 via-pink-800/70 to-orange-600/60" />
-        <div className="relative z-10 p-6 h-full flex flex-col justify-between">
+        <div className="absolute inset-0 z-10 p-6 flex flex-col justify-center gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
               <Camera className="w-5 h-5 text-white" />
             </div>
             <div>
