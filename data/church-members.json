@@ -1,1 +1,91 @@
-[]
+[
+  {
+    "id": "m_1234",
+    "name": "김온유",
+    "birthDate": "1965-07-11",
+    "gender": "남",
+    "familyRelation": "세대주",
+    "faithHead": "박인내",
+    "photo": "",
+    "parish": "1교구 1구역",
+    "spouse": "박인내",
+    "phone": "010-3333-4444",
+    "tel": "02-555-6666",
+    "address": "서울특별시 성북구 보문로 123",
+    "memberType": "장년",
+    "currentStatus": "출석",
+    "registrationDate": "2011-03-13",
+    "introducer": "이장로",
+    "marriageStatus": "기혼",
+    "attendanceRate": "A",
+    "serviceDept": "고등부 교사 / 기획위원회 임원",
+    "workplace": "회사원",
+    "detailPosition": "서리집사",
+    "ordinationDate": "2013-08-13",
+    "missionGroup": "제2남선교회",
+    "baptismType": "세례",
+    "baptismDate": "2003-05-01",
+    "baptismChurch": "믿음교회",
+    "notes": "충실한 봉사자. 고등부 교사 및 기획위원회 임원으로 섬기고 있음.",
+    "familyMembers": [
+      {
+        "relation": "본인",
+        "name": "김온유",
+        "birthDate": "1965-07-11",
+        "memberCategory": "교인",
+        "position": "안수집사",
+        "department": "제2남선교회",
+        "faithLevel": "세례",
+        "phone": "010-3333-4444",
+        "notes": ""
+      },
+      {
+        "relation": "처",
+        "name": "박인내",
+        "birthDate": "1968-01-04",
+        "memberCategory": "교인",
+        "position": "집사",
+        "department": "제4여전도회",
+        "faithLevel": "세례",
+        "phone": "010-4444-5555",
+        "notes": ""
+      },
+      {
+        "relation": "자녀",
+        "name": "김기쁨",
+        "birthDate": "2000-01-14",
+        "memberCategory": "타교회",
+        "position": "청년",
+        "department": "타교회",
+        "faithLevel": "세례",
+        "phone": "",
+        "notes": ""
+      },
+      {
+        "relation": "자녀",
+        "name": "김찬양",
+        "birthDate": "2002-08-24",
+        "memberCategory": "미출석",
+        "position": "청년",
+        "department": "미출석",
+        "faithLevel": "입교",
+        "phone": "",
+        "notes": ""
+      }
+    ],
+    "pastoralVisits": [
+      {
+        "visitDate": "2025-11-15",
+        "bibleHymn": "350장",
+        "visitContent": "이사심방. 새 거주지로 이사 후 첫 심방. 가정에 평안이 있으시길 기도함."
+      },
+      {
+        "visitDate": "2026-03-20",
+        "bibleHymn": "280장",
+        "visitContent": "정기심방. 건강하게 잘 지내고 계심. 고등부 교사 봉사에 감사드림."
+      }
+    ],
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2026-04-03T00:00:00.000Z"
+  }
+]
