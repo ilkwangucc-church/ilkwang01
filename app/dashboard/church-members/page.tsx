@@ -15,6 +15,7 @@ import {
   MessageSquare,
   User,
   Image as ImageIcon,
+  Settings,
 } from "lucide-react";
 
 /* ── 타입 정의 ──────────────────────────────────────────────── */
@@ -329,9 +330,16 @@ export default function ChurchMembersPage() {
   // 인라인 메모 추가
   const [newMemoText, setNewMemoText] = useState("");
 
-  /* ── 모든 그룹 수집 ──────────────────────────────────────── */
+  // 카테고리 관리
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [visitCats, setVisitCats] = useState<string[]>([]);
+  const [memberGroupCats, setMemberGroupCats] = useState<string[]>([]);
+  const [newCatInput, setNewCatInput] = useState("");
+  const [newGroupInput, setNewGroupInput] = useState("");
 
-  const allGroups = [...new Set(members.flatMap(m => m.groups || []))];
+  /* ── 모든 그룹 수집 (서버 카테고리 + 교인 데이터) ──────── */
+
+  const allGroups = [...new Set([...memberGroupCats, ...members.flatMap(m => m.groups || [])])];
 
   /* ── 데이터 로드 ─────────────────────────────────────────── */
 
@@ -349,8 +357,32 @@ export default function ChurchMembersPage() {
     }
   }
 
+  async function fetchCategories() {
+    try {
+      const res = await fetch("/api/church-categories");
+      if (res.ok) {
+        const data = await res.json();
+        setVisitCats(data.visitCategories || []);
+        setMemberGroupCats(data.memberGroups || []);
+      }
+    } catch { /* silent */ }
+  }
+
+  async function saveCategories(vc: string[], mg: string[]) {
+    try {
+      await fetch("/api/church-categories", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitCategories: vc, memberGroups: mg }),
+      });
+      setVisitCats(vc);
+      setMemberGroupCats(mg);
+    } catch { alert("카테고리 저장 실패"); }
+  }
+
   useEffect(() => {
     fetchMembers();
+    fetchCategories();
   }, []);
 
   /* ── 검색/필터 ───────────────────────────────────────────── */
@@ -723,6 +755,13 @@ export default function ChurchMembersPage() {
             className="hidden"
             onChange={handleImport}
           />
+          <button
+            onClick={() => setShowCategoryModal(true)}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-purple-300 text-purple-600 rounded-xl hover:bg-purple-50 transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            카테고리 관리
+          </button>
           <button
             onClick={() =>
               (window.location.href = "/api/church-members/export")
@@ -1391,7 +1430,7 @@ export default function ChurchMembersPage() {
                       placeholder="예: 기획위원회, 찬양팀, ..."
                     />
                     <datalist id="group-datalist">
-                      {allGroups.map(g => <option key={g} value={g} />)}
+                      {[...new Set([...memberGroupCats, ...allGroups])].map(g => <option key={g} value={g} />)}
                     </datalist>
                   </div>
                 </div>
@@ -1599,7 +1638,7 @@ export default function ChurchMembersPage() {
                           />
                           <datalist id={`visit-cat-${i}`}>
                             {[...new Set([
-                              ...DEFAULT_CATEGORIES,
+                              ...visitCats,
                               ...members.flatMap((mm) =>
                                 (mm.pastoralVisits || []).map((v) => v.category).filter(Boolean)
                               ),
@@ -1759,6 +1798,139 @@ export default function ChurchMembersPage() {
                   : editingMember
                     ? "수정 완료"
                     : "등록 완료"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════ */}
+      {/*  카테고리 관리 모달                                     */}
+      {/* ══════════════════════════════════════════════════════ */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
+              <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                <Settings className="w-5 h-5 text-purple-600" /> 카테고리 관리
+              </h3>
+              <button onClick={() => setShowCategoryModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {/* 심방 카테고리 */}
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 mb-3">심방 카테고리</h4>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {visitCats.map((cat) => (
+                    <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-sm font-medium">
+                      {cat}
+                      <button
+                        onClick={() => {
+                          const updated = visitCats.filter(c => c !== cat);
+                          saveCategories(updated, memberGroupCats);
+                        }}
+                        className="text-[#2E7D32]/60 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                  {visitCats.length === 0 && <p className="text-sm text-gray-400">등록된 카테고리가 없습니다.</p>}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    value={newCatInput}
+                    onChange={(e) => setNewCatInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newCatInput.trim()) {
+                        const updated = [...visitCats, newCatInput.trim()];
+                        saveCategories(updated, memberGroupCats);
+                        setNewCatInput("");
+                      }
+                    }}
+                    placeholder="새 심방 카테고리 입력..."
+                    className={inputClass + " flex-1"}
+                  />
+                  <button
+                    onClick={() => {
+                      if (!newCatInput.trim()) return;
+                      const updated = [...visitCats, newCatInput.trim()];
+                      saveCategories(updated, memberGroupCats);
+                      setNewCatInput("");
+                    }}
+                    className="px-4 py-2 bg-[#2E7D32] text-white rounded-xl text-sm shrink-0"
+                  >
+                    추가
+                  </button>
+                </div>
+              </div>
+
+              {/* 교인 그룹 카테고리 */}
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 mb-3">교인 그룹</h4>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {memberGroupCats.map((grp) => {
+                    const grpMembers = members.filter(m => (m.groups || []).includes(grp));
+                    const grpPhones = grpMembers.map(m => m.phone).filter(Boolean).map(p => p.replace(/-/g, ""));
+                    return (
+                    <span key={grp} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
+                      {grp}
+                      <span className="text-[10px] text-purple-400">({grpMembers.length}명)</span>
+                      <button
+                        onClick={() => {
+                          if (grpPhones.length === 0) { alert(`${grp} 그룹에 연락처가 없습니다.`); return; }
+                          window.location.href = `sms:${grpPhones.join(",")}`;
+                        }}
+                        className="text-purple-400 hover:text-[#2E7D32] transition-colors"
+                        title={`${grp} 단체문자`}
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          const updated = memberGroupCats.filter(g => g !== grp);
+                          saveCategories(visitCats, updated);
+                        }}
+                        className="text-purple-400 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                    );
+                  })}
+                  {memberGroupCats.length === 0 && <p className="text-sm text-gray-400">등록된 그룹이 없습니다.</p>}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    value={newGroupInput}
+                    onChange={(e) => setNewGroupInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newGroupInput.trim()) {
+                        const updated = [...memberGroupCats, newGroupInput.trim()];
+                        saveCategories(visitCats, updated);
+                        setNewGroupInput("");
+                      }
+                    }}
+                    placeholder="새 교인 그룹 입력..."
+                    className={inputClass + " flex-1"}
+                  />
+                  <button
+                    onClick={() => {
+                      if (!newGroupInput.trim()) return;
+                      const updated = [...memberGroupCats, newGroupInput.trim()];
+                      saveCategories(visitCats, updated);
+                      setNewGroupInput("");
+                    }}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-xl text-sm shrink-0"
+                  >
+                    추가
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t bg-gray-50 rounded-b-2xl shrink-0">
+              <button onClick={() => setShowCategoryModal(false)} className="w-full py-2 text-sm bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors">
+                닫기
               </button>
             </div>
           </div>
