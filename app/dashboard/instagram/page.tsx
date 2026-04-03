@@ -1,5 +1,5 @@
 "use client";
-import { Instagram, ExternalLink, Heart, MessageCircle, Users } from "lucide-react";
+import { Camera, ExternalLink, Heart, MessageCircle, Users } from "lucide-react";
 
 const DEPT_INSTAGRAMS = [
   {
@@ -106,7 +106,7 @@ export default function InstagramPage() {
         <div className="relative z-10 p-6 h-full flex flex-col justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-              <Instagram className="w-5 h-5 text-white" />
+              <Camera className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">부서별 인스타그램</h1>
@@ -115,7 +115,7 @@ export default function InstagramPage() {
           </div>
           <div className="flex items-center gap-6 text-white/80 text-sm">
             <span className="flex items-center gap-2"><Users className="w-4 h-4" /> 총 팔로워 {TOTAL_FOLLOWERS}</span>
-            <span className="flex items-center gap-2"><Instagram className="w-4 h-4" /> 총 게시물 {TOTAL_POSTS}개</span>
+            <span className="flex items-center gap-2"><Camera className="w-4 h-4" /> 총 게시물 {TOTAL_POSTS}개</span>
             <span className="flex items-center gap-2">📱 부서 계정 6개</span>
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function InstagramPage() {
             <div className="p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${account.gradient} flex items-center justify-center text-white shrink-0 ring-2 ring-white shadow`}>
-                  <Instagram className="w-6 h-6" />
+                  <Camera className="w-6 h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-900 group-hover:text-purple-600 transition-colors">{account.dept}</p>
@@ -195,7 +195,7 @@ export default function InstagramPage() {
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 p-6 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-              <Instagram className="w-6 h-6 text-white" />
+              <Camera className="w-6 h-6 text-white" />
             </div>
             <div>
               <p className="text-white font-bold text-lg">부서 계정 추가 요청</p>
