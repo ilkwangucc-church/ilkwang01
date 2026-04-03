@@ -1,184 +1,1225 @@
 "use client";
-import { useState } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
-import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
 
-const CHURCH_MEMBERS = [
-  { id: 1, name: "김성도", phone: "010-1234-5678", address: "서울 성북구", birthDate: "1975-05-10", baptismDate: "2000-04-15", group: "2부 예배", role: 2, notes: "" },
-  { id: 2, name: "이집사", phone: "010-2345-6789", address: "서울 종로구", birthDate: "1968-09-22", baptismDate: "1998-06-01", group: "1부 예배", role: 3, notes: "찬양대 봉사" },
-  { id: 3, name: "박장로", phone: "010-3456-7890", address: "서울 성북구", birthDate: "1955-02-14", baptismDate: "1985-01-01", group: "당회", role: 4, notes: "재정부서" },
-  { id: 4, name: "최권사", phone: "010-4567-8901", address: "서울 도봉구", birthDate: "1963-11-30", baptismDate: "1992-09-15", group: "2부 예배", role: 3, notes: "" },
-  { id: 5, name: "정성도", phone: "010-5678-9012", address: "서울 성북구", birthDate: "1990-07-08", baptismDate: "2018-04-01", group: "청년부", role: 2, notes: "" },
+import { useState, useEffect, useRef } from "react";
+import {
+  Search,
+  Plus,
+  Pencil,
+  Trash2,
+  ChevronDown,
+  ChevronRight,
+  Download,
+  Upload,
+  FileSpreadsheet,
+  X,
+  MessageSquare,
+  User,
+} from "lucide-react";
+
+/* ── 타입 정의 ──────────────────────────────────────────────── */
+
+interface FamilyMember {
+  relation: string;
+  name: string;
+  birthDate: string;
+  memberCategory: string;
+  position: string;
+  department: string;
+  faithLevel: string;
+  phone: string;
+  notes: string;
+}
+
+interface PastoralVisit {
+  visitDate: string;
+  bibleHymn: string;
+  visitContent: string;
+}
+
+interface ChurchMember {
+  id: string;
+  name: string;
+  birthDate: string;
+  gender: string;
+  familyRelation: string;
+  faithHead: string;
+  photo: string;
+  parish: string;
+  spouse: string;
+  phone: string;
+  tel: string;
+  address: string;
+  memberType: string;
+  currentStatus: string;
+  registrationDate: string;
+  introducer: string;
+  marriageStatus: string;
+  attendanceRate: string;
+  serviceDept: string;
+  workplace: string;
+  detailPosition: string;
+  ordinationDate: string;
+  missionGroup: string;
+  baptismType: string;
+  baptismDate: string;
+  baptismChurch: string;
+  notes: string;
+  familyMembers: FamilyMember[];
+  pastoralVisits: PastoralVisit[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/* ── 빈 객체 헬퍼 ───────────────────────────────────────────── */
+
+function emptyMember(): Omit<ChurchMember, "id" | "createdAt" | "updatedAt"> {
+  return {
+    name: "",
+    birthDate: "",
+    gender: "남",
+    familyRelation: "",
+    faithHead: "",
+    photo: "",
+    parish: "",
+    spouse: "",
+    phone: "",
+    tel: "",
+    address: "",
+    memberType: "장년",
+    currentStatus: "출석",
+    registrationDate: "",
+    introducer: "",
+    marriageStatus: "미혼",
+    attendanceRate: "A",
+    serviceDept: "",
+    workplace: "",
+    detailPosition: "",
+    ordinationDate: "",
+    missionGroup: "",
+    baptismType: "",
+    baptismDate: "",
+    baptismChurch: "",
+    notes: "",
+    familyMembers: [],
+    pastoralVisits: [],
+  };
+}
+
+function emptyFamily(): FamilyMember {
+  return {
+    relation: "",
+    name: "",
+    birthDate: "",
+    memberCategory: "",
+    position: "",
+    department: "",
+    faithLevel: "",
+    phone: "",
+    notes: "",
+  };
+}
+
+function emptyVisit(): PastoralVisit {
+  return { visitDate: "", bibleHymn: "", visitContent: "" };
+}
+
+/* ── SMS 링크 컴포넌트 ──────────────────────────────────────── */
+
+function SmsLink({ number }: { number: string }) {
+  if (!number) return <span className="text-gray-400">-</span>;
+  return (
+    <a
+      href={`sms:${number.replace(/-/g, "")}`}
+      className="text-[#2E7D32] hover:underline inline-flex items-center gap-1"
+    >
+      <MessageSquare className="w-3 h-3" />
+      {number}
+    </a>
+  );
+}
+
+/* ── 교적카드 레이블/값 셀 스타일 ──────────────────────────── */
+
+const labelCellClass =
+  "bg-gray-100 font-medium text-gray-700 px-3 py-2 whitespace-nowrap text-xs border border-gray-300";
+const valueCellClass = "px-3 py-2 text-sm text-gray-900 border border-gray-300";
+
+/* ── 필터 탭 ────────────────────────────────────────────────── */
+
+const MEMBER_TYPE_FILTERS = [
+  { label: "전체", value: "" },
+  { label: "장년", value: "장년" },
+  { label: "청년", value: "청년" },
+  { label: "중고등", value: "중고등" },
+  { label: "유초등", value: "유초등" },
 ];
 
-type Member = typeof CHURCH_MEMBERS[0];
+/* ════════════════════════════════════════════════════════════ */
+/*  메인 페이지 컴포넌트                                       */
+/* ════════════════════════════════════════════════════════════ */
 
 export default function ChurchMembersPage() {
+  const [members, setMembers] = useState<ChurchMember[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // 모달
   const [showModal, setShowModal] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [members, setMembers] = useState(CHURCH_MEMBERS);
+  const [editingMember, setEditingMember] = useState<ChurchMember | null>(null);
+  const [form, setForm] = useState(emptyMember());
+  const [activeTab, setActiveTab] = useState(0);
+  const [saving, setSaving] = useState(false);
 
-  const filtered = members.filter((m) =>
-    !search || m.name.includes(search) || m.phone.includes(search) || m.group.includes(search)
-  );
+  // 가져오기 결과
+  const [importResult, setImportResult] = useState<string | null>(null);
 
-  function openEdit(m: Member) {
-    setSelectedMember(m);
-    setShowModal(true);
+  // 파일 인풋 ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  /* ── 데이터 로드 ─────────────────────────────────────────── */
+
+  async function fetchMembers() {
+    try {
+      const res = await fetch("/api/church-members");
+      if (res.ok) {
+        const data = await res.json();
+        setMembers(data);
+      }
+    } catch {
+      // silent
+    } finally {
+      setLoading(false);
+    }
   }
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  /* ── 검색/필터 ───────────────────────────────────────────── */
+
+  const filtered = members.filter((m) => {
+    if (filterType && m.memberType !== filterType) return false;
+    if (
+      search &&
+      ![m.name, m.phone, m.parish, m.serviceDept].some((v) =>
+        v?.toLowerCase().includes(search.toLowerCase()),
+      )
+    )
+      return false;
+    return true;
+  });
+
+  /* ── 모달 열기/닫기 ──────────────────────────────────────── */
 
   function openNew() {
-    setSelectedMember(null);
+    setEditingMember(null);
+    setForm(emptyMember());
+    setActiveTab(0);
     setShowModal(true);
   }
 
-  function handleDelete(id: number) {
+  function openEdit(m: ChurchMember) {
+    setEditingMember(m);
+    setForm({
+      name: m.name,
+      birthDate: m.birthDate,
+      gender: m.gender,
+      familyRelation: m.familyRelation,
+      faithHead: m.faithHead,
+      photo: m.photo,
+      parish: m.parish,
+      spouse: m.spouse,
+      phone: m.phone,
+      tel: m.tel,
+      address: m.address,
+      memberType: m.memberType,
+      currentStatus: m.currentStatus,
+      registrationDate: m.registrationDate,
+      introducer: m.introducer,
+      marriageStatus: m.marriageStatus,
+      attendanceRate: m.attendanceRate,
+      serviceDept: m.serviceDept,
+      workplace: m.workplace,
+      detailPosition: m.detailPosition,
+      ordinationDate: m.ordinationDate,
+      missionGroup: m.missionGroup,
+      baptismType: m.baptismType,
+      baptismDate: m.baptismDate,
+      baptismChurch: m.baptismChurch,
+      notes: m.notes,
+      familyMembers: m.familyMembers?.length
+        ? m.familyMembers.map((f) => ({ ...f }))
+        : [],
+      pastoralVisits: m.pastoralVisits?.length
+        ? m.pastoralVisits.map((v) => ({ ...v }))
+        : [],
+    });
+    setActiveTab(0);
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setEditingMember(null);
+  }
+
+  /* ── CRUD ────────────────────────────────────────────────── */
+
+  async function handleSave() {
+    if (!form.name.trim()) {
+      alert("이름은 필수입니다.");
+      return;
+    }
+    setSaving(true);
+    try {
+      if (editingMember) {
+        const res = await fetch(`/api/church-members/${editingMember.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error("수정 실패");
+      } else {
+        const res = await fetch("/api/church-members", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error("등록 실패");
+      }
+      closeModal();
+      await fetchMembers();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "저장 중 오류 발생");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: string) {
     if (!confirm("이 교인을 삭제하시겠습니까?")) return;
-    setMembers(prev => prev.filter(m => m.id !== id));
+    try {
+      const res = await fetch(`/api/church-members/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setMembers((prev) => prev.filter((m) => m.id !== id));
+        if (expandedId === id) setExpandedId(null);
+      }
+    } catch {
+      alert("삭제 중 오류 발생");
+    }
+  }
+
+  /* ── 엑셀 가져오기 ───────────────────────────────────────── */
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    try {
+      const res = await fetch("/api/church-members/import", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setImportResult(
+          `가져오기 완료: ${data.imported}명 신규, ${data.updated}명 업데이트` +
+            (data.errors?.length
+              ? `\n오류: ${data.errors.join(", ")}`
+              : ""),
+        );
+        await fetchMembers();
+      } else {
+        setImportResult(`오류: ${data.error}`);
+      }
+    } catch {
+      setImportResult("파일 업로드 중 오류가 발생했습니다.");
+    }
+    // 파일 인풋 초기화
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  /* ── 폼 업데이트 헬퍼 ────────────────────────────────────── */
+
+  function updateField(field: string, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function updateFamilyMember(
+    idx: number,
+    field: keyof FamilyMember,
+    value: string,
+  ) {
+    setForm((prev) => {
+      const arr = [...prev.familyMembers];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return { ...prev, familyMembers: arr };
+    });
+  }
+
+  function addFamilyMember() {
+    setForm((prev) => ({
+      ...prev,
+      familyMembers: [...prev.familyMembers, emptyFamily()],
+    }));
+  }
+
+  function removeFamilyMember(idx: number) {
+    setForm((prev) => ({
+      ...prev,
+      familyMembers: prev.familyMembers.filter((_, i) => i !== idx),
+    }));
+  }
+
+  function updateVisit(idx: number, field: keyof PastoralVisit, value: string) {
+    setForm((prev) => {
+      const arr = [...prev.pastoralVisits];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return { ...prev, pastoralVisits: arr };
+    });
+  }
+
+  function addVisit() {
+    setForm((prev) => ({
+      ...prev,
+      pastoralVisits: [...prev.pastoralVisits, emptyVisit()],
+    }));
+  }
+
+  function removeVisit(idx: number) {
+    setForm((prev) => ({
+      ...prev,
+      pastoralVisits: prev.pastoralVisits.filter((_, i) => i !== idx),
+    }));
+  }
+
+  /* ── 입력 필드 컴포넌트 ──────────────────────────────────── */
+
+  const inputClass =
+    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30";
+
+  function FormField({
+    label,
+    field,
+    type = "text",
+  }: {
+    label: string;
+    field: string;
+    type?: string;
+  }) {
+    return (
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+        <input
+          type={type}
+          value={(form as Record<string, unknown>)[field] as string}
+          onChange={(e) => updateField(field, e.target.value)}
+          className={inputClass}
+        />
+      </div>
+    );
+  }
+
+  function FormSelect({
+    label,
+    field,
+    options,
+  }: {
+    label: string;
+    field: string;
+    options: string[];
+  }) {
+    return (
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+        <select
+          value={(form as Record<string, unknown>)[field] as string}
+          onChange={(e) => updateField(field, e.target.value)}
+          className={inputClass}
+        >
+          {options.map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
+  /* ══════════════════════════════════════════════════════════ */
+  /*  렌더링                                                   */
+  /* ══════════════════════════════════════════════════════════ */
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24 text-gray-400 text-sm">
+        데이터를 불러오는 중...
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
+      {/* ── 헤더 ──────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">교인 관리</h1>
-          <p className="text-gray-500 text-sm mt-0.5">교적 명부 · 총 {members.length}명 등록</p>
+          <p className="text-gray-500 text-sm mt-0.5">
+            교적 명부 · 총 {members.length}명 등록
+          </p>
         </div>
-        <button
-          onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
-        >
-          <Plus className="w-4 h-4" /> 교인 등록
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() =>
+              (window.location.href = "/api/church-members/template")
+            }
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            양식 다운로드
+          </button>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            엑셀 가져오기
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            className="hidden"
+            onChange={handleImport}
+          />
+          <button
+            onClick={() =>
+              (window.location.href = "/api/church-members/export")
+            }
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            엑셀 내보내기
+          </button>
+          <button
+            onClick={openNew}
+            className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20] transition-colors font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            교인 등록
+          </button>
+        </div>
       </div>
 
-      {/* 검색 */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      {/* ── 가져오기 결과 알림 ─────────────────────────────── */}
+      {importResult && (
+        <div className="flex items-center justify-between bg-[#E8F5E9] border border-[#2E7D32]/20 text-[#2E7D32] px-4 py-3 rounded-xl text-sm">
+          <span className="whitespace-pre-wrap">{importResult}</span>
+          <button
+            onClick={() => setImportResult(null)}
+            className="ml-3 text-[#2E7D32] hover:text-[#1B5E20]"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* ── 검색 + 필터 ───────────────────────────────────── */}
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="이름·전화번호·부서 검색..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+            placeholder="이름·전화번호·교구·부서 검색..."
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
           />
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {MEMBER_TYPE_FILTERS.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setFilterType(f.value)}
+              className={`px-3.5 py-1.5 text-xs rounded-full border transition-colors font-medium ${
+                filterType === f.value
+                  ? "bg-[#2E7D32] text-white border-[#2E7D32]"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* 교인 목록 */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* ── 교인 테이블 ───────────────────────────────────── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="text-left px-5 py-3">이름</th>
-                <th className="text-left px-5 py-3 hidden md:table-cell">연락처</th>
-                <th className="text-left px-5 py-3">등급</th>
-                <th className="text-left px-5 py-3 hidden sm:table-cell">소속 부서</th>
-                <th className="text-left px-5 py-3 hidden lg:table-cell">세례일</th>
-                <th className="text-left px-5 py-3 hidden lg:table-cell">비고</th>
-                <th className="text-left px-5 py-3">관리</th>
+                <th className="w-8 px-3 py-3"></th>
+                <th className="text-left px-4 py-3">이름</th>
+                <th className="text-left px-4 py-3 hidden md:table-cell">
+                  연락처
+                </th>
+                <th className="text-left px-4 py-3 hidden sm:table-cell">
+                  교구
+                </th>
+                <th className="text-left px-4 py-3 hidden lg:table-cell">
+                  상세직분
+                </th>
+                <th className="text-left px-4 py-3 hidden lg:table-cell">
+                  출석률
+                </th>
+                <th className="text-left px-4 py-3">관리</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.map((m) => (
-                <tr key={m.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
-                        {m.name[0]}
+                <>
+                  <tr
+                    key={m.id}
+                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() =>
+                      setExpandedId(expandedId === m.id ? null : m.id)
+                    }
+                  >
+                    <td className="px-3 py-3 text-gray-400">
+                      {expandedId === m.id ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
+                          {m.name?.[0] || <User className="w-4 h-4" />}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{m.name}</p>
+                          <p className="text-xs text-gray-400">
+                            {m.birthDate || "-"}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{m.name}</p>
-                        <p className="text-xs text-gray-400">{m.birthDate}</p>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      {m.phone ? (
+                        <span
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <SmsLink number={m.phone} />
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 hidden sm:table-cell text-gray-600">
+                      {m.parish || "-"}
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell text-gray-600">
+                      {m.detailPosition || "-"}
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          m.attendanceRate === "A"
+                            ? "bg-green-100 text-green-700"
+                            : m.attendanceRate === "B"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : m.attendanceRate === "C"
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {m.attendanceRate || "-"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEdit(m);
+                          }}
+                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-[#2E7D32] transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(m.id);
+                          }}
+                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"}`}>
-                      {ROLE_LABELS[m.role]}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 hidden sm:table-cell text-gray-600">{m.group}</td>
-                  <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.baptismDate || "-"}</td>
-                  <td className="px-5 py-3 hidden lg:table-cell text-gray-400 text-xs">{m.notes || "-"}</td>
-                  <td className="px-5 py-3">
-                    <div className="flex gap-2">
-                      <button onClick={() => openEdit(m)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-[#2E7D32] transition-colors">
-                        <Pencil className="w-3.5 h-3.5" />
-                      </button>
-                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-red-500 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+
+                  {/* ── 교적카드 아코디언 (카드형 레이아웃) ── */}
+                  {expandedId === m.id && (
+                    <tr key={`${m.id}-card`}>
+                      <td colSpan={7} className="px-2 sm:px-4 py-3 bg-gray-50/70">
+                        <div className="space-y-3">
+
+                          {/* ── 프로필 헤더 ── */}
+                          <div className="bg-white rounded-xl border border-gray-200 p-4">
+                            <div className="flex items-start gap-4">
+                              {m.photo ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={m.photo} alt={m.name} className="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-[#E8F5E9]" />
+                              ) : (
+                                <div className="w-14 h-14 bg-[#E8F5E9] rounded-full flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
+                                  <span className="text-[#2E7D32] font-bold text-lg">{m.name?.[0]}</span>
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h3 className="text-lg font-bold text-gray-900">{m.name}</h3>
+                                  <span className="text-xs px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium">{m.memberType || "장년"}</span>
+                                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">{m.detailPosition || "-"}</span>
+                                  {m.currentStatus && m.currentStatus !== "출석" && (
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">{m.currentStatus}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500 flex-wrap">
+                                  <span>{m.gender} · {m.birthDate || "-"}</span>
+                                  <span>{m.marriageStatus || "-"}</span>
+                                  {m.parish && <span>{m.parish}</span>}
+                                </div>
+                                <div className="flex items-center gap-4 mt-2 flex-wrap">
+                                  {m.phone && (
+                                    <span onClick={(e) => e.stopPropagation()}>
+                                      <SmsLink number={m.phone} />
+                                    </span>
+                                  )}
+                                  {m.tel && <span className="text-xs text-gray-500">TEL {m.tel}</span>}
+                                </div>
+                              </div>
+                              <span className="text-[10px] text-gray-400 shrink-0">
+                                {m.updatedAt ? new Date(m.updatedAt).toLocaleDateString("ko-KR") : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* ── 정보 그리드 (3열 카드) ── */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+                            {/* 기본 정보 */}
+                            <div className="bg-white rounded-xl border border-gray-200 p-4">
+                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3 flex items-center gap-1.5">
+                                <User className="w-3.5 h-3.5" /> 기본 정보
+                              </h4>
+                              <dl className="space-y-2 text-sm">
+                                {[
+                                  ["가족관계", m.familyRelation],
+                                  ["신앙세대주", m.faithHead],
+                                  ["배우자", m.spouse],
+                                  ["주소", m.address],
+                                ].map(([label, val]) => (
+                                  <div key={label} className="flex">
+                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
+                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </div>
+
+                            {/* 교인 정보 */}
+                            <div className="bg-white rounded-xl border border-gray-200 p-4">
+                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3">교인 정보</h4>
+                              <dl className="space-y-2 text-sm">
+                                {[
+                                  ["등록일", m.registrationDate],
+                                  ["인도자", m.introducer],
+                                  ["출석률", m.attendanceRate],
+                                  ["봉사부서", m.serviceDept],
+                                  ["직장명", m.workplace],
+                                ].map(([label, val]) => (
+                                  <div key={label} className="flex">
+                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
+                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </div>
+
+                            {/* 직분 · 세례 */}
+                            <div className="bg-white rounded-xl border border-gray-200 p-4">
+                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3">직분 · 세례</h4>
+                              <dl className="space-y-2 text-sm">
+                                {[
+                                  ["상세직분", m.detailPosition],
+                                  ["임직일", m.ordinationDate],
+                                  ["선교회", m.missionGroup],
+                                  ["세례유형", m.baptismType],
+                                  ["집례일", m.baptismDate],
+                                  ["집례교회", m.baptismChurch],
+                                ].map(([label, val]) => (
+                                  <div key={label} className="flex">
+                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
+                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </div>
+                          </div>
+
+                          {/* ── 비고 ── */}
+                          {m.notes && (
+                            <div className="bg-white rounded-xl border border-gray-200 p-4">
+                              <h4 className="text-xs font-bold text-gray-500 mb-1">비고</h4>
+                              <p className="text-sm text-gray-700 whitespace-pre-wrap">{m.notes}</p>
+                            </div>
+                          )}
+
+                          {/* ── 가족사항 ── */}
+                          {m.familyMembers && m.familyMembers.length > 0 && (
+                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                              <div className="px-4 py-2.5 border-b border-gray-100">
+                                <h4 className="text-xs font-bold text-[#2E7D32]">가족사항</h4>
+                              </div>
+                              <div className="divide-y divide-gray-100">
+                                {m.familyMembers.map((f, fi) => (
+                                  <div key={fi} className="px-4 py-3 flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
+                                      <span className="text-blue-600 font-bold text-xs">{f.name?.[0] || "?"}</span>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-medium">{f.relation || "-"}</span>
+                                        <span className="font-bold text-sm text-gray-900">{f.name || "-"}</span>
+                                        {f.position && <span className="text-xs text-gray-500">{f.position}</span>}
+                                      </div>
+                                      <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400 flex-wrap">
+                                        {f.birthDate && <span>{f.birthDate}</span>}
+                                        {f.memberCategory && <span>{f.memberCategory}</span>}
+                                        {f.department && <span>{f.department}</span>}
+                                        {f.faithLevel && <span>{f.faithLevel}</span>}
+                                      </div>
+                                    </div>
+                                    {f.phone && (
+                                      <span onClick={(e) => e.stopPropagation()} className="shrink-0">
+                                        <SmsLink number={f.phone} />
+                                      </span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* ── 심방내역 ── */}
+                          {m.pastoralVisits && m.pastoralVisits.length > 0 && (
+                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                              <div className="px-4 py-2.5 border-b border-gray-100">
+                                <h4 className="text-xs font-bold text-[#2E7D32]">심방내역</h4>
+                              </div>
+                              <div className="divide-y divide-gray-100">
+                                {m.pastoralVisits.map((v, vi) => (
+                                  <div key={vi} className="px-4 py-3">
+                                    <div className="flex items-center gap-3 mb-1">
+                                      <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
+                                      {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
+                                    </div>
+                                    {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed">{v.visitContent}</p>}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
               ))}
             </tbody>
           </table>
         </div>
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
+          <div className="text-center py-12 text-gray-400 text-sm">
+            {search || filterType
+              ? "검색 결과가 없습니다."
+              : "등록된 교인이 없습니다."}
+          </div>
         )}
       </div>
 
-      {/* 등록/편집 모달 */}
+      {/* ══════════════════════════════════════════════════════ */}
+      {/*  등록/편집 모달                                        */}
+      {/* ══════════════════════════════════════════════════════ */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h3 className="font-bold text-gray-900">{selectedMember ? "교인 정보 수정" : "새 교인 등록"}</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] flex flex-col">
+            {/* 모달 헤더 */}
+            <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
+              <h3 className="font-bold text-gray-900">
+                {editingMember ? "교인 정보 수정" : "새 교인 등록"}
+              </h3>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+              >
+                &times;
+              </button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">이름 *</label>
-                  <input defaultValue={selectedMember?.name} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">연락처</label>
-                  <input defaultValue={selectedMember?.phone} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">생년월일</label>
-                  <input type="date" defaultValue={selectedMember?.birthDate} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">세례일</label>
-                  <input type="date" defaultValue={selectedMember?.baptismDate} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">등급</label>
-                  <select defaultValue={selectedMember?.role} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30">
-                    {Object.entries(ROLE_LABELS).map(([v, label]) => (
-                      <option key={v} value={v}>{v}. {label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">소속 부서</label>
-                  <input defaultValue={selectedMember?.group} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">주소</label>
-                <input defaultValue={selectedMember?.address} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">비고</label>
-                <textarea defaultValue={selectedMember?.notes} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 resize-none" />
-              </div>
+
+            {/* 탭 헤더 */}
+            <div className="flex border-b shrink-0">
+              {["기본정보", "교인정보", "가족사항", "심방내역"].map(
+                (tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(i)}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                      activeTab === i
+                        ? "text-[#2E7D32] border-b-2 border-[#2E7D32]"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ),
+              )}
             </div>
-            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+
+            {/* 탭 내용 */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* 탭 0: 기본정보 */}
+              {activeTab === 0 && (
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField label="이름 *" field="name" />
+                  <FormField label="생년월일" field="birthDate" />
+                  <FormSelect
+                    label="성별"
+                    field="gender"
+                    options={["남", "여"]}
+                  />
+                  <FormField label="가족관계" field="familyRelation" />
+                  <FormField label="신앙세대주" field="faithHead" />
+                  <FormField label="교구" field="parish" />
+                  <FormField label="배우자" field="spouse" />
+                  <FormField label="HP (휴대폰)" field="phone" />
+                  <FormField label="TEL (전화)" field="tel" />
+                  <div className="col-span-2">
+                    <FormField label="주소" field="address" />
+                  </div>
+                </div>
+              )}
+
+              {/* 탭 1: 교인정보 */}
+              {activeTab === 1 && (
+                <div className="grid grid-cols-2 gap-4">
+                  <FormSelect
+                    label="교인구분"
+                    field="memberType"
+                    options={["장년", "청년", "중고등", "유초등", "유아", "기타"]}
+                  />
+                  <FormSelect
+                    label="현재상태"
+                    field="currentStatus"
+                    options={["출석", "결석", "군입대", "이명", "탈퇴", "별세"]}
+                  />
+                  <FormField label="등록일" field="registrationDate" />
+                  <FormField label="인도자" field="introducer" />
+                  <FormSelect
+                    label="결혼관계"
+                    field="marriageStatus"
+                    options={["미혼", "기혼", "이혼", "사별"]}
+                  />
+                  <FormSelect
+                    label="출석률"
+                    field="attendanceRate"
+                    options={["A", "B", "C", "D"]}
+                  />
+                  <FormField label="봉사부서" field="serviceDept" />
+                  <FormField label="직장명" field="workplace" />
+                  <FormField label="상세직분" field="detailPosition" />
+                  <FormField label="임직일" field="ordinationDate" />
+                  <FormField label="선교회" field="missionGroup" />
+                  <FormSelect
+                    label="세례유형"
+                    field="baptismType"
+                    options={["", "유아세례", "세례", "입교", "학습"]}
+                  />
+                  <FormField label="집례일" field="baptismDate" />
+                  <FormField label="집례교회" field="baptismChurch" />
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      비고
+                    </label>
+                    <textarea
+                      value={form.notes}
+                      onChange={(e) => updateField("notes", e.target.value)}
+                      rows={3}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 탭 2: 가족사항 */}
+              {activeTab === 2 && (
+                <div className="space-y-4">
+                  {form.familyMembers.map((fam, i) => (
+                    <div
+                      key={i}
+                      className="border border-gray-200 rounded-xl p-4 space-y-3 relative"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold text-gray-600">
+                          가족 #{i + 1}
+                        </span>
+                        <button
+                          onClick={() => removeFamilyMember(i)}
+                          className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
+                        >
+                          <Trash2 className="w-3 h-3" /> 삭제
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            관계
+                          </label>
+                          <input
+                            value={fam.relation}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "relation", e.target.value)
+                            }
+                            className={inputClass}
+                            placeholder="예: 배우자, 자녀"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            이름
+                          </label>
+                          <input
+                            value={fam.name}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "name", e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            생년월일
+                          </label>
+                          <input
+                            value={fam.birthDate}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "birthDate", e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            교인구분
+                          </label>
+                          <input
+                            value={fam.memberCategory}
+                            onChange={(e) =>
+                              updateFamilyMember(
+                                i,
+                                "memberCategory",
+                                e.target.value,
+                              )
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            직분
+                          </label>
+                          <input
+                            value={fam.position}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "position", e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            소속부서
+                          </label>
+                          <input
+                            value={fam.department}
+                            onChange={(e) =>
+                              updateFamilyMember(
+                                i,
+                                "department",
+                                e.target.value,
+                              )
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            신급
+                          </label>
+                          <input
+                            value={fam.faithLevel}
+                            onChange={(e) =>
+                              updateFamilyMember(
+                                i,
+                                "faithLevel",
+                                e.target.value,
+                              )
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            휴대폰
+                          </label>
+                          <input
+                            value={fam.phone}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "phone", e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            비고
+                          </label>
+                          <input
+                            value={fam.notes}
+                            onChange={(e) =>
+                              updateFamilyMember(i, "notes", e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={addFamilyMember}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors w-full justify-center"
+                  >
+                    <Plus className="w-4 h-4" /> 가족 추가
+                  </button>
+                </div>
+              )}
+
+              {/* 탭 3: 심방내역 */}
+              {activeTab === 3 && (
+                <div className="space-y-4">
+                  {form.pastoralVisits.map((visit, i) => (
+                    <div
+                      key={i}
+                      className="border border-gray-200 rounded-xl p-4 space-y-3"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold text-gray-600">
+                          심방 #{i + 1}
+                        </span>
+                        <button
+                          onClick={() => removeVisit(i)}
+                          className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
+                        >
+                          <Trash2 className="w-3 h-3" /> 삭제
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            심방일
+                          </label>
+                          <input
+                            value={visit.visitDate}
+                            onChange={(e) =>
+                              updateVisit(i, "visitDate", e.target.value)
+                            }
+                            className={inputClass}
+                            placeholder="2025-01-01"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            성경/찬송
+                          </label>
+                          <input
+                            value={visit.bibleHymn}
+                            onChange={(e) =>
+                              updateVisit(i, "bibleHymn", e.target.value)
+                            }
+                            className={inputClass}
+                            placeholder="요한복음 3:16 / 찬송 205장"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">
+                          심방내용
+                        </label>
+                        <textarea
+                          value={visit.visitContent}
+                          onChange={(e) =>
+                            updateVisit(i, "visitContent", e.target.value)
+                          }
+                          rows={2}
+                          className={`${inputClass} resize-none`}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={addVisit}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors w-full justify-center"
+                  >
+                    <Plus className="w-4 h-4" /> 심방 추가
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* 모달 푸터 */}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl shrink-0">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
+              >
                 취소
               </button>
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors">
-                {selectedMember ? "수정 완료" : "등록 완료"}
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-5 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
+              >
+                {saving
+                  ? "저장 중..."
+                  : editingMember
+                    ? "수정 완료"
+                    : "등록 완료"}
               </button>
             </div>
           </div>
