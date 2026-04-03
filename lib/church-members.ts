@@ -17,6 +17,7 @@ export interface FamilyMember {
   department: string;
   faithLevel: string;
   phone: string;
+  photo: string;
   notes: string;
 }
 
@@ -25,6 +26,7 @@ export interface PastoralVisit {
   visitDate: string;
   bibleHymn: string;
   visitContent: string;
+  category: string;
 }
 
 /* ── 교적카드 ─────────────────────────────────────────────────── */
@@ -36,6 +38,7 @@ export interface ChurchMember {
   familyRelation: string;
   faithHead: string;
   photo: string;
+  familyPhotos: string[];
   parish: string;
   spouse: string;
   phone: string;
@@ -100,6 +103,7 @@ export function createEmptyMember(partial: Partial<ChurchMember> = {}): ChurchMe
     familyRelation: "",
     faithHead: "",
     photo: "",
+    familyPhotos: [],
     parish: "",
     spouse: "",
     phone: "",
@@ -138,6 +142,8 @@ export const MEMBER_EXCEL_HEADERS: Record<string, string> = {
   가족관계: "familyRelation",
   신앙세대주: "faithHead",
   사진URL: "photo",
+  가족사진1: "familyPhoto1",
+  가족사진2: "familyPhoto2",
   교구: "parish",
   배우자: "spouse",
   HP: "phone",
@@ -171,12 +177,14 @@ export const FAMILY_EXCEL_HEADERS: Record<string, string> = {
   소속부서: "department",
   신급: "faithLevel",
   휴대폰: "phone",
+  사진URL: "photo",
   비고: "notes",
 };
 
 export const VISIT_EXCEL_HEADERS: Record<string, string> = {
   교적번호: "memberId",
   교인이름: "memberName",
+  카테고리: "category",
   심방일: "visitDate",
   "성경/찬송": "bibleHymn",
   심방내용: "visitContent",

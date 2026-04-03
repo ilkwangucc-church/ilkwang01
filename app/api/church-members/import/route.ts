@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
         department: mapped.department || "",
         faithLevel: mapped.faithLevel || "",
         phone: mapped.phone || "",
+        photo: mapped.photo || "",
         notes: mapped.notes || "",
       });
     });
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest) {
         visitDate: mapped.visitDate || "",
         bibleHymn: mapped.bibleHymn || "",
         visitContent: mapped.visitContent || "",
+        category: mapped.category || "정기심방",
       });
     });
 

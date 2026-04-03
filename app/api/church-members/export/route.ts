@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   const memberRows = members.map((m) => ({
     교적번호: m.id, 이름: m.name, 생년월일: m.birthDate, 성별: m.gender,
     가족관계: m.familyRelation, 신앙세대주: m.faithHead, 사진URL: m.photo,
+    가족사진1: (m.familyPhotos || [])[0] || "", 가족사진2: (m.familyPhotos || [])[1] || "",
     교구: m.parish, 배우자: m.spouse, HP: m.phone, TEL: m.tel, 주소: m.address,
     교인구분: m.memberType, 현재상태: m.currentStatus, 등록일: m.registrationDate,
     인도자: m.introducer, 결혼관계: m.marriageStatus, 출석률: m.attendanceRate,
@@ -35,12 +36,12 @@ export async function GET(req: NextRequest) {
       familyRows.push({
         교적번호: m.id, 교인이름: m.name, 관계: f.relation, 이름: f.name,
         생년월일: f.birthDate, 교인구분: f.memberCategory, 직분: f.position,
-        소속부서: f.department, 신급: f.faithLevel, 휴대폰: f.phone, 비고: f.notes,
+        소속부서: f.department, 신급: f.faithLevel, 휴대폰: f.phone, 사진URL: f.photo || "", 비고: f.notes,
       });
     });
   });
   const ws2 = XLSX.utils.json_to_sheet(familyRows.length > 0 ? familyRows : [{}], {
-    header: ["교적번호", "교인이름", "관계", "이름", "생년월일", "교인구분", "직분", "소속부서", "신급", "휴대폰", "비고"],
+    header: ["교적번호", "교인이름", "관계", "이름", "생년월일", "교인구분", "직분", "소속부서", "신급", "휴대폰", "사진URL", "비고"],
   });
   XLSX.utils.book_append_sheet(wb, ws2, "가족사항");
 
@@ -49,13 +50,13 @@ export async function GET(req: NextRequest) {
   members.forEach((m) => {
     (m.pastoralVisits || []).forEach((v) => {
       visitRows.push({
-        교적번호: m.id, 교인이름: m.name, 심방일: v.visitDate,
-        "성경/찬송": v.bibleHymn, 심방내용: v.visitContent,
+        교적번호: m.id, 교인이름: m.name, 카테고리: v.category || "기타",
+        심방일: v.visitDate, "성경/찬송": v.bibleHymn, 심방내용: v.visitContent,
       });
     });
   });
   const ws3 = XLSX.utils.json_to_sheet(visitRows.length > 0 ? visitRows : [{}], {
-    header: ["교적번호", "교인이름", "심방일", "성경/찬송", "심방내용"],
+    header: ["교적번호", "교인이름", "카테고리", "심방일", "성경/찬송", "심방내용"],
   });
   XLSX.utils.book_append_sheet(wb, ws3, "심방내역");
 

@@ -14,6 +14,7 @@ import {
   X,
   MessageSquare,
   User,
+  Image as ImageIcon,
 } from "lucide-react";
 
 /* ── 타입 정의 ──────────────────────────────────────────────── */
@@ -27,6 +28,7 @@ interface FamilyMember {
   department: string;
   faithLevel: string;
   phone: string;
+  photo: string;
   notes: string;
 }
 
@@ -34,6 +36,7 @@ interface PastoralVisit {
   visitDate: string;
   bibleHymn: string;
   visitContent: string;
+  category: string;
 }
 
 interface ChurchMember {
@@ -44,6 +47,7 @@ interface ChurchMember {
   familyRelation: string;
   faithHead: string;
   photo: string;
+  familyPhotos: string[];
   parish: string;
   spouse: string;
   phone: string;
@@ -70,6 +74,10 @@ interface ChurchMember {
   updatedAt: string;
 }
 
+/* ── 상수 ───────────────────────────────────────────────────── */
+
+const VISIT_CATEGORIES = ["정기심방", "이사심방", "새해심방", "병문안", "기타"];
+
 /* ── 빈 객체 헬퍼 ───────────────────────────────────────────── */
 
 function emptyMember(): Omit<ChurchMember, "id" | "createdAt" | "updatedAt"> {
@@ -80,6 +88,7 @@ function emptyMember(): Omit<ChurchMember, "id" | "createdAt" | "updatedAt"> {
     familyRelation: "",
     faithHead: "",
     photo: "",
+    familyPhotos: [],
     parish: "",
     spouse: "",
     phone: "",
@@ -115,12 +124,13 @@ function emptyFamily(): FamilyMember {
     department: "",
     faithLevel: "",
     phone: "",
+    photo: "",
     notes: "",
   };
 }
 
 function emptyVisit(): PastoralVisit {
-  return { visitDate: "", bibleHymn: "", visitContent: "" };
+  return { visitDate: "", bibleHymn: "", visitContent: "", category: "정기심방" };
 }
 
 /* ── SMS 링크 컴포넌트 ──────────────────────────────────────── */
@@ -135,6 +145,106 @@ function SmsLink({ number }: { number: string }) {
       <MessageSquare className="w-3 h-3" />
       {number}
     </a>
+  );
+}
+
+/* ── 이미지 모달 컴포넌트 ──────────────────────────────────── */
+
+function ImageModal({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4" onClick={onClose}>
+      <button className="absolute top-4 right-4 text-white/80 hover:text-white" onClick={onClose}>
+        <X className="w-8 h-8" />
+      </button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} className="max-w-full max-h-[85vh] object-contain rounded-lg" onClick={e => e.stopPropagation()} />
+    </div>
+  );
+}
+
+/* ── 가족 상세 모달 컴포넌트 ────────────────────────────────── */
+
+function FamilyDetailModal({
+  member,
+  onClose,
+  onImageClick,
+}: {
+  member: FamilyMember;
+  onClose: () => void;
+  onImageClick: (src: string, alt: string) => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 헤더 */}
+        <div className="flex items-center justify-between px-5 py-4 border-b">
+          <h3 className="font-bold text-gray-900">가족 상세 정보</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* 내용 */}
+        <div className="p-5">
+          <div className="flex items-start gap-4 mb-5">
+            {member.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={member.photo}
+                alt={member.name}
+                className="w-20 h-20 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity shrink-0"
+                onClick={() => onImageClick(member.photo, member.name)}
+              />
+            ) : (
+              <div className="w-20 h-20 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                <User className="w-8 h-8 text-blue-300" />
+              </div>
+            )}
+            <div>
+              <h4 className="text-lg font-bold text-gray-900">{member.name || "-"}</h4>
+              {member.relation && (
+                <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium mt-1">
+                  {member.relation}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <dl className="space-y-3">
+            {[
+              ["관계", member.relation],
+              ["생년월일", member.birthDate],
+              ["교인구분", member.memberCategory],
+              ["직분", member.position],
+              ["소속부서", member.department],
+              ["신급", member.faithLevel],
+            ].map(([label, val]) => (
+              <div key={label} className="flex items-center">
+                <dt className="w-20 shrink-0 text-xs text-gray-500 font-medium">{label}</dt>
+                <dd className="text-sm text-gray-900">{val || "-"}</dd>
+              </div>
+            ))}
+            {member.phone && (
+              <div className="flex items-center">
+                <dt className="w-20 shrink-0 text-xs text-gray-500 font-medium">연락처</dt>
+                <dd>
+                  <SmsLink number={member.phone} />
+                </dd>
+              </div>
+            )}
+            {member.notes && (
+              <div className="flex items-start">
+                <dt className="w-20 shrink-0 text-xs text-gray-500 font-medium pt-0.5">비고</dt>
+                <dd className="text-sm text-gray-700 whitespace-pre-wrap">{member.notes}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -154,6 +264,10 @@ const MEMBER_TYPE_FILTERS = [
   { label: "유초등", value: "유초등" },
 ];
 
+// Suppress unused variable warnings for table cell styles used in potential future enhancements
+void labelCellClass;
+void valueCellClass;
+
 /* ════════════════════════════════════════════════════════════ */
 /*  메인 페이지 컴포넌트                                       */
 /* ════════════════════════════════════════════════════════════ */
@@ -171,6 +285,15 @@ export default function ChurchMembersPage() {
   const [form, setForm] = useState(emptyMember());
   const [activeTab, setActiveTab] = useState(0);
   const [saving, setSaving] = useState(false);
+
+  // 이미지 모달
+  const [imageModal, setImageModal] = useState<{ src: string; alt: string } | null>(null);
+
+  // 가족 상세 모달
+  const [familyDetailModal, setFamilyDetailModal] = useState<FamilyMember | null>(null);
+
+  // 심방 카테고리 접기/펼치기
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
 
   // 가져오기 결과
   const [importResult, setImportResult] = useState<string | null>(null);
@@ -230,6 +353,7 @@ export default function ChurchMembersPage() {
       familyRelation: m.familyRelation,
       faithHead: m.faithHead,
       photo: m.photo,
+      familyPhotos: m.familyPhotos?.length ? [...m.familyPhotos] : [],
       parish: m.parish,
       spouse: m.spouse,
       phone: m.phone,
@@ -351,6 +475,15 @@ export default function ChurchMembersPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
+  function updateFamilyPhoto(idx: number, value: string) {
+    setForm((prev) => {
+      const arr = [...(prev.familyPhotos || [])];
+      while (arr.length <= idx) arr.push("");
+      arr[idx] = value;
+      return { ...prev, familyPhotos: arr };
+    });
+  }
+
   function updateFamilyMember(
     idx: number,
     field: keyof FamilyMember,
@@ -399,6 +532,24 @@ export default function ChurchMembersPage() {
     }));
   }
 
+  /* ── 심방 카테고리 토글 ──────────────────────────────────── */
+
+  function toggleCategory(cat: string) {
+    setOpenCategories((prev) => ({ ...prev, [cat]: !prev[cat] }));
+  }
+
+  /* ── 심방을 카테고리별로 그룹핑 ──────────────────────────── */
+
+  function groupVisitsByCategory(visits: PastoralVisit[]) {
+    const groups: Record<string, PastoralVisit[]> = {};
+    for (const v of visits) {
+      const cat = v.category || "기타";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(v);
+    }
+    return groups;
+  }
+
   /* ── 입력 필드 컴포넌트 ──────────────────────────────────── */
 
   const inputClass =
@@ -408,10 +559,12 @@ export default function ChurchMembersPage() {
     label,
     field,
     type = "text",
+    placeholder,
   }: {
     label: string;
     field: string;
     type?: string;
+    placeholder?: string;
   }) {
     return (
       <div>
@@ -423,6 +576,7 @@ export default function ChurchMembersPage() {
           value={(form as Record<string, unknown>)[field] as string}
           onChange={(e) => updateField(field, e.target.value)}
           className={inputClass}
+          placeholder={placeholder}
         />
       </div>
     );
@@ -682,9 +836,15 @@ export default function ChurchMembersPage() {
                           {/* ── 프로필 헤더 ── */}
                           <div className="bg-white rounded-xl border border-gray-200 p-4">
                             <div className="flex items-start gap-4">
+                              {/* 프로필 사진 */}
                               {m.photo ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={m.photo} alt={m.name} className="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-[#E8F5E9]" />
+                                <img
+                                  src={m.photo}
+                                  alt={m.name}
+                                  className="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-[#E8F5E9] cursor-pointer hover:opacity-90 transition-opacity"
+                                  onClick={() => setImageModal({ src: m.photo, alt: m.name })}
+                                />
                               ) : (
                                 <div className="w-14 h-14 bg-[#E8F5E9] rounded-full flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
                                   <span className="text-[#2E7D32] font-bold text-lg">{m.name?.[0]}</span>
@@ -713,6 +873,23 @@ export default function ChurchMembersPage() {
                                   {m.tel && <span className="text-xs text-gray-500">TEL {m.tel}</span>}
                                 </div>
                               </div>
+
+                              {/* 가족 사진 (최대 2장) */}
+                              <div className="flex items-center gap-2 shrink-0">
+                                {m.familyPhotos && m.familyPhotos.length > 0 && m.familyPhotos.map((fp, fpi) =>
+                                  fp ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      key={fpi}
+                                      src={fp}
+                                      alt={`${m.name} 가족사진 ${fpi + 1}`}
+                                      className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                                      onClick={() => setImageModal({ src: fp, alt: `${m.name} 가족사진 ${fpi + 1}` })}
+                                    />
+                                  ) : null
+                                )}
+                              </div>
+
                               <span className="text-[10px] text-gray-400 shrink-0">
                                 {m.updatedAt ? new Date(m.updatedAt).toLocaleDateString("ko-KR") : ""}
                               </span>
@@ -790,58 +967,116 @@ export default function ChurchMembersPage() {
                             </div>
                           )}
 
-                          {/* ── 가족사항 ── */}
+                          {/* ── 가족사항 (카드 레이아웃) ── */}
                           {m.familyMembers && m.familyMembers.length > 0 && (
                             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                               <div className="px-4 py-2.5 border-b border-gray-100">
-                                <h4 className="text-xs font-bold text-[#2E7D32]">가족사항</h4>
+                                <h4 className="text-xs font-bold text-[#2E7D32]">
+                                  가족사항
+                                  <span className="ml-2 text-gray-400 font-normal">{m.familyMembers.length}명</span>
+                                </h4>
                               </div>
-                              <div className="divide-y divide-gray-100">
-                                {m.familyMembers.map((f, fi) => (
-                                  <div key={fi} className="px-4 py-3 flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
-                                      <span className="text-blue-600 font-bold text-xs">{f.name?.[0] || "?"}</span>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-medium">{f.relation || "-"}</span>
-                                        <span className="font-bold text-sm text-gray-900">{f.name || "-"}</span>
-                                        {f.position && <span className="text-xs text-gray-500">{f.position}</span>}
+                              <div className="p-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  {m.familyMembers.map((f, fi) => (
+                                    <div
+                                      key={fi}
+                                      className="bg-white rounded-xl border border-gray-200 p-3 cursor-pointer hover:shadow-md transition-all"
+                                      onClick={() => setFamilyDetailModal(f)}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        {/* 가족 사진 */}
+                                        {f.photo ? (
+                                          // eslint-disable-next-line @next/next/no-img-element
+                                          <img
+                                            src={f.photo}
+                                            alt={f.name}
+                                            className="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setImageModal({ src: f.photo, alt: f.name });
+                                            }}
+                                          />
+                                        ) : (
+                                          <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                                            <span className="text-blue-600 font-bold text-sm">{f.name?.[0] || "?"}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-2">
+                                            <span className="font-bold text-sm text-gray-900">{f.name || "-"}</span>
+                                            {f.relation && (
+                                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium">{f.relation}</span>
+                                            )}
+                                          </div>
+                                          <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
+                                            {f.position && <span>{f.position}</span>}
+                                            {f.department && <span>· {f.department}</span>}
+                                          </div>
+                                          <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-400 flex-wrap">
+                                            {f.birthDate && <span>{f.birthDate}</span>}
+                                            {f.memberCategory && <span>· {f.memberCategory}</span>}
+                                            {f.faithLevel && <span>· {f.faithLevel}</span>}
+                                          </div>
+                                        </div>
+                                        <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
                                       </div>
-                                      <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400 flex-wrap">
-                                        {f.birthDate && <span>{f.birthDate}</span>}
-                                        {f.memberCategory && <span>{f.memberCategory}</span>}
-                                        {f.department && <span>{f.department}</span>}
-                                        {f.faithLevel && <span>{f.faithLevel}</span>}
-                                      </div>
                                     </div>
-                                    {f.phone && (
-                                      <span onClick={(e) => e.stopPropagation()} className="shrink-0">
-                                        <SmsLink number={f.phone} />
-                                      </span>
-                                    )}
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
                             </div>
                           )}
 
-                          {/* ── 심방내역 ── */}
+                          {/* ── 심방내역 (카테고리별 그룹핑) ── */}
                           {m.pastoralVisits && m.pastoralVisits.length > 0 && (
                             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                               <div className="px-4 py-2.5 border-b border-gray-100">
-                                <h4 className="text-xs font-bold text-[#2E7D32]">심방내역</h4>
+                                <h4 className="text-xs font-bold text-[#2E7D32]">
+                                  심방내역
+                                  <span className="ml-2 text-gray-400 font-normal">{m.pastoralVisits.length}건</span>
+                                </h4>
                               </div>
-                              <div className="divide-y divide-gray-100">
-                                {m.pastoralVisits.map((v, vi) => (
-                                  <div key={vi} className="px-4 py-3">
-                                    <div className="flex items-center gap-3 mb-1">
-                                      <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
-                                      {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
+                              <div>
+                                {Object.entries(groupVisitsByCategory(m.pastoralVisits)).map(([cat, visits]) => {
+                                  const catKey = `${m.id}-${cat}`;
+                                  const isOpen = openCategories[catKey] !== false; // default open
+                                  return (
+                                    <div key={cat}>
+                                      {/* 카테고리 헤더 */}
+                                      <div
+                                        className="bg-gray-50 px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
+                                        onClick={() => setOpenCategories((prev) => ({ ...prev, [catKey]: !isOpen }))}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          {isOpen ? (
+                                            <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                                          ) : (
+                                            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                                          )}
+                                          <span className="text-xs font-medium text-gray-700">{cat}</span>
+                                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#2E7D32]/10 text-[#2E7D32] font-medium">
+                                            {visits.length}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      {/* 카테고리 내 심방 목록 */}
+                                      {isOpen && (
+                                        <div className="divide-y divide-gray-100">
+                                          {visits.map((v, vi) => (
+                                            <div key={vi} className="px-4 py-3 pl-10">
+                                              <div className="flex items-center gap-3 mb-1">
+                                                <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
+                                                {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
+                                              </div>
+                                              {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed">{v.visitContent}</p>}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
                                     </div>
-                                    {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed">{v.visitContent}</p>}
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
@@ -922,6 +1157,42 @@ export default function ChurchMembersPage() {
                   <FormField label="TEL (전화)" field="tel" />
                   <div className="col-span-2">
                     <FormField label="주소" field="address" />
+                  </div>
+
+                  {/* 사진 URL 입력 */}
+                  <div className="col-span-2 border-t border-gray-100 pt-4 mt-2">
+                    <h4 className="text-xs font-bold text-gray-600 mb-3 flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5" /> 사진 관리
+                    </h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      <FormField label="프로필 사진 URL" field="photo" placeholder="https://example.com/photo.jpg" />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            가족 사진 1 URL
+                          </label>
+                          <input
+                            type="text"
+                            value={form.familyPhotos?.[0] || ""}
+                            onChange={(e) => updateFamilyPhoto(0, e.target.value)}
+                            className={inputClass}
+                            placeholder="https://example.com/family1.jpg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            가족 사진 2 URL
+                          </label>
+                          <input
+                            type="text"
+                            value={form.familyPhotos?.[1] || ""}
+                            onChange={(e) => updateFamilyPhoto(1, e.target.value)}
+                            className={inputClass}
+                            placeholder="https://example.com/family2.jpg"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1119,6 +1390,20 @@ export default function ChurchMembersPage() {
                           />
                         </div>
                       </div>
+                      {/* 가족 사진 URL */}
+                      <div className="border-t border-gray-100 pt-3 mt-2">
+                        <label className="block text-xs text-gray-600 mb-1 flex items-center gap-1">
+                          <ImageIcon className="w-3 h-3" /> 사진 URL
+                        </label>
+                        <input
+                          value={fam.photo}
+                          onChange={(e) =>
+                            updateFamilyMember(i, "photo", e.target.value)
+                          }
+                          className={inputClass}
+                          placeholder="https://example.com/photo.jpg"
+                        />
+                      </div>
                     </div>
                   ))}
                   <button
@@ -1149,7 +1434,25 @@ export default function ChurchMembersPage() {
                           <Trash2 className="w-3 h-3" /> 삭제
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            카테고리
+                          </label>
+                          <select
+                            value={visit.category || "정기심방"}
+                            onChange={(e) =>
+                              updateVisit(i, "category", e.target.value)
+                            }
+                            className={inputClass}
+                          >
+                            {VISIT_CATEGORIES.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">
                             심방일
@@ -1224,6 +1527,31 @@ export default function ChurchMembersPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════ */}
+      {/*  가족 상세 모달 (fixed, 최상위)                        */}
+      {/* ══════════════════════════════════════════════════════ */}
+      {familyDetailModal && (
+        <FamilyDetailModal
+          member={familyDetailModal}
+          onClose={() => setFamilyDetailModal(null)}
+          onImageClick={(src, alt) => {
+            setFamilyDetailModal(null);
+            setImageModal({ src, alt });
+          }}
+        />
+      )}
+
+      {/* ══════════════════════════════════════════════════════ */}
+      {/*  이미지 모달 (fixed, 최상위)                           */}
+      {/* ══════════════════════════════════════════════════════ */}
+      {imageModal && (
+        <ImageModal
+          src={imageModal.src}
+          alt={imageModal.alt}
+          onClose={() => setImageModal(null)}
+        />
       )}
     </div>
   );
