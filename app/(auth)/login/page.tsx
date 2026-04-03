@@ -54,8 +54,8 @@ export default function LoginPage() {
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo01.png" alt="일광교회" className="h-10 w-auto mb-2" />
-                <span className="font-nanum text-[11px] text-gray-500 tracking-wide">행복과 영원으로 초대하는</span>
-                <span className="font-noto-black text-[22px] text-[#1a2744] mt-1">일광교회</span>
+                <span className="font-nanum text-[11px] text-gray-500 tracking-wide leading-none">행복과 영원으로 초대하는</span>
+                <span className="font-noto-black text-[22px] text-[#1a2744] leading-none">일광교회</span>
               </div>
               <h1 className="text-2xl font-bold text-gray-900">로그인</h1>
               <p className="text-gray-500 text-sm mt-1">일광교회 성도 포털</p>
