@@ -3,8 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 로그인 페이지는 통과
-  if (pathname === "/login" || pathname === "/admin/login") {
+  // 로그인/비밀번호 찾기/재설정 페이지는 통과
+  if (
+    pathname === "/login" ||
+    pathname === "/admin/login" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password"
+  ) {
     return NextResponse.next();
   }
 
