@@ -350,8 +350,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           )}
         </header>
 
+        {/* 대시보드 폰트 스케일링 — 최소 14px */}
+        <style>{`
+          .dc .text-xs,
+          .dc .text-\\[10px\\],
+          .dc .text-\\[11px\\],
+          .dc .text-\\[10px\\] { font-size:0.875rem !important; line-height:1.375rem !important }
+          .dc .text-sm { font-size:1rem !important; line-height:1.5rem !important }
+          .dc .text-base { font-size:1.0625rem !important; line-height:1.625rem !important }
+          .dc .text-lg { font-size:1.25rem !important; line-height:1.75rem !important }
+          .dc .text-xl { font-size:1.5rem !important; line-height:2rem !important }
+          .dc .text-2xl { font-size:1.875rem !important; line-height:2.375rem !important }
+          .dc table th, .dc table td { font-size:max(0.875rem, inherit) }
+        `}</style>
         {/* 페이지 컨텐츠 */}
-        <main className="flex-1 overflow-y-auto p-5 lg:p-6">
+        <main className="dc flex-1 overflow-y-auto p-5 lg:p-6">
           {children}
         </main>
       </div>
