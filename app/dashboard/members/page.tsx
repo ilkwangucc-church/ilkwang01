@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Search, UserCheck, UserX, ChevronDown, X } from "lucide-react";
-import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
+import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
 const MEMBERS = [
   { id: 1, name: "홍길동", email: "hong@email.com", phone: "010-1234-5678", role: 1, dept: "-",    matched: false, joined: "2025-03-28" },
@@ -71,7 +71,7 @@ export default function MembersPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">회원 관리</h1>
-          <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 7단계 등급 관리</p>
+          <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 6단계 등급 관리</p>
         </div>
         <button
           onClick={() => { setShowAddModal(true); setAddError(""); setNewMember(EMPTY_NEW); }}
@@ -99,7 +99,7 @@ export default function MembersPage() {
           className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
         >
           <option value={0}>전체 등급</option>
-          {Object.entries(ROLE_LABELS).map(([v, label]) => (
+          {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
             <option key={v} value={v}>{v}단계 · {label}</option>
           ))}
         </select>
@@ -144,7 +144,7 @@ export default function MembersPage() {
                         autoFocus
                         className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
                       >
-                        {Object.entries(ROLE_LABELS).map(([v, label]) => (
+                        {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
                           <option key={v} value={v}>{v}. {label}</option>
                         ))}
                       </select>
@@ -185,9 +185,9 @@ export default function MembersPage() {
 
       {/* 등급 안내 */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-        <h3 className="font-semibold text-gray-900 mb-3 text-sm">회원 등급 안내 (7단계)</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-          {Object.entries(ROLE_LABELS).map(([v, name]) => {
+        <h3 className="font-semibold text-gray-900 mb-3 text-sm">회원 등급 안내 (6단계)</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          {Object.entries(ROLE_LABELS_SELECT).map(([v, name]) => {
             const level = Number(v);
             const count = members.filter(m => m.role === level).length;
             return (
@@ -253,7 +253,7 @@ export default function MembersPage() {
                     onChange={e => setNewMember(p => ({ ...p, role: Number(e.target.value) }))}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none"
                   >
-                    {Object.entries(ROLE_LABELS).map(([v, label]) => (
+                    {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
                       <option key={v} value={v}>{v}단계 · {label}</option>
                     ))}
                   </select>

@@ -1,14 +1,24 @@
 import { createHash, createHmac } from "crypto";
 
-/** 회원 등급 레이블 */
+/** 회원 등급 레이블 (6단계) */
 export const ROLE_LABELS: Record<number, string> = {
   1: "일반회원",
-  2: "성도",
-  3: "제직",
-  4: "당회원",
-  5: "교역자",
-  6: "담임목사",
-  7: "최고관리자",
+  2: "믿음회원",
+  3: "소망회원",
+  4: "사랑회원",
+  5: "일반관리자",
+  6: "교역자",
+  7: "교역자", // 내부 최고관리자 계정 호환용 — UI 선택 목록에 미노출
+};
+
+/** 화면 선택 목록에 표시할 등급 (1~6단계) */
+export const ROLE_LABELS_SELECT: Record<number, string> = {
+  1: "일반회원",
+  2: "믿음회원",
+  3: "소망회원",
+  4: "사랑회원",
+  5: "일반관리자",
+  6: "교역자",
 };
 
 /** 회원 등급별 뱃지 색상 (Tailwind) */
@@ -19,7 +29,7 @@ export const ROLE_COLORS: Record<number, string> = {
   4: "bg-indigo-100 text-indigo-700",
   5: "bg-purple-100 text-purple-700",
   6: "bg-amber-100 text-amber-700",
-  7: "bg-red-100 text-red-700",
+  7: "bg-amber-100 text-amber-700",
 };
 
 const SALT = process.env.ADMIN_SALT || "ilkwang_salt_2026";
