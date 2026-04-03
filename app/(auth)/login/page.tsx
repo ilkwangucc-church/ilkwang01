@@ -49,7 +49,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 20 }}>
+          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 10 }}>
             <div className="text-center mb-8">
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
