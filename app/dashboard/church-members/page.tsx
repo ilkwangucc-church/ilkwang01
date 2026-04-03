@@ -342,6 +342,11 @@ export default function ChurchMembersPage() {
   const [selectedGroupView, setSelectedGroupView] = useState<string | null>(null);
   const [checkedPhones, setCheckedPhones] = useState<Set<string>>(new Set());
 
+  // 그룹 설정 모달 탭 + 교인 추가 패널
+  const [groupModalTab, setGroupModalTab] = useState<"builtin" | "custom">("builtin");
+  const [showAddMemberPanel, setShowAddMemberPanel] = useState(false);
+  const [groupAddSearch, setGroupAddSearch] = useState("");
+
   // 문자 보내기 모달
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [smsRecipients, setSmsRecipients] = useState<{ name: string; phone: string }[]>([]);
@@ -390,6 +395,51 @@ export default function ChurchMembersPage() {
       setVisitCats(vc);
       setMemberGroupCats(mg);
     } catch { alert("카테고리 저장 실패"); }
+  }
+
+  async function updateMemberType(memberId: string, newType: string) {
+    const member = members.find(m => m.id === memberId);
+    if (!member) return;
+    try {
+      const res = await fetch(`/api/church-members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...member, memberType: newType }),
+      });
+      if (!res.ok) throw new Error();
+      await fetchMembers();
+    } catch { alert("저장 실패"); }
+  }
+
+  async function addMemberToCustomGroup(memberId: string, groupName: string) {
+    const member = members.find(m => m.id === memberId);
+    if (!member) return;
+    if ((member.groups || []).includes(groupName)) return;
+    const updated = [...(member.groups || []), groupName];
+    try {
+      const res = await fetch(`/api/church-members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...member, groups: updated }),
+      });
+      if (!res.ok) throw new Error();
+      await fetchMembers();
+    } catch { alert("저장 실패"); }
+  }
+
+  async function removeMemberFromCustomGroup(memberId: string, groupName: string) {
+    const member = members.find(m => m.id === memberId);
+    if (!member) return;
+    const updated = (member.groups || []).filter(g => g !== groupName);
+    try {
+      const res = await fetch(`/api/church-members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...member, groups: updated }),
+      });
+      if (!res.ok) throw new Error();
+      await fetchMembers();
+    } catch { alert("저장 실패"); }
   }
 
   useEffect(() => {
@@ -812,6 +862,13 @@ export default function ChurchMembersPage() {
           />
         </div>
         <div className="flex gap-2 flex-wrap items-center">
+          <button
+            onClick={() => { setShowGroupModal(true); setGroupModalTab("builtin"); setSelectedGroupView(null); setShowAddMemberPanel(false); setGroupAddSearch(""); }}
+            className="p-1.5 rounded-full border border-purple-300 text-purple-600 hover:bg-purple-50 transition-colors"
+            title="그룹 설정"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
           {MEMBER_TYPE_FILTERS.map((f) => (
             <button
               key={f.value}
@@ -825,15 +882,6 @@ export default function ChurchMembersPage() {
               {f.label}
             </button>
           ))}
-          {/* 그룹 필터 */}
-          <div className="w-px h-5 bg-gray-200" />
-          <button
-            onClick={() => setShowGroupModal(true)}
-            className="p-1.5 rounded-full border border-purple-300 text-purple-600 hover:bg-purple-50 transition-colors"
-            title="그룹 설정"
-          >
-            <Settings className="w-3.5 h-3.5" />
-          </button>
           {allGroups.map(g => (
             <button
               key={g}
@@ -1822,161 +1870,339 @@ export default function ChurchMembersPage() {
       {/* ══════════════════════════════════════════════════════ */}
       {/*  카테고리 관리 모달                                     */}
       {/* ══════════════════════════════════════════════════════ */}
-      {/* ── 교인 그룹 관리 모달 ─────────────────────────────── */}
+      {/* ── 교인 그룹 설정 모달 (통합) ──────────────────────── */}
       {showGroupModal && (() => {
-        const viewMembers = selectedGroupView
+        const BUILTIN_TYPES = ["장년", "청년", "중고등", "유초등"];
+
+        // 기본 분류 탭
+        const builtinViewMembers = selectedGroupView
+          ? members.filter(m => m.memberType === selectedGroupView)
+          : [];
+        const builtinViewWithPhone = builtinViewMembers.filter(m => m.phone);
+        const builtinAllChecked = builtinViewWithPhone.length > 0 && builtinViewWithPhone.every(m => checkedPhones.has(m.phone));
+
+        // 직접 만든 그룹 탭
+        const customViewMembers = selectedGroupView
           ? members.filter(m => (m.groups || []).includes(selectedGroupView))
           : [];
-        const viewMembersWithPhone = viewMembers.filter(m => m.phone);
-        const allChecked = viewMembersWithPhone.length > 0 && viewMembersWithPhone.every(m => checkedPhones.has(m.phone));
+        const customViewWithPhone = customViewMembers.filter(m => m.phone);
+        const customAllChecked = customViewWithPhone.length > 0 && customViewWithPhone.every(m => checkedPhones.has(m.phone));
+
+        // 추가 가능한 교인 (현재 그룹에 없는 교인)
+        const notInCustomGroup = selectedGroupView && groupModalTab === "custom"
+          ? members.filter(m => !(m.groups || []).includes(selectedGroupView) && m.name.includes(groupAddSearch))
+          : [];
+
+        function closeGroupModal() {
+          setShowGroupModal(false);
+          setSelectedGroupView(null);
+          setCheckedPhones(new Set());
+          setShowAddMemberPanel(false);
+          setGroupAddSearch("");
+        }
+
         return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[85vh] flex flex-col">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] flex flex-col">
+
+            {/* 헤더 */}
             <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
               <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-purple-600" /> 교인 그룹 관리
+                <Settings className="w-5 h-5 text-purple-600" /> 교인 그룹 설정
               </h3>
-              <button onClick={() => { setShowGroupModal(false); setSelectedGroupView(null); setCheckedPhones(new Set()); }} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+              <button onClick={closeGroupModal} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
+
+            {/* 탭 */}
+            <div className="flex border-b shrink-0">
+              <button
+                onClick={() => { setGroupModalTab("builtin"); setSelectedGroupView(null); setCheckedPhones(new Set()); setShowAddMemberPanel(false); }}
+                className={`flex-1 py-3 text-sm font-medium transition-colors ${groupModalTab === "builtin" ? "border-b-2 border-purple-600 text-purple-600" : "text-gray-500 hover:text-gray-700"}`}
+              >
+                기본 분류
+              </button>
+              <button
+                onClick={() => { setGroupModalTab("custom"); setSelectedGroupView(null); setCheckedPhones(new Set()); setShowAddMemberPanel(false); }}
+                className={`flex-1 py-3 text-sm font-medium transition-colors ${groupModalTab === "custom" ? "border-b-2 border-purple-600 text-purple-600" : "text-gray-500 hover:text-gray-700"}`}
+              >
+                직접 만든 그룹
+              </button>
+            </div>
+
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {/* 그룹 태그 목록 */}
-              <div className="flex flex-wrap gap-2">
-                {memberGroupCats.map((grp) => {
-                  const cnt = members.filter(m => (m.groups || []).includes(grp)).length;
-                  const isActive = selectedGroupView === grp;
-                  return (
-                    <span key={grp} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-colors ${isActive ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-600 hover:bg-purple-100"}`}>
-                      <span onClick={() => {
-                        if (isActive) { setSelectedGroupView(null); setCheckedPhones(new Set()); }
-                        else { setSelectedGroupView(grp); setCheckedPhones(new Set()); }
-                      }}>
-                        {grp} <span className={`text-[10px] ${isActive ? "text-purple-200" : "text-purple-400"}`}>({cnt}명)</span>
-                      </span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); const updated = memberGroupCats.filter(g => g !== grp); saveCategories(visitCats, updated); if (selectedGroupView === grp) setSelectedGroupView(null); }}
-                        className={`${isActive ? "text-purple-200 hover:text-red-300" : "text-purple-400 hover:text-red-500"} transition-colors`}
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </span>
-                  );
-                })}
-                {memberGroupCats.length === 0 && <p className="text-sm text-gray-400">등록된 그룹이 없습니다.</p>}
-              </div>
 
-              {/* 그룹 추가 입력 */}
-              <div className="flex gap-2">
-                <input
-                  value={newGroupInput}
-                  onChange={(e) => setNewGroupInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && newGroupInput.trim()) {
-                      const updated = [...memberGroupCats, newGroupInput.trim()];
-                      saveCategories(visitCats, updated);
-                      setNewGroupInput("");
-                    }
-                  }}
-                  placeholder="새 교인 그룹 입력..."
-                  className={inputClass + " flex-1"}
-                />
-                <button
-                  onClick={() => {
-                    if (!newGroupInput.trim()) return;
-                    const updated = [...memberGroupCats, newGroupInput.trim()];
-                    saveCategories(visitCats, updated);
-                    setNewGroupInput("");
-                  }}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-xl text-sm shrink-0"
-                >
-                  추가
-                </button>
-              </div>
+              {/* ─── 기본 분류 탭 ─── */}
+              {groupModalTab === "builtin" && (
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    {BUILTIN_TYPES.map(type => {
+                      const cnt = members.filter(m => m.memberType === type).length;
+                      const isActive = selectedGroupView === type;
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => { setSelectedGroupView(isActive ? null : type); setCheckedPhones(new Set()); }}
+                          className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-[#2E7D32] text-white" : "bg-[#E8F5E9] text-[#2E7D32] hover:bg-[#C8E6C9]"}`}
+                        >
+                          {type} <span className="text-[11px] opacity-70">({cnt}명)</span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              {/* 선택된 그룹 회원 목록 */}
-              {selectedGroupView && (
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="bg-gray-50 px-4 py-2.5 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={allChecked}
-                        onChange={() => {
-                          if (allChecked) setCheckedPhones(new Set());
-                          else setCheckedPhones(new Set(viewMembersWithPhone.map(m => m.phone)));
-                        }}
-                        className="w-4 h-4 rounded accent-purple-600"
-                      />
-                      <span className="text-xs font-bold text-gray-700">{selectedGroupView}</span>
-                      <span className="text-[10px] text-gray-400">{viewMembers.length}명</span>
+                  {selectedGroupView && (
+                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="bg-gray-50 px-4 py-2.5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={builtinAllChecked}
+                            onChange={() => {
+                              if (builtinAllChecked) setCheckedPhones(new Set());
+                              else setCheckedPhones(new Set(builtinViewWithPhone.map(m => m.phone)));
+                            }}
+                            className="w-4 h-4 rounded accent-[#2E7D32]"
+                          />
+                          <span className="text-xs font-bold text-gray-700">{selectedGroupView}</span>
+                          <span className="text-[10px] text-gray-400">{builtinViewMembers.length}명</span>
+                        </div>
+                        {checkedPhones.size > 0 && (
+                          <button
+                            onClick={() => {
+                              const recipients = builtinViewMembers.filter(m => m.phone && checkedPhones.has(m.phone)).map(m => ({ name: m.name, phone: m.phone }));
+                              setSmsRecipients(recipients); setSmsMessage(""); setSmsResult(null); setShowSmsModal(true);
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#2E7D32] text-white rounded-lg"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5" /> 선택 문자 ({checkedPhones.size})
+                          </button>
+                        )}
+                      </div>
+                      <div className="divide-y divide-gray-100 max-h-[280px] overflow-y-auto">
+                        {builtinViewMembers.length === 0 ? (
+                          <p className="text-sm text-gray-400 text-center py-6">해당 분류에 소속된 교인이 없습니다.</p>
+                        ) : builtinViewMembers.map(m => (
+                          <div key={m.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50">
+                            <input
+                              type="checkbox"
+                              checked={!!m.phone && checkedPhones.has(m.phone)}
+                              disabled={!m.phone}
+                              onChange={() => {
+                                if (!m.phone) return;
+                                setCheckedPhones(prev => { const next = new Set(prev); if (next.has(m.phone)) next.delete(m.phone); else next.add(m.phone); return next; });
+                              }}
+                              className="w-4 h-4 rounded accent-[#2E7D32]"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <span className="text-sm font-medium text-gray-900">{m.name}</span>
+                              {m.detailPosition && <span className="text-[10px] text-gray-400 ml-2">{m.detailPosition}</span>}
+                            </div>
+                            <select
+                              value={m.memberType}
+                              onChange={async (e) => { await updateMemberType(m.id, e.target.value); }}
+                              onClick={e => e.stopPropagation()}
+                              className="text-xs border border-gray-200 rounded-lg px-2 py-1 text-gray-600 bg-white focus:outline-none focus:ring-1 focus:ring-[#2E7D32]/30"
+                            >
+                              {BUILTIN_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    {checkedPhones.size > 0 && (
+                  )}
+
+                  {selectedGroupView && builtinViewWithPhone.length > 0 && (
+                    <div className="flex justify-end">
                       <button
                         onClick={() => {
-                          const recipients = viewMembers.filter(m => m.phone && checkedPhones.has(m.phone)).map(m => ({ name: m.name, phone: m.phone }));
-                          setSmsRecipients(recipients);
-                          setSmsMessage("");
-                          setSmsResult(null);
-                          setShowSmsModal(true);
+                          const recipients = builtinViewWithPhone.map(m => ({ name: m.name, phone: m.phone }));
+                          setSmsRecipients(recipients); setSmsMessage(""); setSmsResult(null); setShowSmsModal(true);
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors"
+                        className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20]"
                       >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        선택 문자 보내기 ({checkedPhones.size})
+                        <MessageSquare className="w-4 h-4" /> 전체 문자 ({builtinViewWithPhone.length}명)
                       </button>
-                    )}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* ─── 직접 만든 그룹 탭 ─── */}
+              {groupModalTab === "custom" && (
+                <>
+                  {/* 그룹 목록 */}
+                  <div className="flex flex-wrap gap-2">
+                    {memberGroupCats.map(grp => {
+                      const cnt = members.filter(m => (m.groups || []).includes(grp)).length;
+                      const isActive = selectedGroupView === grp;
+                      return (
+                        <span
+                          key={grp}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-colors ${isActive ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-600 hover:bg-purple-100"}`}
+                        >
+                          <span onClick={() => { setSelectedGroupView(isActive ? null : grp); setCheckedPhones(new Set()); setShowAddMemberPanel(false); setGroupAddSearch(""); }}>
+                            {grp} <span className={`text-[10px] ${isActive ? "text-purple-200" : "text-purple-400"}`}>({cnt}명)</span>
+                          </span>
+                          <button
+                            onClick={e => { e.stopPropagation(); const updated = memberGroupCats.filter(g => g !== grp); saveCategories(visitCats, updated); if (selectedGroupView === grp) { setSelectedGroupView(null); setShowAddMemberPanel(false); } }}
+                            className={`${isActive ? "text-purple-200 hover:text-red-300" : "text-purple-400 hover:text-red-500"} transition-colors`}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </span>
+                      );
+                    })}
+                    {memberGroupCats.length === 0 && <p className="text-sm text-gray-400">등록된 그룹이 없습니다.</p>}
                   </div>
-                  <div className="divide-y divide-gray-100 max-h-[300px] overflow-y-auto">
-                    {viewMembers.length === 0 ? (
-                      <p className="text-sm text-gray-400 text-center py-6">해당 그룹에 소속된 교인이 없습니다.</p>
-                    ) : viewMembers.map(m => (
-                      <label key={m.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={!!m.phone && checkedPhones.has(m.phone)}
-                          disabled={!m.phone}
-                          onChange={() => {
-                            if (!m.phone) return;
-                            setCheckedPhones(prev => {
-                              const next = new Set(prev);
-                              if (next.has(m.phone)) next.delete(m.phone); else next.add(m.phone);
-                              return next;
-                            });
-                          }}
-                          className="w-4 h-4 rounded accent-purple-600"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm font-medium text-gray-900">{m.name}</span>
-                          {m.detailPosition && <span className="text-[10px] text-gray-400 ml-2">{m.detailPosition}</span>}
+
+                  {/* 그룹 추가 입력 */}
+                  <div className="flex gap-2">
+                    <input
+                      value={newGroupInput}
+                      onChange={e => setNewGroupInput(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter" && newGroupInput.trim()) {
+                          const updated = [...memberGroupCats, newGroupInput.trim()];
+                          saveCategories(visitCats, updated);
+                          setNewGroupInput("");
+                        }
+                      }}
+                      placeholder="새 그룹 이름 입력..."
+                      className={inputClass + " flex-1"}
+                    />
+                    <button
+                      onClick={() => {
+                        if (!newGroupInput.trim()) return;
+                        const updated = [...memberGroupCats, newGroupInput.trim()];
+                        saveCategories(visitCats, updated);
+                        setNewGroupInput("");
+                      }}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-xl text-sm shrink-0"
+                    >추가</button>
+                  </div>
+
+                  {/* 선택된 그룹 교인 목록 + 추가/제거 */}
+                  {selectedGroupView && (
+                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="bg-gray-50 px-4 py-2.5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={customAllChecked}
+                            onChange={() => {
+                              if (customAllChecked) setCheckedPhones(new Set());
+                              else setCheckedPhones(new Set(customViewWithPhone.map(m => m.phone)));
+                            }}
+                            className="w-4 h-4 rounded accent-purple-600"
+                          />
+                          <span className="text-xs font-bold text-gray-700">{selectedGroupView}</span>
+                          <span className="text-[10px] text-gray-400">{customViewMembers.length}명</span>
                         </div>
-                        {m.phone ? (
-                          <span className="text-xs text-gray-500">{m.phone}</span>
-                        ) : (
-                          <span className="text-[10px] text-red-400">번호 없음</span>
-                        )}
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                        <div className="flex items-center gap-2">
+                          {checkedPhones.size > 0 && (
+                            <button
+                              onClick={() => {
+                                const recipients = customViewMembers.filter(m => m.phone && checkedPhones.has(m.phone)).map(m => ({ name: m.name, phone: m.phone }));
+                                setSmsRecipients(recipients); setSmsMessage(""); setSmsResult(null); setShowSmsModal(true);
+                              }}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#2E7D32] text-white rounded-lg"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" /> 선택 문자 ({checkedPhones.size})
+                            </button>
+                          )}
+                          <button
+                            onClick={() => { setShowAddMemberPanel(v => !v); setGroupAddSearch(""); }}
+                            className="flex items-center gap-1 px-3 py-1.5 text-xs bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> 교인 추가
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 교인 추가 패널 */}
+                      {showAddMemberPanel && (
+                        <div className="border-b border-gray-200 bg-purple-50 p-3 space-y-2">
+                          <input
+                            value={groupAddSearch}
+                            onChange={e => setGroupAddSearch(e.target.value)}
+                            placeholder="이름으로 검색..."
+                            className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-400"
+                          />
+                          <div className="max-h-[160px] overflow-y-auto space-y-1">
+                            {notInCustomGroup.length === 0 ? (
+                              <p className="text-xs text-gray-400 text-center py-2">추가할 교인이 없습니다.</p>
+                            ) : notInCustomGroup.map(m => (
+                              <div key={m.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2">
+                                <div>
+                                  <span className="text-sm font-medium text-gray-900">{m.name}</span>
+                                  {m.memberType && <span className="text-[10px] text-gray-400 ml-2">{m.memberType}</span>}
+                                </div>
+                                <button
+                                  onClick={async () => { await addMemberToCustomGroup(m.id, selectedGroupView!); }}
+                                  className="text-xs px-2.5 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                                >추가</button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="divide-y divide-gray-100 max-h-[280px] overflow-y-auto">
+                        {customViewMembers.length === 0 ? (
+                          <p className="text-sm text-gray-400 text-center py-6">해당 그룹에 소속된 교인이 없습니다.</p>
+                        ) : customViewMembers.map(m => (
+                          <div key={m.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50">
+                            <input
+                              type="checkbox"
+                              checked={!!m.phone && checkedPhones.has(m.phone)}
+                              disabled={!m.phone}
+                              onChange={() => {
+                                if (!m.phone) return;
+                                setCheckedPhones(prev => { const next = new Set(prev); if (next.has(m.phone)) next.delete(m.phone); else next.add(m.phone); return next; });
+                              }}
+                              className="w-4 h-4 rounded accent-purple-600"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <span className="text-sm font-medium text-gray-900">{m.name}</span>
+                              {m.memberType && <span className="text-[10px] text-gray-400 ml-2">{m.memberType}</span>}
+                            </div>
+                            {m.phone ? (
+                              <span className="text-xs text-gray-500">{m.phone}</span>
+                            ) : (
+                              <span className="text-[10px] text-red-400">번호 없음</span>
+                            )}
+                            <button
+                              onClick={async () => { await removeMemberFromCustomGroup(m.id, selectedGroupView!); }}
+                              className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                              title="그룹에서 제거"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedGroupView && customViewWithPhone.length > 0 && (
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => {
+                          const recipients = customViewWithPhone.map(m => ({ name: m.name, phone: m.phone }));
+                          setSmsRecipients(recipients); setSmsMessage(""); setSmsResult(null); setShowSmsModal(true);
+                        }}
+                        className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20]"
+                      >
+                        <MessageSquare className="w-4 h-4" /> 전체 문자 ({customViewWithPhone.length}명)
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
-            <div className="px-6 py-4 border-t bg-gray-50 rounded-b-2xl shrink-0 flex items-center justify-between">
-              {selectedGroupView && viewMembersWithPhone.length > 0 && (
-                <button
-                  onClick={() => {
-                    const recipients = viewMembersWithPhone.map(m => ({ name: m.name, phone: m.phone }));
-                    setSmsRecipients(recipients);
-                    setSmsMessage("");
-                    setSmsResult(null);
-                    setShowSmsModal(true);
-                  }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20] transition-colors"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  전체 문자 보내기 ({viewMembersWithPhone.length}명)
-                </button>
-              )}
-              {!selectedGroupView && <div />}
-              <button onClick={() => { setShowGroupModal(false); setSelectedGroupView(null); setCheckedPhones(new Set()); }} className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors">닫기</button>
+
+            <div className="px-6 py-4 border-t bg-gray-50 rounded-b-2xl shrink-0 flex justify-end">
+              <button onClick={closeGroupModal} className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors">닫기</button>
             </div>
           </div>
         </div>
