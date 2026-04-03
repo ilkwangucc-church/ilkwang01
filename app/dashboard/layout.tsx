@@ -271,14 +271,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link
             href="/dashboard"
             onClick={() => setSidebarOpen(false)}
-            className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors mx-2 rounded-lg mb-1 ${
+            className={`flex items-center gap-2 mx-2 px-3 py-2 text-[14px] transition-colors rounded-lg mb-1 ${
               pathname === "/dashboard"
                 ? "bg-[#2E7D32] text-white"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
             }`}
           >
             <LayoutDashboard className="w-4 h-4 shrink-0" />
-            홈
+            Home
           </Link>
 
           {/* 커뮤니티 그룹 — 모든 회원 */}

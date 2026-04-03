@@ -76,7 +76,7 @@ export default function CommunityHome() {
     <div className="space-y-6">
 
       {/* 환영 배너 — 전체 너비 */}
-      <div className="relative rounded-2xl overflow-hidden min-h-[180px]">
+      <div className="relative rounded-2xl overflow-hidden h-[180px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1548407260-da850faa41e3?auto=format&fit=crop&w=1600&q=80"
@@ -84,7 +84,7 @@ export default function CommunityHome() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1B5E20]/90 to-[#2E7D32]/70" />
-        <div className="relative z-10 p-6 flex items-start justify-between flex-wrap gap-4 h-full">
+        <div className="absolute inset-0 z-10 px-6 flex items-center justify-between flex-wrap gap-4">
           <div>
             <p className="text-green-200 text-sm mb-1 flex items-center gap-1">
               <Sun className="w-3.5 h-3.5" />
