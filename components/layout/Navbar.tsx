@@ -148,6 +148,11 @@ export default function Navbar() {
           </p>
           <div className="ml-auto flex items-center gap-4">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">문의하기</Link>
+            {loggedIn && (
+              <button onClick={handleLogout} className="text-white/70 hover:text-white text-xs transition-colors">
+                로그아웃
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -188,12 +193,9 @@ export default function Navbar() {
           {/* Right: Login/Logout + CTA */}
           <div className="hidden lg:flex flex-1 items-center justify-end gap-4">
             {loggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 px-4 py-2 bg-gray-700 text-white text-sm font-bold rounded-[26px] hover:bg-gray-900 transition-colors"
-              >
-                <LogOut className="w-3.5 h-3.5" /> 로그아웃
-              </button>
+              <Link href="/dashboard" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
+                My Account
+              </Link>
             ) : (
               <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
                 로그인
