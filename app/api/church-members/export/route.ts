@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     인도자: m.introducer, 결혼관계: m.marriageStatus, 출석률: m.attendanceRate,
     봉사부서: m.serviceDept, 직장명: m.workplace, 상세직분: m.detailPosition,
     임직일: m.ordinationDate, 선교회: m.missionGroup, 세례유형: m.baptismType,
-    집례일: m.baptismDate, 집례교회: m.baptismChurch, 비고: m.notes,
+    집례일: m.baptismDate, 집례교회: m.baptismChurch, 그룹: (m.groups || []).join(", "),
   }));
   const ws1 = XLSX.utils.json_to_sheet(memberRows);
   ws1["!cols"] = Object.keys(memberRows[0] || {}).map(() => ({ wch: 14 }));
@@ -51,12 +51,12 @@ export async function GET(req: NextRequest) {
     (m.pastoralVisits || []).forEach((v) => {
       visitRows.push({
         교적번호: m.id, 교인이름: m.name, 카테고리: v.category || "기타",
-        심방일: v.visitDate, "성경/찬송": v.bibleHymn, 심방내용: v.visitContent,
+        심방일: v.visitDate, "성경/찬송": v.bibleHymn, 심방내용: v.visitContent, 기록자: v.author || "",
       });
     });
   });
   const ws3 = XLSX.utils.json_to_sheet(visitRows.length > 0 ? visitRows : [{}], {
-    header: ["교적번호", "교인이름", "카테고리", "심방일", "성경/찬송", "심방내용"],
+    header: ["교적번호", "교인이름", "카테고리", "심방일", "성경/찬송", "심방내용", "기록자"],
   });
   XLSX.utils.book_append_sheet(wb, ws3, "심방내역");
 

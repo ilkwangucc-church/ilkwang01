@@ -30,7 +30,19 @@
     "baptismType": "세례",
     "baptismDate": "2003-05-01",
     "baptismChurch": "믿음교회",
-    "notes": "충실한 봉사자. 고등부 교사 및 기획위원회 임원으로 섬기고 있음.",
+    "memos": [
+      {
+        "content": "충실한 봉사자. 고등부 교사 및 기획위원회 임원으로 섬기고 있음.",
+        "author": "신점일 목사",
+        "createdAt": "2024-03-15T09:00:00.000Z"
+      },
+      {
+        "content": "2026년 장로 피택 후보로 추천 검토 중.",
+        "author": "최고관리자",
+        "createdAt": "2026-02-20T14:30:00.000Z"
+      }
+    ],
+    "groups": ["기획위원회", "고등부 교사", "장로후보"],
     "familyMembers": [
       {
         "relation": "본인",
@@ -86,19 +98,22 @@
         "visitDate": "2025-11-15",
         "bibleHymn": "350장",
         "visitContent": "이사심방. 새 거주지로 이사 후 첫 심방. 가정에 평안이 있으시길 기도함.",
-        "category": "이사심방"
+        "category": "이사심방",
+        "author": "신점일 목사"
       },
       {
         "visitDate": "2026-03-20",
         "bibleHymn": "280장",
         "visitContent": "정기심방. 건강하게 잘 지내고 계심. 고등부 교사 봉사에 감사드림.",
-        "category": "정기심방"
+        "category": "정기심방",
+        "author": "김교역 전도사"
       },
       {
         "visitDate": "2026-01-10",
         "bibleHymn": "시편 23편",
         "visitContent": "새해 심방. 올 한 해도 건강하시고 가정에 하나님의 은혜가 충만하시길.",
-        "category": "새해심방"
+        "category": "새해심방",
+        "author": "신점일 목사"
       }
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",

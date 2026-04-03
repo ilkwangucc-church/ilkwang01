@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
         bibleHymn: mapped.bibleHymn || "",
         visitContent: mapped.visitContent || "",
         category: mapped.category || "정기심방",
+        author: mapped.author || "",
       });
     });
 

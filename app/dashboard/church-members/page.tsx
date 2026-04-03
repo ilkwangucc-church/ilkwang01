@@ -32,11 +32,18 @@ interface FamilyMember {
   notes: string;
 }
 
+interface MemoEntry {
+  content: string;
+  author: string;
+  createdAt: string;
+}
+
 interface PastoralVisit {
   visitDate: string;
   bibleHymn: string;
   visitContent: string;
   category: string;
+  author: string;
 }
 
 interface ChurchMember {
@@ -67,7 +74,8 @@ interface ChurchMember {
   baptismType: string;
   baptismDate: string;
   baptismChurch: string;
-  notes: string;
+  memos: MemoEntry[];
+  groups: string[];
   familyMembers: FamilyMember[];
   pastoralVisits: PastoralVisit[];
   createdAt: string;
@@ -108,7 +116,8 @@ function emptyMember(): Omit<ChurchMember, "id" | "createdAt" | "updatedAt"> {
     baptismType: "",
     baptismDate: "",
     baptismChurch: "",
-    notes: "",
+    memos: [],
+    groups: [],
     familyMembers: [],
     pastoralVisits: [],
   };
@@ -130,7 +139,22 @@ function emptyFamily(): FamilyMember {
 }
 
 function emptyVisit(): PastoralVisit {
-  return { visitDate: "", bibleHymn: "", visitContent: "", category: "정기심방" };
+  return { visitDate: "", bibleHymn: "", visitContent: "", category: "정기심방", author: "" };
+}
+
+/* ── 현재 사용자 이름 가져오기 ──────────────────────────────── */
+
+function getCurrentAuthor(): string {
+  try {
+    const raw = sessionStorage.getItem("admin_user");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return parsed.displayName || "관리자";
+    }
+  } catch {
+    // silent
+  }
+  return "관리자";
 }
 
 /* ── SMS 링크 컴포넌트 ──────────────────────────────────────── */
@@ -277,6 +301,7 @@ export default function ChurchMembersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("");
+  const [filterGroup, setFilterGroup] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // 모달
@@ -300,6 +325,13 @@ export default function ChurchMembersPage() {
 
   // 파일 인풋 ref
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 인라인 메모 추가
+  const [newMemoText, setNewMemoText] = useState("");
+
+  /* ── 모든 그룹 수집 ──────────────────────────────────────── */
+
+  const allGroups = [...new Set(members.flatMap(m => m.groups || []))];
 
   /* ── 데이터 로드 ─────────────────────────────────────────── */
 
@@ -325,6 +357,7 @@ export default function ChurchMembersPage() {
 
   const filtered = members.filter((m) => {
     if (filterType && m.memberType !== filterType) return false;
+    if (filterGroup && !(m.groups || []).includes(filterGroup)) return false;
     if (
       search &&
       ![m.name, m.phone, m.parish, m.serviceDept].some((v) =>
@@ -373,7 +406,8 @@ export default function ChurchMembersPage() {
       baptismType: m.baptismType,
       baptismDate: m.baptismDate,
       baptismChurch: m.baptismChurch,
-      notes: m.notes,
+      memos: m.memos?.length ? m.memos.map(memo => ({ ...memo })) : [],
+      groups: m.groups?.length ? [...m.groups] : [],
       familyMembers: m.familyMembers?.length
         ? m.familyMembers.map((f) => ({ ...f }))
         : [],
@@ -435,6 +469,36 @@ export default function ChurchMembersPage() {
       }
     } catch {
       alert("삭제 중 오류 발생");
+    }
+  }
+
+  /* ── 인라인 메모 추가 ─────────────────────────────────────── */
+
+  async function handleAddMemo(memberId: string) {
+    if (!newMemoText.trim()) return;
+    const member = members.find(m => m.id === memberId);
+    if (!member) return;
+
+    const newMemo: MemoEntry = {
+      content: newMemoText.trim(),
+      author: getCurrentAuthor(),
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedMemos = [...(member.memos || []), newMemo];
+
+    try {
+      const res = await fetch(`/api/church-members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...member, memos: updatedMemos }),
+      });
+      if (res.ok) {
+        setNewMemoText("");
+        await fetchMembers();
+      }
+    } catch {
+      alert("메모 저장 중 오류 발생");
     }
   }
 
@@ -519,9 +583,10 @@ export default function ChurchMembersPage() {
   }
 
   function addVisit() {
+    const author = getCurrentAuthor();
     setForm((prev) => ({
       ...prev,
-      pastoralVisits: [...prev.pastoralVisits, emptyVisit()],
+      pastoralVisits: [...prev.pastoralVisits, { ...emptyVisit(), author }],
     }));
   }
 
@@ -537,6 +602,7 @@ export default function ChurchMembersPage() {
   function toggleCategory(cat: string) {
     setOpenCategories((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }
+  void toggleCategory;
 
   /* ── 심방을 카테고리별로 그룹핑 ──────────────────────────── */
 
@@ -667,6 +733,17 @@ export default function ChurchMembersPage() {
             엑셀 내보내기
           </button>
           <button
+            onClick={() => {
+              const phones = filtered.map(m => m.phone).filter(Boolean).map(p => p.replace(/-/g, ""));
+              if (phones.length === 0) { alert("문자를 보낼 연락처가 없습니다."); return; }
+              window.location.href = `sms:${phones.join(",")}`;
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-[#2E7D32] text-[#2E7D32] rounded-xl hover:bg-[#E8F5E9] transition-colors"
+          >
+            <MessageSquare className="w-4 h-4" />
+            단체 문자 ({filtered.filter(m => m.phone).length})
+          </button>
+          <button
             onClick={openNew}
             className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20] transition-colors font-medium"
           >
@@ -701,7 +778,7 @@ export default function ChurchMembersPage() {
             className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
           />
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
           {MEMBER_TYPE_FILTERS.map((f) => (
             <button
               key={f.value}
@@ -715,6 +792,25 @@ export default function ChurchMembersPage() {
               {f.label}
             </button>
           ))}
+          {/* 그룹 필터 */}
+          {allGroups.length > 0 && (
+            <>
+              <div className="w-px h-5 bg-gray-200" />
+              {allGroups.map(g => (
+                <button
+                  key={g}
+                  onClick={() => setFilterGroup(filterGroup === g ? "" : g)}
+                  className={`px-3.5 py-1.5 text-xs rounded-full border transition-colors font-medium ${
+                    filterGroup === g
+                      ? "bg-purple-600 text-white border-purple-600"
+                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </>
+          )}
         </div>
       </div>
 
@@ -859,6 +955,16 @@ export default function ChurchMembersPage() {
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">{m.currentStatus}</span>
                                   )}
                                 </div>
+                                {/* 그룹 태그 */}
+                                {m.groups && m.groups.length > 0 && (
+                                  <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                                    {m.groups.map(g => (
+                                      <span key={g} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 font-medium">
+                                        {g}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
                                 <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500 flex-wrap">
                                   <span>{m.gender} · {m.birthDate || "-"}</span>
                                   <span>{m.marriageStatus || "-"}</span>
@@ -959,13 +1065,48 @@ export default function ChurchMembersPage() {
                             </div>
                           </div>
 
-                          {/* ── 비고 ── */}
-                          {m.notes && (
-                            <div className="bg-white rounded-xl border border-gray-200 p-4">
-                              <h4 className="text-xs font-bold text-gray-500 mb-1">비고</h4>
-                              <p className="text-sm text-gray-700 whitespace-pre-wrap">{m.notes}</p>
+                          {/* ── 메모 ── */}
+                          <div className="bg-white rounded-xl border border-gray-200 p-4">
+                            <h4 className="text-xs font-bold text-gray-500 mb-2">메모</h4>
+                            {m.memos && m.memos.length > 0 ? (
+                              <div className="space-y-2">
+                                {m.memos.map((memo, mi) => (
+                                  <div key={mi} className="bg-gray-50 rounded-lg px-3 py-2">
+                                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{memo.content}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <span className="text-[10px] text-gray-400">{memo.author}</span>
+                                      <span className="text-[10px] text-gray-300">·</span>
+                                      <span className="text-[10px] text-gray-400">
+                                        {memo.createdAt ? new Date(memo.createdAt).toLocaleDateString("ko-KR") : ""}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-gray-400">등록된 메모가 없습니다.</p>
+                            )}
+                            <div className="flex gap-2 mt-3">
+                              <input
+                                placeholder="메모 입력..."
+                                value={expandedId === m.id ? newMemoText : ""}
+                                onChange={(e) => setNewMemoText(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleAddMemo(m.id);
+                                  }
+                                }}
+                                className={inputClass + " flex-1"}
+                              />
+                              <button
+                                onClick={() => handleAddMemo(m.id)}
+                                className="px-3 py-2 bg-[#2E7D32] text-white rounded-xl text-sm shrink-0"
+                              >
+                                추가
+                              </button>
                             </div>
-                          )}
+                          </div>
 
                           {/* ── 가족사항 (카드 레이아웃) ── */}
                           {m.familyMembers && m.familyMembers.length > 0 && (
@@ -1067,6 +1208,7 @@ export default function ChurchMembersPage() {
                                             <div key={vi} className="px-4 py-3 pl-10">
                                               <div className="flex items-center gap-3 mb-1">
                                                 <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
+                                                {v.author && <span className="text-[10px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full">{v.author}</span>}
                                                 {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
                                               </div>
                                               {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed">{v.visitContent}</p>}
@@ -1092,7 +1234,7 @@ export default function ChurchMembersPage() {
         </div>
         {filtered.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">
-            {search || filterType
+            {search || filterType || filterGroup
               ? "검색 결과가 없습니다."
               : "등록된 교인이 없습니다."}
           </div>
@@ -1120,7 +1262,7 @@ export default function ChurchMembersPage() {
 
             {/* 탭 헤더 */}
             <div className="flex border-b shrink-0">
-              {["기본정보", "교인정보", "가족사항", "심방내역"].map(
+              {["기본정보", "교인정보", "가족사항", "심방내역", "메모"].map(
                 (tab, i) => (
                   <button
                     key={tab}
@@ -1236,14 +1378,21 @@ export default function ChurchMembersPage() {
                   <FormField label="집례교회" field="baptismChurch" />
                   <div className="col-span-2">
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      비고
+                      그룹 태그 (쉼표로 구분)
                     </label>
-                    <textarea
-                      value={form.notes}
-                      onChange={(e) => updateField("notes", e.target.value)}
-                      rows={3}
-                      className={`${inputClass} resize-none`}
+                    <input
+                      list="group-datalist"
+                      value={form.groups?.join(", ") || ""}
+                      onChange={(e) => {
+                        const tags = e.target.value.split(",").map(s => s.trim()).filter(Boolean);
+                        setForm(prev => ({ ...prev, groups: tags }));
+                      }}
+                      className={inputClass}
+                      placeholder="예: 기획위원회, 찬양팀, ..."
                     />
+                    <datalist id="group-datalist">
+                      {allGroups.map(g => <option key={g} value={g} />)}
+                    </datalist>
                   </div>
                 </div>
               )}
@@ -1434,7 +1583,7 @@ export default function ChurchMembersPage() {
                           <Trash2 className="w-3 h-3" /> 삭제
                         </button>
                       </div>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">
                             카테고리 (직접 입력 가능)
@@ -1485,6 +1634,19 @@ export default function ChurchMembersPage() {
                             placeholder="요한복음 3:16 / 찬송 205장"
                           />
                         </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">
+                            기록자
+                          </label>
+                          <input
+                            value={visit.author || ""}
+                            onChange={(e) =>
+                              updateVisit(i, "author", e.target.value)
+                            }
+                            className={inputClass}
+                            placeholder="기록자 이름"
+                          />
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">
@@ -1507,6 +1669,74 @@ export default function ChurchMembersPage() {
                   >
                     <Plus className="w-4 h-4" /> 심방 추가
                   </button>
+                </div>
+              )}
+
+              {/* 탭 4: 메모 */}
+              {activeTab === 4 && (
+                <div className="space-y-4">
+                  {form.memos && form.memos.length > 0 ? (
+                    <div className="space-y-3">
+                      {form.memos.map((memo, mi) => (
+                        <div key={mi} className="border border-gray-200 rounded-xl p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-700 whitespace-pre-wrap">{memo.content}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <span className="text-xs text-gray-500">{memo.author}</span>
+                                <span className="text-xs text-gray-300">·</span>
+                                <span className="text-xs text-gray-400">
+                                  {memo.createdAt ? new Date(memo.createdAt).toLocaleDateString("ko-KR") : ""}
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setForm(prev => ({
+                                  ...prev,
+                                  memos: prev.memos.filter((_, i) => i !== mi),
+                                }));
+                              }}
+                              className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 shrink-0"
+                            >
+                              <Trash2 className="w-3 h-3" /> 삭제
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-400 text-center py-4">등록된 메모가 없습니다.</p>
+                  )}
+                  <div className="border border-dashed border-gray-300 rounded-xl p-4 space-y-3">
+                    <label className="block text-xs font-bold text-gray-600">새 메모 추가</label>
+                    <textarea
+                      placeholder="메모 내용을 입력하세요..."
+                      className={`${inputClass} resize-none`}
+                      rows={3}
+                      id="modal-memo-input"
+                    />
+                    <button
+                      onClick={() => {
+                        const textarea = document.getElementById("modal-memo-input") as HTMLTextAreaElement;
+                        const content = textarea?.value?.trim();
+                        if (!content) return;
+                        const newMemo: MemoEntry = {
+                          content,
+                          author: getCurrentAuthor(),
+                          createdAt: new Date().toISOString(),
+                        };
+                        setForm(prev => ({
+                          ...prev,
+                          memos: [...(prev.memos || []), newMemo],
+                        }));
+                        textarea.value = "";
+                      }}
+                      className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-xl hover:bg-[#1B5E20] transition-colors"
+                    >
+                      <Plus className="w-4 h-4" /> 메모 추가
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

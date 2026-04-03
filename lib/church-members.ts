@@ -21,12 +21,20 @@ export interface FamilyMember {
   notes: string;
 }
 
+/* ── 메모 (기록자 추적) ────────────────────────────────────────── */
+export interface MemoEntry {
+  content: string;
+  author: string;
+  createdAt: string;
+}
+
 /* ── 심방내역 ─────────────────────────────────────────────────── */
 export interface PastoralVisit {
   visitDate: string;
   bibleHymn: string;
   visitContent: string;
   category: string;
+  author: string;
 }
 
 /* ── 교적카드 ─────────────────────────────────────────────────── */
@@ -58,7 +66,8 @@ export interface ChurchMember {
   baptismType: string;
   baptismDate: string;
   baptismChurch: string;
-  notes: string;
+  memos: MemoEntry[];
+  groups: string[];
   familyMembers: FamilyMember[];
   pastoralVisits: PastoralVisit[];
   createdAt: string;
@@ -123,7 +132,8 @@ export function createEmptyMember(partial: Partial<ChurchMember> = {}): ChurchMe
     baptismType: "",
     baptismDate: "",
     baptismChurch: "",
-    notes: "",
+    memos: [],
+    groups: [],
     familyMembers: [],
     pastoralVisits: [],
     createdAt: now,
@@ -163,7 +173,7 @@ export const MEMBER_EXCEL_HEADERS: Record<string, string> = {
   세례유형: "baptismType",
   집례일: "baptismDate",
   집례교회: "baptismChurch",
-  비고: "notes",
+  그룹: "groups",
 };
 
 export const FAMILY_EXCEL_HEADERS: Record<string, string> = {
@@ -188,4 +198,5 @@ export const VISIT_EXCEL_HEADERS: Record<string, string> = {
   심방일: "visitDate",
   "성경/찬송": "bibleHymn",
   심방내용: "visitContent",
+  기록자: "author",
 };
