@@ -84,7 +84,7 @@ export default function CommunityHome() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1B5E20]/90 to-[#2E7D32]/70" />
-        <div className="absolute inset-0 z-10 px-6 flex items-center justify-between flex-wrap gap-4">
+        <div className="absolute inset-0 z-10 px-6 flex items-center justify-between gap-4">
           <div>
             <p className="text-green-200 text-sm mb-1 flex items-center gap-1">
               <Sun className="w-3.5 h-3.5" />
@@ -93,7 +93,7 @@ export default function CommunityHome() {
             <h1 className="text-3xl font-bold text-white mb-1">{displayName}님, 환영합니다 👋</h1>
             <p className="text-green-100 text-sm">행복과 영원으로 초대하는 일광교회 커뮤니티입니다</p>
           </div>
-          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 text-sm max-w-xs border border-white/20">
+          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 text-sm max-w-xs border border-white/20 flex flex-col justify-center self-center shrink-0">
             <p className="text-green-100 text-xs mb-1 flex items-center gap-1">
               <BookOpen className="w-3 h-3" /> 오늘의 말씀
             </p>
