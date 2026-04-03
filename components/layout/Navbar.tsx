@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, LogOut } from "lucide-react";
 import Logo from "./Logo";
 
 type SubItem = { label: string; href: string; desc: string };
@@ -79,6 +79,21 @@ export default function Navbar() {
   const [visible, setVisible]       = useState(true);
   const lastScrollY                 = useRef(0);
   const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [loggedIn, setLoggedIn]     = useState(false);
+
+  // 로그인 상태 확인 (대시보드에서 프론트로 나와도 유지)
+  useEffect(() => {
+    fetch("/api/admin/auth/me")
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.username) setLoggedIn(true); })
+      .catch(() => {});
+  }, []);
+
+  async function handleLogout() {
+    await fetch("/api/admin/auth", { method: "DELETE" });
+    sessionStorage.removeItem("admin_user");
+    setLoggedIn(false);
+  }
 
   useEffect(() => {
     const onScroll = () => {
@@ -133,7 +148,6 @@ export default function Navbar() {
           </p>
           <div className="ml-auto flex items-center gap-4">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">문의하기</Link>
-            <Link href="/register" className="text-white/70 hover:text-white text-xs transition-colors">회원가입</Link>
           </div>
         </div>
       </div>
@@ -171,11 +185,20 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right: Login + CTA */}
+          {/* Right: Login/Logout + CTA */}
           <div className="hidden lg:flex flex-1 items-center justify-end gap-4">
-            <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
-              로그인
-            </Link>
+            {loggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-4 py-2 bg-gray-700 text-white text-sm font-bold rounded-[26px] hover:bg-gray-900 transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" /> 로그아웃
+              </button>
+            ) : (
+              <Link href="/login" className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors">
+                로그인
+              </Link>
+            )}
             <Link href="/offering" className={`px-4 py-2 text-sm font-bold rounded-[26px] transition-colors tracking-wide ${
               white
                 ? "border border-black text-black"
