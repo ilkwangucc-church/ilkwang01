@@ -745,13 +745,6 @@ export default function ChurchMembersPage() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={() => setShowGroupModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-purple-300 text-purple-600 rounded-xl hover:bg-purple-50 transition-colors"
-          >
-            <Settings className="w-4 h-4" />
-            그룹 관리
-          </button>
-          <button
             onClick={() =>
               (window.location.href = "/api/church-members/template")
             }
@@ -782,20 +775,6 @@ export default function ChurchMembersPage() {
           >
             <FileSpreadsheet className="w-4 h-4" />
             엑셀 내보내기
-          </button>
-          <button
-            onClick={() => {
-              const recipients = filtered.filter(m => m.phone).map(m => ({ name: m.name, phone: m.phone }));
-              if (recipients.length === 0) { alert("문자를 보낼 연락처가 없습니다."); return; }
-              setSmsRecipients(recipients);
-              setSmsMessage("");
-              setSmsResult(null);
-              setShowSmsModal(true);
-            }}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-[#2E7D32] text-[#2E7D32] rounded-xl hover:bg-[#E8F5E9] transition-colors"
-          >
-            <MessageSquare className="w-4 h-4" />
-            단체 문자 ({filtered.filter(m => m.phone).length})
           </button>
           <button
             onClick={openNew}
@@ -847,24 +826,27 @@ export default function ChurchMembersPage() {
             </button>
           ))}
           {/* 그룹 필터 */}
-          {allGroups.length > 0 && (
-            <>
-              <div className="w-px h-5 bg-gray-200" />
-              {allGroups.map(g => (
-                <button
-                  key={g}
-                  onClick={() => setFilterGroup(filterGroup === g ? "" : g)}
-                  className={`px-3.5 py-1.5 text-xs rounded-full border transition-colors font-medium ${
-                    filterGroup === g
-                      ? "bg-purple-600 text-white border-purple-600"
-                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  {g}
-                </button>
-              ))}
-            </>
-          )}
+          <div className="w-px h-5 bg-gray-200" />
+          <button
+            onClick={() => setShowGroupModal(true)}
+            className="p-1.5 rounded-full border border-purple-300 text-purple-600 hover:bg-purple-50 transition-colors"
+            title="그룹 설정"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+          {allGroups.map(g => (
+            <button
+              key={g}
+              onClick={() => setFilterGroup(filterGroup === g ? "" : g)}
+              className={`px-3.5 py-1.5 text-xs rounded-full border transition-colors font-medium ${
+                filterGroup === g
+                  ? "bg-purple-600 text-white border-purple-600"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {g}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -1621,14 +1603,23 @@ export default function ChurchMembersPage() {
               {/* 탭 3: 심방내역 */}
               {activeTab === 3 && (
                 <div className="space-y-4">
-                  <div className="flex justify-start">
+                  {/* 심방 카테고리 탭 바 */}
+                  <div className="flex gap-2 flex-wrap items-center">
                     <button
                       onClick={() => setShowVisitCatModal(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-[#2E7D32]/40 text-[#2E7D32] rounded-xl hover:bg-[#E8F5E9] transition-colors"
+                      className="p-1.5 rounded-full border border-[#2E7D32]/40 text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors"
+                      title="심방 카테고리 설정"
                     >
                       <Settings className="w-3.5 h-3.5" />
-                      심방 카테고리 설정
                     </button>
+                    {visitCats.map(cat => {
+                      const count = form.pastoralVisits.filter(v => v.category === cat).length;
+                      return (
+                        <span key={cat} className="px-3 py-1 text-xs rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium">
+                          {cat} {count > 0 && <span className="text-[10px] text-[#2E7D32]/60">({count})</span>}
+                        </span>
+                      );
+                    })}
                   </div>
                   {form.pastoralVisits.map((visit, i) => (
                     <div
