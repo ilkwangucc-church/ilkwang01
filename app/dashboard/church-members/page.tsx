@@ -76,7 +76,7 @@ interface ChurchMember {
 
 /* ── 상수 ───────────────────────────────────────────────────── */
 
-const VISIT_CATEGORIES = ["정기심방", "이사심방", "새해심방", "병문안", "기타"];
+const DEFAULT_CATEGORIES = ["정기심방", "이사심방", "새해심방", "병문안"];
 
 /* ── 빈 객체 헬퍼 ───────────────────────────────────────────── */
 
@@ -842,11 +842,11 @@ export default function ChurchMembersPage() {
                                 <img
                                   src={m.photo}
                                   alt={m.name}
-                                  className="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-[#E8F5E9] cursor-pointer hover:opacity-90 transition-opacity"
+                                  className="w-16 h-16 rounded-xl object-cover shrink-0 ring-2 ring-[#E8F5E9] cursor-pointer hover:opacity-90 transition-opacity"
                                   onClick={() => setImageModal({ src: m.photo, alt: m.name })}
                                 />
                               ) : (
-                                <div className="w-14 h-14 bg-[#E8F5E9] rounded-full flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
+                                <div className="w-16 h-16 bg-[#E8F5E9] rounded-xl flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
                                   <span className="text-[#2E7D32] font-bold text-lg">{m.name?.[0]}</span>
                                 </div>
                               )}
@@ -1437,21 +1437,27 @@ export default function ChurchMembersPage() {
                       <div className="grid grid-cols-3 gap-3">
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">
-                            카테고리
+                            카테고리 (직접 입력 가능)
                           </label>
-                          <select
-                            value={visit.category || "정기심방"}
+                          <input
+                            list={`visit-cat-${i}`}
+                            value={visit.category || ""}
                             onChange={(e) =>
                               updateVisit(i, "category", e.target.value)
                             }
                             className={inputClass}
-                          >
-                            {VISIT_CATEGORIES.map((c) => (
-                              <option key={c} value={c}>
-                                {c}
-                              </option>
+                            placeholder="예: 정기심방, 병문안..."
+                          />
+                          <datalist id={`visit-cat-${i}`}>
+                            {[...new Set([
+                              ...DEFAULT_CATEGORIES,
+                              ...members.flatMap((mm) =>
+                                (mm.pastoralVisits || []).map((v) => v.category).filter(Boolean)
+                              ),
+                            ])].map((c) => (
+                              <option key={c} value={c} />
                             ))}
-                          </select>
+                          </datalist>
                         </div>
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">
