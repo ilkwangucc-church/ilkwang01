@@ -54,8 +54,8 @@ const DEPT_INSTAGRAMS = [
     posts: 76,
     recentImages: [
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=300&q=80",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=300&q=80",
-      "https://images.unsplash.com/photo-1548407260-da850faa41e3?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1569173112611-52a7cd38bea9?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80",
     ],
   },
   {
