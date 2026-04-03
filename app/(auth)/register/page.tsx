@@ -55,8 +55,14 @@ export default function RegisterPage() {
                 <span className="font-nanum text-[11px] text-gray-500 tracking-wide leading-none">행복과 영원으로 초대하는</span>
                 <span className="font-noto-black text-[22px] text-[#1a2744] leading-none">일광교회</span>
               </div>
-              <span className="inline-block px-5 py-1.5 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold mt-2">회원가입</span>
-              <p className="text-gray-400 text-xs mt-2">일광교회 성도 포털에 오신 것을 환영합니다</p>
+            </div>
+            <div className="flex w-full rounded-xl overflow-hidden mt-3 mb-2">
+              <div className="bg-[#1a2744] px-5 py-2.5 flex items-center">
+                <span className="text-white text-sm font-semibold whitespace-nowrap">회원가입</span>
+              </div>
+              <div className="bg-gray-100 flex-1 px-4 py-2.5 flex items-center">
+                <span className="text-gray-500 text-xs">일광교회 성도 포털에 오신 것을 환영합니다</span>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3">
