@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ilkwang_church",
+    "dept": "일광교회 공식",
+    "handle": "@ilkwang_church",
+    "gradient": "from-purple-500 to-pink-500",
+    "bio": "일광교회 공식 인스타그램입니다. 교회 소식과 은혜로운 이야기를 나눕니다",
+    "url": "https://www.instagram.com/ilkwang_church/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  },
+  {
+    "id": "ilkwang_worship",
+    "dept": "찬양팀",
+    "handle": "@ilkwang_worship",
+    "gradient": "from-amber-400 to-orange-500",
+    "bio": "예배를 섬기는 찬양팀의 이야기를 나눕니다. 하나님께 드리는 찬양",
+    "url": "https://www.instagram.com/ilkwang_worship/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  },
+  {
+    "id": "ilkwang_mission",
+    "dept": "선교부",
+    "handle": "@ilkwang_mission",
+    "gradient": "from-red-400 to-rose-500",
+    "bio": "세계 선교의 현장을 함께 나눕니다. 땅 끝까지 복음을",
+    "url": "https://www.instagram.com/ilkwang_mission/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  },
+  {
+    "id": "ilkwang_kids",
+    "dept": "유초등부",
+    "handle": "@ilkwang_kids",
+    "gradient": "from-green-400 to-teal-500",
+    "bio": "유초등부 아이들의 순수한 믿음 이야기를 전합니다. 다음 세대를 세워갑니다",
+    "url": "https://www.instagram.com/ilkwang_kids/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  },
+  {
+    "id": "ilkwang_teen",
+    "dept": "중고등부",
+    "handle": "@ilkwang_teen",
+    "gradient": "from-indigo-500 to-blue-500",
+    "bio": "중·고등부 청소년 커뮤니티입니다. 함께 성장하는 믿음의 공동체",
+    "url": "https://www.instagram.com/ilkwang_teen/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  },
+  {
+    "id": "ilkwang_youth",
+    "dept": "청년부",
+    "handle": "@ilkwang_youth",
+    "gradient": "from-blue-500 to-purple-500",
+    "bio": "일광교회 청년부 소식을 전합니다. 함께 믿음으로 성장해요",
+    "url": "https://www.instagram.com/ilkwang_youth/",
+    "accessToken": "",
+    "instagramUserId": "",
+    "tokenExpiresAt": "",
+    "isActive": false
+  }
+]

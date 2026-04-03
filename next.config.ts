@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "**.cdninstagram.com" },
+      { protocol: "https", hostname: "graph.instagram.com" },
     ],
     formats: ["image/avif", "image/webp"],  // AVIF 우선, WEBP 폴백
     minimumCacheTTL: 86_400,                // CDN 이미지 캐시 24시간

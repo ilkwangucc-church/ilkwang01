@@ -91,8 +91,9 @@ const adminGroups: NavGroup[] = [
   {
     label: "시스템",
     items: [
-      { label: "캐시 관리",  href: "/dashboard/cache",    icon: Zap },
-      { label: "사이트 설정", href: "/dashboard/settings", icon: Settings },
+      { label: "캐시 관리",   href: "/dashboard/cache",               icon: Zap },
+      { label: "인스타 설정", href: "/dashboard/settings/instagram", icon: Camera },
+      { label: "사이트 설정", href: "/dashboard/settings",           icon: Settings },
     ],
   },
 ];
