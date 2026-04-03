@@ -57,8 +57,8 @@ export default function LoginPage() {
                 <span className="font-nanum text-[11px] text-gray-500 tracking-wide leading-none">행복과 영원으로 초대하는</span>
                 <span className="font-noto-black text-[22px] text-[#1a2744] leading-none">일광교회</span>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">로그인</h1>
-              <p className="text-gray-500 text-sm mt-1">일광교회 성도 포털</p>
+              <span className="inline-block px-5 py-1.5 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold mt-2">로그인</span>
+              <p className="text-gray-400 text-xs mt-2">일광교회 성도 포털</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
