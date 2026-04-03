@@ -1035,104 +1035,141 @@ export default function ChurchMembersPage() {
 
                           {/* ── 프로필 헤더 ── */}
                           <div className="bg-white rounded-xl border border-gray-200 p-4">
-                            <div className="flex items-start gap-4">
+                            <div className="flex items-start gap-3">
+
                               {/* 프로필 사진 */}
                               {m.photo ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                   src={m.photo}
                                   alt={m.name}
-                                  className="w-16 h-16 rounded-xl object-cover shrink-0 ring-2 ring-[#E8F5E9] cursor-pointer hover:opacity-90 transition-opacity"
+                                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 ring-2 ring-[#E8F5E9] cursor-pointer hover:opacity-90 transition-opacity"
                                   onClick={() => setImageModal({ src: m.photo, alt: m.name })}
                                 />
                               ) : (
-                                <div className="w-16 h-16 bg-[#E8F5E9] rounded-xl flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] rounded-xl flex items-center justify-center shrink-0 ring-2 ring-[#E8F5E9]">
                                   <span className="text-[#2E7D32] font-bold text-lg">{m.name?.[0]}</span>
                                 </div>
                               )}
+
+                              {/* 우측 전체 영역 */}
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <h3 className="text-lg font-bold text-gray-900">{m.name}</h3>
-                                  <span className="text-xs px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium">{m.memberType || "장년"}</span>
-                                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">{m.detailPosition || "-"}</span>
-                                  {m.currentStatus && m.currentStatus !== "출석" && (
-                                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">{m.currentStatus}</span>
-                                  )}
+
+                                {/* 이름·배지 행 + 수정일 */}
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <h3 className="text-base font-bold text-gray-900 leading-tight">{m.name}</h3>
+                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-medium">{m.memberType || "장년"}</span>
+                                      {m.detailPosition && (
+                                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">{m.detailPosition}</span>
+                                      )}
+                                      {m.currentStatus && m.currentStatus !== "출석" && (
+                                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">{m.currentStatus}</span>
+                                      )}
+                                    </div>
+
+                                    {/* 그룹 태그 */}
+                                    {m.groups && m.groups.length > 0 && (
+                                      <div className="flex items-center gap-1 mt-1 flex-wrap">
+                                        {m.groups.map(g => (
+                                          <span key={g} className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-600 font-medium">
+                                            {g}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+
+                                    {/* 기본 인적사항 — 2열 그리드 */}
+                                    <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-0.5">
+                                      <div className="flex items-baseline gap-1 text-xs">
+                                        <span className="text-gray-400 shrink-0">성별·생년</span>
+                                        <span className="text-gray-700 truncate">{m.gender} · {m.birthDate || "-"}</span>
+                                      </div>
+                                      <div className="flex items-baseline gap-1 text-xs">
+                                        <span className="text-gray-400 shrink-0">혼인</span>
+                                        <span className="text-gray-700">{m.marriageStatus || "-"}</span>
+                                      </div>
+                                      {m.parish && (
+                                        <div className="flex items-baseline gap-1 text-xs">
+                                          <span className="text-gray-400 shrink-0">교구</span>
+                                          <span className="text-gray-700 truncate">{m.parish}</span>
+                                        </div>
+                                      )}
+                                      {m.serviceDept && (
+                                        <div className="flex items-baseline gap-1 text-xs">
+                                          <span className="text-gray-400 shrink-0">봉사</span>
+                                          <span className="text-gray-700 truncate">{m.serviceDept}</span>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* 연락처 */}
+                                    <div className="mt-1.5 flex items-center gap-3 flex-wrap">
+                                      {m.phone && (
+                                        <span onClick={e => e.stopPropagation()}>
+                                          <SmsLink number={m.phone} />
+                                        </span>
+                                      )}
+                                      {m.tel && <span className="text-xs text-gray-500">TEL {m.tel}</span>}
+                                    </div>
+                                  </div>
+
+                                  {/* 수정일 */}
+                                  <span className="text-[10px] text-gray-400 shrink-0 whitespace-nowrap">
+                                    {m.updatedAt ? new Date(m.updatedAt).toLocaleDateString("ko-KR") : ""}
+                                  </span>
                                 </div>
-                                {/* 그룹 태그 */}
-                                {m.groups && m.groups.length > 0 && (
-                                  <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                                    {m.groups.map(g => (
-                                      <span key={g} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 font-medium">
-                                        {g}
-                                      </span>
-                                    ))}
+
+                                {/* 가족 사진 — 이름 아래 별도 행 */}
+                                {m.familyPhotos && m.familyPhotos.filter(Boolean).length > 0 && (
+                                  <div className="flex gap-2 mt-3 flex-wrap">
+                                    {m.familyPhotos.map((fp, fpi) =>
+                                      fp ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img
+                                          key={fpi}
+                                          src={fp}
+                                          alt={`${m.name} 가족사진 ${fpi + 1}`}
+                                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                                          onClick={() => setImageModal({ src: fp, alt: `${m.name} 가족사진 ${fpi + 1}` })}
+                                        />
+                                      ) : null
+                                    )}
                                   </div>
                                 )}
-                                <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500 flex-wrap">
-                                  <span>{m.gender} · {m.birthDate || "-"}</span>
-                                  <span>{m.marriageStatus || "-"}</span>
-                                  {m.parish && <span>{m.parish}</span>}
-                                </div>
-                                <div className="flex items-center gap-4 mt-2 flex-wrap">
-                                  {m.phone && (
-                                    <span onClick={(e) => e.stopPropagation()}>
-                                      <SmsLink number={m.phone} />
-                                    </span>
-                                  )}
-                                  {m.tel && <span className="text-xs text-gray-500">TEL {m.tel}</span>}
-                                </div>
-                              </div>
 
-                              {/* 가족 사진 (최대 2장) */}
-                              <div className="flex items-center gap-2 shrink-0">
-                                {m.familyPhotos && m.familyPhotos.length > 0 && m.familyPhotos.map((fp, fpi) =>
-                                  fp ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                      key={fpi}
-                                      src={fp}
-                                      alt={`${m.name} 가족사진 ${fpi + 1}`}
-                                      className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                                      onClick={() => setImageModal({ src: fp, alt: `${m.name} 가족사진 ${fpi + 1}` })}
-                                    />
-                                  ) : null
-                                )}
                               </div>
-
-                              <span className="text-[10px] text-gray-400 shrink-0">
-                                {m.updatedAt ? new Date(m.updatedAt).toLocaleDateString("ko-KR") : ""}
-                              </span>
                             </div>
                           </div>
 
-                          {/* ── 정보 그리드 (3열 카드) ── */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {/* ── 정보 그리드 (모바일 2열, 데스크탑 3열) ── */}
+                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
 
                             {/* 기본 정보 */}
-                            <div className="bg-white rounded-xl border border-gray-200 p-4">
-                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3 flex items-center gap-1.5">
-                                <User className="w-3.5 h-3.5" /> 기본 정보
+                            <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4">
+                              <h4 className="text-[11px] sm:text-xs font-bold text-[#2E7D32] mb-2.5 flex items-center gap-1">
+                                <User className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> 기본 정보
                               </h4>
-                              <dl className="space-y-2 text-sm">
+                              <dl className="space-y-1.5">
                                 {[
                                   ["가족관계", m.familyRelation],
                                   ["신앙세대주", m.faithHead],
                                   ["배우자", m.spouse],
                                   ["주소", m.address],
                                 ].map(([label, val]) => (
-                                  <div key={label} className="flex">
-                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
-                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  <div key={label} className="flex gap-1">
+                                    <dt className="w-14 sm:w-16 shrink-0 text-[10px] sm:text-xs text-gray-400">{label}</dt>
+                                    <dd className="text-gray-800 text-[10px] sm:text-xs break-all leading-relaxed">{val || "-"}</dd>
                                   </div>
                                 ))}
                               </dl>
                             </div>
 
                             {/* 교인 정보 */}
-                            <div className="bg-white rounded-xl border border-gray-200 p-4">
-                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3">교인 정보</h4>
-                              <dl className="space-y-2 text-sm">
+                            <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4">
+                              <h4 className="text-[11px] sm:text-xs font-bold text-[#2E7D32] mb-2.5">교인 정보</h4>
+                              <dl className="space-y-1.5">
                                 {[
                                   ["등록일", m.registrationDate],
                                   ["인도자", m.introducer],
@@ -1140,18 +1177,18 @@ export default function ChurchMembersPage() {
                                   ["봉사부서", m.serviceDept],
                                   ["직장명", m.workplace],
                                 ].map(([label, val]) => (
-                                  <div key={label} className="flex">
-                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
-                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  <div key={label} className="flex gap-1">
+                                    <dt className="w-14 sm:w-16 shrink-0 text-[10px] sm:text-xs text-gray-400">{label}</dt>
+                                    <dd className="text-gray-800 text-[10px] sm:text-xs break-all leading-relaxed">{val || "-"}</dd>
                                   </div>
                                 ))}
                               </dl>
                             </div>
 
                             {/* 직분 · 세례 */}
-                            <div className="bg-white rounded-xl border border-gray-200 p-4">
-                              <h4 className="text-xs font-bold text-[#2E7D32] mb-3">직분 · 세례</h4>
-                              <dl className="space-y-2 text-sm">
+                            <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 col-span-2 lg:col-span-1">
+                              <h4 className="text-[11px] sm:text-xs font-bold text-[#2E7D32] mb-2.5">직분 · 세례</h4>
+                              <dl className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-1.5">
                                 {[
                                   ["상세직분", m.detailPosition],
                                   ["임직일", m.ordinationDate],
@@ -1160,9 +1197,9 @@ export default function ChurchMembersPage() {
                                   ["집례일", m.baptismDate],
                                   ["집례교회", m.baptismChurch],
                                 ].map(([label, val]) => (
-                                  <div key={label} className="flex">
-                                    <dt className="w-20 shrink-0 text-xs text-gray-500">{label}</dt>
-                                    <dd className="text-gray-900 text-xs">{val || "-"}</dd>
+                                  <div key={label} className="flex gap-1">
+                                    <dt className="w-14 sm:w-16 shrink-0 text-[10px] sm:text-xs text-gray-400">{label}</dt>
+                                    <dd className="text-gray-800 text-[10px] sm:text-xs break-all leading-relaxed">{val || "-"}</dd>
                                   </div>
                                 ))}
                               </dl>
