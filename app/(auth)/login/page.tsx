@@ -49,7 +49,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10 pb-8">
+          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 20 }}>
             <div className="text-center mb-8">
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -134,7 +134,7 @@ export default function LoginPage() {
             </p>
             <p className="text-xs text-gray-400">
               비밀번호를 잊으셨나요?{" "}
-              <Link href="/contact" className="text-gray-500 hover:text-[#2E7D32] hover:underline">교회 사무실에 문의</Link>
+              <Link href="/forgot-password" className="text-gray-500 hover:text-[#2E7D32] hover:underline">이메일로 비밀번호 찾기</Link>
             </p>
           </div>
         </div>
