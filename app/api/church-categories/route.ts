@@ -8,14 +8,20 @@ const DATA_PATH = path.join(process.cwd(), "data", "church-categories.json");
 interface Categories {
   visitCategories: string[];
   memberGroups: string[];
+  lockedVisitCategories: string[];
 }
 
 async function readCategories(): Promise<Categories> {
   try {
     const raw = await readFile(DATA_PATH, "utf-8");
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return {
+      visitCategories: parsed.visitCategories || [],
+      memberGroups: parsed.memberGroups || [],
+      lockedVisitCategories: parsed.lockedVisitCategories || [],
+    };
   } catch {
-    return { visitCategories: [], memberGroups: [] };
+    return { visitCategories: [], memberGroups: [], lockedVisitCategories: [] };
   }
 }
 
@@ -40,8 +46,9 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const current = await readCategories();
 
-    if (body.visitCategories) current.visitCategories = body.visitCategories;
-    if (body.memberGroups) current.memberGroups = body.memberGroups;
+    if (body.visitCategories !== undefined) current.visitCategories = body.visitCategories;
+    if (body.memberGroups !== undefined) current.memberGroups = body.memberGroups;
+    if (body.lockedVisitCategories !== undefined) current.lockedVisitCategories = body.lockedVisitCategories;
 
     await writeCategories(current);
     return NextResponse.json({ success: true, ...current });

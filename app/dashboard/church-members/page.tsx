@@ -16,6 +16,8 @@ import {
   User,
   Image as ImageIcon,
   Settings,
+  Lock,
+  Unlock,
 } from "lucide-react";
 
 /* ── 타입 정의 ──────────────────────────────────────────────── */
@@ -334,9 +336,13 @@ export default function ChurchMembersPage() {
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showVisitCatModal, setShowVisitCatModal] = useState(false);
   const [visitCats, setVisitCats] = useState<string[]>([]);
+  const [lockedVisitCats, setLockedVisitCats] = useState<string[]>([]);
   const [memberGroupCats, setMemberGroupCats] = useState<string[]>([]);
   const [newCatInput, setNewCatInput] = useState("");
   const [newGroupInput, setNewGroupInput] = useState("");
+
+  // 심방내역 필터 (아코디언 내부)
+  const [activeVisitCatFilter, setActiveVisitCatFilter] = useState<string>("");
 
   // 그룹 관리 — 회원 목록 보기
   const [selectedGroupView, setSelectedGroupView] = useState<string | null>(null);
@@ -381,20 +387,34 @@ export default function ChurchMembersPage() {
         const data = await res.json();
         setVisitCats(data.visitCategories || []);
         setMemberGroupCats(data.memberGroups || []);
+        setLockedVisitCats(data.lockedVisitCategories || []);
       }
     } catch { /* silent */ }
   }
 
-  async function saveCategories(vc: string[], mg: string[]) {
+  async function saveCategories(vc: string[], mg: string[], lvc?: string[]) {
+    const locked = lvc !== undefined ? lvc : lockedVisitCats;
     try {
       await fetch("/api/church-categories", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ visitCategories: vc, memberGroups: mg }),
+        body: JSON.stringify({ visitCategories: vc, memberGroups: mg, lockedVisitCategories: locked }),
       });
       setVisitCats(vc);
       setMemberGroupCats(mg);
+      setLockedVisitCats(locked);
     } catch { alert("카테고리 저장 실패"); }
+  }
+
+  async function saveLockedVisitCats(lvc: string[]) {
+    try {
+      await fetch("/api/church-categories", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitCategories: visitCats, memberGroups: memberGroupCats, lockedVisitCategories: lvc }),
+      });
+      setLockedVisitCats(lvc);
+    } catch { alert("저장 실패"); }
   }
 
   async function updateMemberType(memberId: string, newType: string) {
@@ -1253,59 +1273,77 @@ export default function ChurchMembersPage() {
                             </div>
                           )}
 
-                          {/* ── 심방내역 (카테고리별 그룹핑) ── */}
-                          {m.pastoralVisits && m.pastoralVisits.length > 0 && (
+                          {/* ── 심방내역 (필터 + 목록) ── */}
+                          {m.pastoralVisits && m.pastoralVisits.length > 0 && (() => {
+                            const allCatsInMember = [...new Set(m.pastoralVisits.map(v => v.category || "기타"))];
+                            const displayVisits = activeVisitCatFilter
+                              ? m.pastoralVisits.filter(v => (v.category || "기타") === activeVisitCatFilter)
+                              : m.pastoralVisits;
+                            return (
                             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                              {/* 헤더: 제목 + 설정 아이콘 + 필터 버튼 */}
                               <div className="px-4 py-2.5 border-b border-gray-100">
-                                <h4 className="text-xs font-bold text-[#2E7D32]">
-                                  심방내역
-                                  <span className="ml-2 text-gray-400 font-normal">{m.pastoralVisits.length}건</span>
-                                </h4>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h4 className="text-xs font-bold text-[#2E7D32] shrink-0">
+                                    심방내역
+                                    <span className="ml-1.5 text-gray-400 font-normal">{m.pastoralVisits.length}건</span>
+                                  </h4>
+                                  <button
+                                    onClick={e => { e.stopPropagation(); setShowVisitCatModal(true); }}
+                                    className="p-1 rounded-full border border-[#2E7D32]/30 text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors shrink-0"
+                                    title="심방 분류 설정"
+                                  >
+                                    <Settings className="w-3 h-3" />
+                                  </button>
+                                  <button
+                                    onClick={e => { e.stopPropagation(); setActiveVisitCatFilter(""); }}
+                                    className={`px-2.5 py-1 text-[10px] rounded-full border transition-colors font-medium shrink-0 ${
+                                      activeVisitCatFilter === ""
+                                        ? "bg-[#2E7D32] text-white border-[#2E7D32]"
+                                        : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                                    }`}
+                                  >
+                                    전체
+                                  </button>
+                                  {allCatsInMember.map(cat => (
+                                    <button
+                                      key={cat}
+                                      onClick={e => { e.stopPropagation(); setActiveVisitCatFilter(activeVisitCatFilter === cat ? "" : cat); }}
+                                      className={`px-2.5 py-1 text-[10px] rounded-full border transition-colors font-medium shrink-0 ${
+                                        activeVisitCatFilter === cat
+                                          ? "bg-[#2E7D32] text-white border-[#2E7D32]"
+                                          : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                                      }`}
+                                    >
+                                      {cat}
+                                      <span className="ml-1 opacity-60">
+                                        ({m.pastoralVisits.filter(v => (v.category || "기타") === cat).length})
+                                      </span>
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
-                              <div>
-                                {Object.entries(groupVisitsByCategory(m.pastoralVisits)).map(([cat, visits]) => {
-                                  const catKey = `${m.id}-${cat}`;
-                                  const isOpen = openCategories[catKey] !== false; // default open
-                                  return (
-                                    <div key={cat}>
-                                      {/* 카테고리 헤더 */}
-                                      <div
-                                        className="bg-gray-50 px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
-                                        onClick={() => setOpenCategories((prev) => ({ ...prev, [catKey]: !isOpen }))}
-                                      >
-                                        <div className="flex items-center gap-2">
-                                          {isOpen ? (
-                                            <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-                                          ) : (
-                                            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-                                          )}
-                                          <span className="text-xs font-medium text-gray-700">{cat}</span>
-                                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#2E7D32]/10 text-[#2E7D32] font-medium">
-                                            {visits.length}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      {/* 카테고리 내 심방 목록 */}
-                                      {isOpen && (
-                                        <div className="divide-y divide-gray-100">
-                                          {visits.map((v, vi) => (
-                                            <div key={vi} className="px-4 py-3 pl-10">
-                                              <div className="flex items-center gap-3 mb-1">
-                                                <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
-                                                {v.author && <span className="text-[10px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full">{v.author}</span>}
-                                                {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
-                                              </div>
-                                              {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed">{v.visitContent}</p>}
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
+                              {/* 심방 목록 */}
+                              <div className="divide-y divide-gray-100">
+                                {displayVisits.length === 0 ? (
+                                  <p className="text-xs text-gray-400 text-center py-4">해당 분류의 심방 기록이 없습니다.</p>
+                                ) : displayVisits.map((v, vi) => (
+                                  <div key={vi} className="px-4 py-3">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2E7D32]/10 text-[#2E7D32] font-medium shrink-0">
+                                        {v.category || "기타"}
+                                      </span>
+                                      <span className="text-xs font-medium text-gray-900">{v.visitDate || "-"}</span>
+                                      {v.author && <span className="text-[10px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full">{v.author}</span>}
+                                      {v.bibleHymn && <span className="text-xs text-gray-400">{v.bibleHymn}</span>}
                                     </div>
-                                  );
-                                })}
+                                    {v.visitContent && <p className="text-xs text-gray-600 leading-relaxed pl-1">{v.visitContent}</p>}
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                          )}
+                            );
+                          })()}
 
                         </div>
                       </td>
@@ -2209,46 +2247,93 @@ export default function ChurchMembersPage() {
         );
       })()}
 
-      {/* ── 심방 카테고리 관리 모달 ─────────────────────────── */}
+      {/* ── 심방 분류 설정 모달 (잠금 기능 포함) ───────────── */}
       {showVisitCatModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[80vh] flex flex-col">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[85vh] flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
               <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-[#2E7D32]" /> 심방 카테고리 설정
+                <Settings className="w-5 h-5 text-[#2E7D32]" /> 심방 분류 설정
               </h3>
               <button onClick={() => setShowVisitCatModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="flex flex-wrap gap-2 mb-3">
-                {visitCats.map((cat) => (
-                  <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-sm font-medium">
-                    {cat}
-                    <button
-                      onClick={() => {
-                        const updated = visitCats.filter(c => c !== cat);
-                        saveCategories(updated, memberGroupCats);
-                      }}
-                      className="text-[#2E7D32]/60 hover:text-red-500 transition-colors"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                ))}
-                {visitCats.length === 0 && <p className="text-sm text-gray-400">등록된 카테고리가 없습니다.</p>}
-              </div>
-              <div className="flex gap-2">
+            <div className="flex-1 overflow-y-auto p-6 space-y-3">
+              {/* 범례 */}
+              <p className="text-xs text-gray-400">
+                자물쇠 버튼으로 분류를 잠그면 실수로 삭제되지 않습니다.
+              </p>
+              {/* 카테고리 목록 */}
+              {visitCats.length === 0 && (
+                <p className="text-sm text-gray-400 text-center py-4">등록된 분류가 없습니다.</p>
+              )}
+              {visitCats.map((cat) => {
+                const isLocked = lockedVisitCats.includes(cat);
+                const visitCount = members.reduce((acc, m) => acc + (m.pastoralVisits || []).filter(v => (v.category || "기타") === cat).length, 0);
+                return (
+                  <div
+                    key={cat}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${
+                      isLocked ? "bg-amber-50 border-amber-200" : "bg-[#E8F5E9] border-[#C8E6C9]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      {isLocked && <Lock className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
+                      <span className={`text-sm font-medium truncate ${isLocked ? "text-amber-700" : "text-[#2E7D32]"}`}>{cat}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{visitCount}건</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {/* 잠금/해제 토글 */}
+                      <button
+                        onClick={() => {
+                          const updated = isLocked
+                            ? lockedVisitCats.filter(c => c !== cat)
+                            : [...lockedVisitCats, cat];
+                          saveLockedVisitCats(updated);
+                        }}
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          isLocked
+                            ? "text-amber-500 hover:bg-amber-100"
+                            : "text-gray-400 hover:bg-gray-100 hover:text-amber-500"
+                        }`}
+                        title={isLocked ? "잠금 해제" : "잠금 설정"}
+                      >
+                        {isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                      </button>
+                      {/* 삭제 (잠금 상태이면 비활성) */}
+                      <button
+                        disabled={isLocked}
+                        onClick={() => {
+                          if (isLocked) return;
+                          const updated = visitCats.filter(c => c !== cat);
+                          saveCategories(updated, memberGroupCats);
+                        }}
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          isLocked
+                            ? "text-gray-200 cursor-not-allowed"
+                            : "text-gray-400 hover:bg-red-50 hover:text-red-500"
+                        }`}
+                        title={isLocked ? "잠금 상태 — 삭제 불가" : "삭제"}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* 새 분류 추가 */}
+              <div className="flex gap-2 pt-2">
                 <input
                   value={newCatInput}
-                  onChange={(e) => setNewCatInput(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={e => setNewCatInput(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === "Enter" && newCatInput.trim()) {
                       const updated = [...visitCats, newCatInput.trim()];
                       saveCategories(updated, memberGroupCats);
                       setNewCatInput("");
                     }
                   }}
-                  placeholder="새 심방 카테고리 입력..."
+                  placeholder="새 심방 분류 이름 입력..."
                   className={inputClass + " flex-1"}
                 />
                 <button
