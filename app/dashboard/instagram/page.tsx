@@ -148,7 +148,7 @@ export default function InstagramPage() {
             className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all group"
           >
             {/* 미니 인스타 사진 그리드 */}
-            <div className="grid grid-cols-3 h-28">
+            <div className="grid grid-cols-3 h-28 overflow-hidden">
               {account.recentImages.map((img, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
