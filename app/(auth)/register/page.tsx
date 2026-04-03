@@ -31,16 +31,16 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10 pb-8">
-            <div className="text-center mb-8">
-              <div className="flex justify-center mb-4">
+          <div className="bg-white px-8 pt-6 pb-5">
+            <div className="text-center mb-5">
+              <div className="flex justify-center mb-2">
                 <Logo size="md" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900">회원가입</h1>
               <p className="text-gray-500 text-sm mt-1">일광교회 성도 포털에 오신 것을 환영합니다</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {[
                 { label: "이름", name: "name", type: "text", placeholder: "홍길동" },
                 { label: "이메일", name: "email", type: "email", placeholder: "your@email.com" },
@@ -49,7 +49,7 @@ export default function RegisterPage() {
                 { label: "비밀번호 확인", name: "confirm", type: "password", placeholder: "비밀번호 재입력" },
               ].map((f) => (
                 <div key={f.name}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{f.label}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
                   <input
                     type={f.type}
                     name={f.name}
@@ -57,15 +57,10 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     placeholder={f.placeholder}
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/40 focus:border-[#2E7D32] text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/40 focus:border-[#2E7D32] text-sm transition-colors"
                   />
                 </div>
               ))}
-
-              <div className="text-xs text-gray-500 bg-blue-50 rounded-lg p-3 leading-relaxed">
-                회원가입 후 이름과 휴대폰 번호로 <strong>교적</strong>과 연동하면
-                성도 등급이 부여됩니다. 교적 매칭은 교회 사무실의 확인 후 처리됩니다.
-              </div>
 
               {message && (
                 <div className={`text-sm rounded-lg px-4 py-3 ${message.includes("완료") ? "text-green-700 bg-green-50 border border-green-200" : "text-red-700 bg-red-50 border border-red-200"}`}>
@@ -76,7 +71,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50 mt-2"
+                className="w-full py-3 bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
               >
                 {loading ? "처리 중..." : "회원가입"}
               </button>
