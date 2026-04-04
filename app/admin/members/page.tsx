@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff, Camera, Loader2 } from "lucide-react";
 import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
 interface Member {
@@ -12,6 +12,7 @@ interface Member {
   dept: string;
   matched: boolean;
   joined: string;
+  profileUrl?: string;
 }
 
 interface MemberForm {
@@ -40,7 +41,7 @@ function memberToForm(m: Member): MemberForm {
   };
 }
 
-/* ── 비밀번호 표시/숨기기 토글 버튼 ─────────────────────────── */
+/* ── 비밀번호 표시/숨기기 ─────────────────────────────────── */
 function PwToggle({ show, onToggle }: { show: boolean; onToggle: () => void }) {
   return (
     <button type="button" onClick={onToggle} tabIndex={-1}
@@ -50,10 +51,41 @@ function PwToggle({ show, onToggle }: { show: boolean; onToggle: () => void }) {
   );
 }
 
-/* ── 회원 폼 (추가 / 편집 공용) ────────────────────────────── */
+/* ── 프로필 아바타 ───────────────────────────────────────── */
+function Avatar({
+  member, size = "sm", clickable, onClick,
+}: {
+  member: Member;
+  size?: "sm" | "lg";
+  clickable?: boolean;
+  onClick?: () => void;
+}) {
+  const dim  = size === "lg" ? "w-20 h-20 text-2xl" : "w-9 h-9 text-xs";
+  const ring = clickable
+    ? "cursor-pointer hover:ring-2 hover:ring-[#2E7D32] hover:ring-offset-1 transition-all"
+    : "";
+
+  if (member.profileUrl) {
+    return (
+      <div className={`${dim} rounded-full overflow-hidden shrink-0 ${ring}`} onClick={onClick}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={member.profileUrl} alt={member.name} className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+  return (
+    <div
+      className={`${dim} bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold shrink-0 ${ring}`}
+      onClick={onClick}
+    >
+      {member.name[0]}
+    </div>
+  );
+}
+
+/* ── 회원 폼 필드 (추가 / 편집 공용) ─────────────────────── */
 function MemberFormFields({
-  form, setForm, error, saving, isEdit,
-  onSubmit, onClose,
+  form, setForm, error, saving, isEdit, onSubmit, onClose,
 }: {
   form: MemberForm;
   setForm: React.Dispatch<React.SetStateAction<MemberForm>>;
@@ -63,7 +95,7 @@ function MemberFormFields({
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
 }) {
-  const [showPw, setShowPw] = useState(false);
+  const [showPw, setShowPw]           = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   return (
@@ -71,8 +103,6 @@ function MemberFormFields({
       {error && (
         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>
       )}
-
-      {/* 이름 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           이름 <span className="text-red-500">*</span>
@@ -82,8 +112,6 @@ function MemberFormFields({
           placeholder="홍길동"
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
       </div>
-
-      {/* 이메일 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           이메일 <span className="text-gray-400 text-xs">(이메일 또는 휴대폰 중 하나 필수)</span>
@@ -93,8 +121,6 @@ function MemberFormFields({
           placeholder="example@email.com"
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
       </div>
-
-      {/* 휴대폰 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">휴대폰</label>
         <input type="tel" value={form.phone}
@@ -102,8 +128,6 @@ function MemberFormFields({
           placeholder="010-0000-0000"
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
       </div>
-
-      {/* 등급 · 부서 */}
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">등급</label>
@@ -125,8 +149,6 @@ function MemberFormFields({
             className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
         </div>
       </div>
-
-      {/* 비밀번호 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           비밀번호{" "}
@@ -142,8 +164,6 @@ function MemberFormFields({
           <PwToggle show={showPw} onToggle={() => setShowPw(v => !v)} />
         </div>
       </div>
-
-      {/* 비밀번호 확인 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호 확인</label>
         <div className="relative">
@@ -154,8 +174,6 @@ function MemberFormFields({
           <PwToggle show={showConfirm} onToggle={() => setShowConfirm(v => !v)} />
         </div>
       </div>
-
-      {/* 버튼 */}
       <div className="flex gap-3 pt-2">
         <button type="button" onClick={onClose}
           className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
@@ -172,24 +190,29 @@ function MemberFormFields({
 
 /* ── 메인 페이지 ─────────────────────────────────────────── */
 export default function MembersPage() {
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState(0);
+  const [search, setSearch]             = useState("");
+  const [roleFilter, setRoleFilter]     = useState(0);
   const [inlineEditId, setInlineEditId] = useState<number | null>(null);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [members, setMembers]           = useState<Member[]>([]);
+  const [loading, setLoading]           = useState(true);
 
   /* 추가 모달 */
   const [showAddModal, setShowAddModal] = useState(false);
-  const [addForm, setAddForm] = useState<MemberForm>(EMPTY_FORM);
-  const [addError, setAddError] = useState("");
-  const [addSaving, setAddSaving] = useState(false);
+  const [addForm, setAddForm]           = useState<MemberForm>(EMPTY_FORM);
+  const [addError, setAddError]         = useState("");
+  const [addSaving, setAddSaving]       = useState(false);
 
   /* 편집 모달 */
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editTarget, setEditTarget] = useState<Member | null>(null);
-  const [editForm, setEditForm] = useState<MemberForm>(EMPTY_FORM);
-  const [editError, setEditError] = useState("");
-  const [editSaving, setEditSaving] = useState(false);
+  const [editTarget, setEditTarget]       = useState<Member | null>(null);
+  const [editForm, setEditForm]           = useState<MemberForm>(EMPTY_FORM);
+  const [editError, setEditError]         = useState("");
+  const [editSaving, setEditSaving]       = useState(false);
+
+  /* 프로필 이미지 업로드 */
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarPreview, setAvatarPreview]     = useState<string>("");
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const fetchMembers = useCallback(async () => {
     try {
@@ -203,7 +226,8 @@ export default function MembersPage() {
   useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
   const filtered = members.filter((m) => {
-    const matchSearch = !search || m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
+    const matchSearch = !search ||
+      m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
     return matchSearch && (roleFilter === 0 || m.role === roleFilter);
   });
 
@@ -218,13 +242,19 @@ export default function MembersPage() {
     });
   }
 
-  /* 추가 제출 */
+  /* 회원 추가 */
   async function handleAddSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!addForm.name.trim()) { setAddError("이름을 입력해 주세요."); return; }
-    if (!addForm.email.trim() && !addForm.phone.trim()) { setAddError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return; }
-    if (addForm.password && addForm.password.length < 8) { setAddError("비밀번호는 8자 이상이어야 합니다."); return; }
-    if (addForm.password !== addForm.confirmPassword) { setAddError("비밀번호가 일치하지 않습니다."); return; }
+    if (!addForm.email.trim() && !addForm.phone.trim()) {
+      setAddError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return;
+    }
+    if (addForm.password && addForm.password.length < 8) {
+      setAddError("비밀번호는 8자 이상이어야 합니다."); return;
+    }
+    if (addForm.password !== addForm.confirmPassword) {
+      setAddError("비밀번호가 일치하지 않습니다."); return;
+    }
 
     setAddSaving(true); setAddError("");
     try {
@@ -235,7 +265,8 @@ export default function MembersPage() {
       if (addForm.password) body.password = addForm.password;
 
       const res = await fetch("/api/members", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       if (!res.ok) { setAddError((await res.json()).error || "저장 중 오류가 발생했습니다."); return; }
@@ -249,11 +280,12 @@ export default function MembersPage() {
     }
   }
 
-  /* 편집 열기 */
+  /* 편집 열기 (프로필 이미지 클릭 또는 편집 버튼) */
   function openEdit(m: Member) {
     setEditTarget(m);
     setEditForm(memberToForm(m));
     setEditError("");
+    setAvatarPreview("");
     setShowEditModal(true);
   }
 
@@ -261,20 +293,30 @@ export default function MembersPage() {
   async function handleEditSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!editForm.name.trim()) { setEditError("이름을 입력해 주세요."); return; }
-    if (!editForm.email.trim() && !editForm.phone.trim()) { setEditError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return; }
-    if (editForm.password && editForm.password.length < 8) { setEditError("비밀번호는 8자 이상이어야 합니다."); return; }
-    if (editForm.password !== editForm.confirmPassword) { setEditError("비밀번호가 일치하지 않습니다."); return; }
+    if (!editForm.email.trim() && !editForm.phone.trim()) {
+      setEditError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return;
+    }
+    if (editForm.password && editForm.password.length < 8) {
+      setEditError("비밀번호는 8자 이상이어야 합니다."); return;
+    }
+    if (editForm.password !== editForm.confirmPassword) {
+      setEditError("비밀번호가 일치하지 않습니다."); return;
+    }
 
     setEditSaving(true); setEditError("");
     try {
       const body: Record<string, unknown> = {
-        name: editForm.name, email: editForm.email || "-", phone: editForm.phone || "-",
-        role: editForm.role, dept: editForm.dept || "-",
+        name: editForm.name,
+        email: editForm.email || "-",
+        phone: editForm.phone || "-",
+        role: editForm.role,
+        dept: editForm.dept || "-",
       };
       if (editForm.password) body.password = editForm.password;
 
       const res = await fetch(`/api/members/${editTarget!.id}`, {
-        method: "PUT", headers: { "Content-Type": "application/json" },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       if (!res.ok) { setEditError((await res.json()).error || "저장 중 오류가 발생했습니다."); return; }
@@ -285,6 +327,27 @@ export default function MembersPage() {
     } finally {
       setEditSaving(false);
     }
+  }
+
+  /* 프로필 이미지 업로드 */
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !editTarget) return;
+    setAvatarPreview(URL.createObjectURL(file));
+    setAvatarUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res  = await fetch(`/api/members/${editTarget.id}/avatar`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (res.ok && data.profileUrl) {
+        setEditTarget(prev => prev ? { ...prev, profileUrl: data.profileUrl } : prev);
+        setMembers(prev => prev.map(m =>
+          m.id === editTarget.id ? { ...m, profileUrl: data.profileUrl } : m
+        ));
+      }
+    } catch { /* 업로드 실패 시 미리보기만 유지 */ }
+    finally { setAvatarUploading(false); }
   }
 
   /* 삭제 */
@@ -313,11 +376,11 @@ export default function MembersPage() {
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)}
             placeholder="이름·이메일·전화번호 검색..."
             className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
         </div>
-        <select value={roleFilter} onChange={(e) => setRoleFilter(Number(e.target.value))}
+        <select value={roleFilter} onChange={e => setRoleFilter(Number(e.target.value))}
           className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none">
           <option value={0}>전체 등급</option>
           {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
@@ -349,9 +412,8 @@ export default function MembersPage() {
                   <tr key={m.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
-                          {m.name[0]}
-                        </div>
+                        {/* 프로필 이미지 클릭 → 편집 모달 */}
+                        <Avatar member={m} size="sm" clickable onClick={() => openEdit(m)} />
                         <div>
                           <p className="font-medium text-gray-900">{m.name}</p>
                           <p className="text-xs text-gray-400">{m.email}</p>
@@ -362,9 +424,9 @@ export default function MembersPage() {
                     <td className="px-5 py-3">
                       {inlineEditId === m.id ? (
                         <select defaultValue={m.role}
-                          onChange={(e) => handleRoleChange(m.id, Number(e.target.value))}
+                          onChange={e => handleRoleChange(m.id, Number(e.target.value))}
                           onBlur={() => setInlineEditId(null)} autoFocus
-                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30">
+                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none">
                           {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
                             <option key={v} value={v}>{v}. {label}</option>
                           ))}
@@ -440,12 +502,44 @@ export default function MembersPage() {
         </div>
       )}
 
-      {/* ── 편집 모달 ───────────────────────────────────────────── */}
+      {/* ── 편집 모달 — 프로필 이미지 클릭으로도 열림 ────────── */}
       {showEditModal && editTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            {/* 헤더: 프로필 이미지 + 이름 */}
             <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white rounded-t-2xl">
-              <h2 className="text-lg font-bold text-gray-900">회원 편집 — {editTarget.name}</h2>
+              <div className="flex items-center gap-3">
+                {/* 프로필 이미지 — 클릭 시 파일 선택 */}
+                <div className="relative">
+                  <Avatar
+                    member={{ ...editTarget, profileUrl: avatarPreview || editTarget.profileUrl }}
+                    size="lg"
+                    clickable
+                    onClick={() => avatarInputRef.current?.click()}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => avatarInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 w-6 h-6 bg-[#2E7D32] rounded-full flex items-center justify-center text-white hover:bg-[#1B5E20] transition-colors shadow"
+                  >
+                    {avatarUploading
+                      ? <Loader2 className="w-3 h-3 animate-spin" />
+                      : <Camera className="w-3 h-3" />
+                    }
+                  </button>
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp,.gif"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">{editTarget.name}</h2>
+                  <p className="text-xs text-gray-400">이미지 클릭하여 프로필 사진 변경</p>
+                </div>
+              </div>
               <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
               </button>
