@@ -1,0 +1,10 @@
+[
+  { "id": 1, "name": "홍길동", "email": "hong@email.com", "phone": "010-1234-5678", "role": 1, "dept": "-", "matched": false, "joined": "2025-03-28" },
+  { "id": 2, "name": "김성도", "email": "kim@email.com", "phone": "010-2345-6789", "role": 2, "dept": "2부", "matched": true, "joined": "2025-01-15" },
+  { "id": 3, "name": "이집사", "email": "lee@email.com", "phone": "010-3456-7890", "role": 3, "dept": "1부", "matched": true, "joined": "2024-11-20" },
+  { "id": 4, "name": "박장로", "email": "park@email.com", "phone": "010-4567-8901", "role": 4, "dept": "당회", "matched": true, "joined": "2023-08-05" },
+  { "id": 5, "name": "정전도사", "email": "jeong@email.com", "phone": "010-5678-9012", "role": 5, "dept": "교역자", "matched": true, "joined": "2022-03-01" },
+  { "id": 6, "name": "강목사", "email": "kang@email.com", "phone": "010-6789-0123", "role": 6, "dept": "교역자", "matched": true, "joined": "2010-01-01" },
+  { "id": 7, "name": "웹마스터", "email": "web@ilkwang.or.kr", "phone": "-", "role": 7, "dept": "관리", "matched": true, "joined": "2026-01-01" },
+  { "id": 8, "name": "최성도", "email": "choi@email.com", "phone": "010-7890-1234", "role": 2, "dept": "-", "matched": false, "joined": "2025-02-10" }
+]

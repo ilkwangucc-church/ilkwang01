@@ -1,18 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, UserCheck, UserX, ChevronDown, X } from "lucide-react";
 import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
-const MEMBERS = [
-  { id: 1, name: "홍길동", email: "hong@email.com", phone: "010-1234-5678", role: 1, dept: "-",    matched: false, joined: "2025-03-28" },
-  { id: 2, name: "김성도", email: "kim@email.com",  phone: "010-2345-6789", role: 2, dept: "2부",  matched: true,  joined: "2025-01-15" },
-  { id: 3, name: "이집사", email: "lee@email.com",  phone: "010-3456-7890", role: 3, dept: "1부",  matched: true,  joined: "2024-11-20" },
-  { id: 4, name: "박장로", email: "park@email.com", phone: "010-4567-8901", role: 4, dept: "당회",  matched: true,  joined: "2023-08-05" },
-  { id: 5, name: "정전도사", email: "jeong@email.com", phone: "010-5678-9012", role: 5, dept: "교역자", matched: true, joined: "2022-03-01" },
-  { id: 6, name: "강목사", email: "kang@email.com", phone: "010-6789-0123", role: 6, dept: "교역자", matched: true, joined: "2010-01-01" },
-  { id: 7, name: "웹마스터", email: "web@ilkwang.or.kr", phone: "-", role: 7, dept: "관리", matched: true, joined: "2026-01-01" },
-  { id: 8, name: "최성도", email: "choi@email.com", phone: "010-7890-1234", role: 2, dept: "-",    matched: false, joined: "2025-02-10" },
-];
+interface Member {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  role: number;
+  dept: string;
+  matched: boolean;
+  joined: string;
+}
 
 interface NewMember {
   name: string;
@@ -28,10 +28,28 @@ export default function MembersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(0);
   const [editId, setEditId] = useState<number | null>(null);
-  const [members, setMembers] = useState(MEMBERS);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newMember, setNewMember] = useState<NewMember>(EMPTY_NEW);
   const [addError, setAddError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const fetchMembers = useCallback(async () => {
+    try {
+      const res = await fetch("/api/members");
+      if (res.ok) {
+        const data = await res.json();
+        setMembers(data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
 
   const filtered = members.filter((m) => {
     const matchSearch = !search || m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
@@ -39,31 +57,49 @@ export default function MembersPage() {
     return matchSearch && matchRole;
   });
 
-  function handleRoleChange(id: number, newRole: number) {
+  async function handleRoleChange(id: number, newRole: number) {
     setMembers(prev => prev.map(m => m.id === id ? { ...m, role: newRole } : m));
     setEditId(null);
+    await fetch(`/api/members/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole }),
+    });
   }
 
-  function handleAddSubmit(e: React.FormEvent) {
+  async function handleAddSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!newMember.name.trim()) { setAddError("이름을 입력해 주세요."); return; }
     if (!newMember.email.trim() && !newMember.phone.trim()) {
       setAddError("이메일 또는 휴대폰 번호 중 하나는 입력해야 합니다."); return;
     }
-    const newId = Math.max(...members.map(m => m.id)) + 1;
-    setMembers(prev => [...prev, {
-      id: newId,
-      name: newMember.name.trim(),
-      email: newMember.email.trim() || "-",
-      phone: newMember.phone.trim() || "-",
-      role: newMember.role,
-      dept: newMember.dept.trim() || "-",
-      matched: false,
-      joined: new Date().toISOString().slice(0, 10),
-    }]);
-    setNewMember(EMPTY_NEW);
+    setSaving(true);
     setAddError("");
-    setShowAddModal(false);
+    try {
+      const res = await fetch("/api/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newMember),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        setAddError(err.error || "저장 중 오류가 발생했습니다.");
+        return;
+      }
+      await fetchMembers();
+      setNewMember(EMPTY_NEW);
+      setShowAddModal(false);
+    } catch {
+      setAddError("저장 중 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("이 회원을 삭제하시겠습니까?")) return;
+    await fetch(`/api/members/${id}`, { method: "DELETE" });
+    await fetchMembers();
   }
 
   return (
@@ -107,79 +143,88 @@ export default function MembersPage() {
 
       {/* 회원 테이블 */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="text-left px-5 py-3">이름</th>
-                <th className="text-left px-5 py-3 hidden md:table-cell">연락처</th>
-                <th className="text-left px-5 py-3">등급</th>
-                <th className="text-left px-5 py-3 hidden sm:table-cell">교적</th>
-                <th className="text-left px-5 py-3 hidden lg:table-cell">부서</th>
-                <th className="text-left px-5 py-3 hidden lg:table-cell">가입일</th>
-                <th className="text-left px-5 py-3">관리</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map((m) => (
-                <tr key={m.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
-                        {m.name[0]}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{m.name}</p>
-                        <p className="text-xs text-gray-400">{m.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
-                  <td className="px-5 py-3">
-                    {editId === m.id ? (
-                      <select
-                        defaultValue={m.role}
-                        onChange={(e) => handleRoleChange(m.id, Number(e.target.value))}
-                        onBlur={() => setEditId(null)}
-                        autoFocus
-                        className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                      >
-                        {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
-                          <option key={v} value={v}>{v}. {label}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <button
-                        onClick={() => setEditId(m.id)}
-                        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}
-                        title="클릭하여 등급 변경"
-                      >
-                        {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-5 py-3 hidden sm:table-cell">
-                    {m.matched ? (
-                      <span className="flex items-center gap-1 text-emerald-600 text-xs"><UserCheck className="w-3 h-3" />완료</span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
-                  <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.joined}</td>
-                  <td className="px-5 py-3">
-                    <div className="flex gap-2">
-                      <button className="text-xs text-[#2E7D32] hover:underline">편집</button>
-                      <button className="text-xs text-red-500 hover:underline">삭제</button>
-                    </div>
-                  </td>
+        {loading ? (
+          <div className="text-center py-12 text-gray-400 text-sm">불러오는 중...</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                  <th className="text-left px-5 py-3">이름</th>
+                  <th className="text-left px-5 py-3 hidden md:table-cell">연락처</th>
+                  <th className="text-left px-5 py-3">등급</th>
+                  <th className="text-left px-5 py-3 hidden sm:table-cell">교적</th>
+                  <th className="text-left px-5 py-3 hidden lg:table-cell">부서</th>
+                  <th className="text-left px-5 py-3 hidden lg:table-cell">가입일</th>
+                  <th className="text-left px-5 py-3">관리</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {filtered.map((m) => (
+                  <tr key={m.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
+                          {m.name[0]}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{m.name}</p>
+                          <p className="text-xs text-gray-400">{m.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
+                    <td className="px-5 py-3">
+                      {editId === m.id ? (
+                        <select
+                          defaultValue={m.role}
+                          onChange={(e) => handleRoleChange(m.id, Number(e.target.value))}
+                          onBlur={() => setEditId(null)}
+                          autoFocus
+                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                        >
+                          {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
+                            <option key={v} value={v}>{v}. {label}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <button
+                          onClick={() => setEditId(m.id)}
+                          className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}
+                          title="클릭하여 등급 변경"
+                        >
+                          {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 hidden sm:table-cell">
+                      {m.matched ? (
+                        <span className="flex items-center gap-1 text-emerald-600 text-xs"><UserCheck className="w-3 h-3" />완료</span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
+                    <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.joined}</td>
+                    <td className="px-5 py-3">
+                      <div className="flex gap-2">
+                        <button className="text-xs text-[#2E7D32] hover:underline">편집</button>
+                        <button
+                          onClick={() => handleDelete(m.id)}
+                          className="text-xs text-red-500 hover:underline"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filtered.length === 0 && (
+              <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
+            )}
+          </div>
         )}
       </div>
 
@@ -279,9 +324,10 @@ export default function MembersPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
+                  disabled={saving}
+                  className="flex-1 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-60"
                 >
-                  추가 완료
+                  {saving ? "저장 중..." : "추가 완료"}
                 </button>
               </div>
             </form>
