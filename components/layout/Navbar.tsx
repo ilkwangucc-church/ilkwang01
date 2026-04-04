@@ -139,7 +139,7 @@ export default function Navbar() {
         <div className="max-w-[1400px] mx-auto px-6 flex items-center h-[72px] relative">
 
           {/* 모바일: 중앙 고정 / 데스크탑: 왼쪽 */}
-          <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1 -mt-[3px]">
+          <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1 -mt-[6px]">
             <Logo size="md" variant={white ? "dark" : "light"} />
           </div>
 
