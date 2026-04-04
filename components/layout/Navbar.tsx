@@ -125,10 +125,12 @@ export default function Navbar() {
           </p>
           <div className="ml-auto flex items-center gap-4">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">문의하기</Link>
-            {loggedIn && (
+            {loggedIn ? (
               <button onClick={handleLogout} className="text-white/70 hover:text-white text-xs transition-colors">
                 로그아웃
               </button>
+            ) : (
+              <Link href="/register" className="text-white/70 hover:text-white text-xs transition-colors">회원가입</Link>
             )}
           </div>
         </div>
