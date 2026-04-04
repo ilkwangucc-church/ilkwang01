@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff, Camera, Loader2 } from "lucide-react";
+import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff, Camera, Loader2, ArrowUpDown } from "lucide-react";
 import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
 interface Member {
@@ -198,6 +198,7 @@ function MemberFormFields({
 export default function MembersPage() {
   const [search, setSearch]             = useState("");
   const [roleFilter, setRoleFilter]     = useState(0);
+  const [sortBy, setSortBy]             = useState<"name" | "role">("name"); // 가나다순 기본
   const [inlineEditId, setInlineEditId] = useState<number | null>(null);
   const [members, setMembers]           = useState<Member[]>([]);
   const [loading, setLoading]           = useState(true);
@@ -235,11 +236,17 @@ export default function MembersPage() {
 
   useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
-  const filtered = members.filter((m) => {
-    const matchSearch = !search ||
-      m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
-    return matchSearch && (roleFilter === 0 || m.role === roleFilter);
-  });
+  const filtered = members
+    .filter((m) => {
+      const matchSearch = !search ||
+        m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
+      return matchSearch && (roleFilter === 0 || m.role === roleFilter);
+    })
+    .sort((a, b) =>
+      sortBy === "name"
+        ? a.name.localeCompare(b.name, "ko")           // 가나다순
+        : b.role - a.role || a.name.localeCompare(b.name, "ko")  // 단계 높은순 → 같으면 가나다순
+    );
 
   /* 인라인 등급 변경 */
   async function handleRoleChange(id: number, newRole: number) {
@@ -397,6 +404,11 @@ export default function MembersPage() {
             <option key={v} value={v}>{v}단계 · {label}</option>
           ))}
         </select>
+        <button onClick={() => setSortBy(s => s === "name" ? "role" : "name")}
+          className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+          <ArrowUpDown className="w-3.5 h-3.5" />
+          {sortBy === "name" ? "가나다순" : "단계순"}
+        </button>
       </div>
 
       {/* 회원 테이블 */}

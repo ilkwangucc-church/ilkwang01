@@ -34,32 +34,46 @@ export async function POST(req: NextRequest) {
     );
 
     if (!account || !account.isActive || account.passwordHash !== passwordHash) {
-      // 하드코딩 계정에 없으면 members.json 에서 이메일로 찾기
+      // 하드코딩 계정에 없으면 members.json 에서 찾기
+      const members = await readMembers();
+      let member = null;
+
       if (isEmail) {
-        const members = await readMembers();
-        const member = members.find(
+        // 이메일로 직접 검색
+        member = members.find(
           (m) =>
             m.email !== "-" &&
             m.email.toLowerCase() === id.toLowerCase() &&
             m.passwordHash === passwordHash
         );
-        if (member) {
-          const mToken = createSessionToken(member.email, member.role, member.name);
-          const mRes = NextResponse.json({
-            success: true,
-            username: member.email,
-            role: member.role,
-            displayName: member.name,
-          });
-          mRes.cookies.set("admin_session", mToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60,
-            path: "/",
-          });
-          return mRes;
-        }
+      } else {
+        // 유저네임(이메일 @ 앞부분)으로 검색 — 2단계 이상만
+        member = members.find(
+          (m) =>
+            m.role >= 2 &&
+            m.email !== "-" &&
+            m.email.split("@")[0].toLowerCase() === id.toLowerCase() &&
+            m.passwordHash === passwordHash
+        );
+      }
+
+      if (member) {
+        const username = member.email.split("@")[0];
+        const mToken = createSessionToken(username, member.role, member.name);
+        const mRes = NextResponse.json({
+          success: true,
+          username,
+          role: member.role,
+          displayName: member.name,
+        });
+        mRes.cookies.set("admin_session", mToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 7 * 24 * 60 * 60,
+          path: "/",
+        });
+        return mRes;
       }
       return NextResponse.json({ error: "아이디/이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
     }
