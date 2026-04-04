@@ -37,7 +37,7 @@ export async function PATCH(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "세션 만료" }, { status: 401 });
 
   try {
-    const { displayName, currentPassword, newPassword } = await req.json();
+    const { displayName, phone, dept, currentPassword, newPassword } = await req.json();
 
     const members = await readMembers();
     const idx = members.findIndex(
@@ -57,11 +57,12 @@ export async function PATCH(req: NextRequest) {
     }
 
     const newName = displayName?.trim();
-    if (newName && idx !== -1) {
-      members[idx] = { ...members[idx], name: newName };
+    if (idx !== -1) {
+      if (newName) members[idx] = { ...members[idx], name: newName };
+      if (phone !== undefined) members[idx] = { ...members[idx], phone: phone || "-" };
+      if (dept !== undefined) members[idx] = { ...members[idx], dept: dept || "-" };
+      await writeMembers(members);
     }
-
-    if (idx !== -1) await writeMembers(members);
 
     const updatedDisplayName = (newName && idx !== -1) ? newName : session.displayName;
     const newToken = createSessionToken(session.username, session.role, updatedDisplayName);

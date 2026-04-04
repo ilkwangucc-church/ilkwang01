@@ -176,8 +176,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   /* 프로필 모달 */
   const [showProfile, setShowProfile]       = useState(false);
-  const [profileTab, setProfileTab]         = useState<"info" | "pw">("info");
+  const [profileTab, setProfileTab]         = useState<"edit" | "pw">("edit");
   const [profileData, setProfileData]       = useState<Record<string, string>>({});
+  const [editName, setEditName]             = useState("");
+  const [editPhone, setEditPhone]           = useState("");
+  const [editDept, setEditDept]             = useState("");
   const [pwForm, setPwForm]                 = useState({ current: "", next: "", confirm: "" });
   const [showCurPw, setShowCurPw]           = useState(false);
   const [showNewPw, setShowNewPw]           = useState(false);
@@ -206,15 +209,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, []);
 
   async function openProfile() {
-    setProfileTab("info");
+    setProfileTab("edit");
     setProfileMsg("");
     setProfileErr("");
     setPwForm({ current: "", next: "", confirm: "" });
     setShowProfile(true);
     try {
       const res = await fetch("/api/admin/profile");
-      if (res.ok) setProfileData(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setProfileData(data);
+        setEditName(data.displayName || "");
+        setEditPhone(data.phone === "-" ? "" : data.phone || "");
+        setEditDept(data.dept === "-" ? "" : data.dept || "");
+      }
     } catch { /* noop */ }
+  }
+
+  async function handleProfileSave(e: React.FormEvent) {
+    e.preventDefault();
+    setProfileErr(""); setProfileMsg("");
+    if (!editName.trim()) { setProfileErr("이름을 입력해주세요."); return; }
+    setProfileSaving(true);
+    try {
+      const res = await fetch("/api/admin/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: editName.trim(), phone: editPhone.trim() || "-", dept: editDept.trim() || "-" }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setProfileErr(data.error || "오류가 발생했습니다."); return; }
+      setProfileMsg("프로필이 수정되었습니다.");
+      if (data.displayName) {
+        setAdminUser(prev => prev ? { ...prev, displayName: data.displayName } : prev);
+        sessionStorage.setItem("admin_user", JSON.stringify({ ...adminUser, displayName: data.displayName }));
+      }
+    } catch { setProfileErr("서버 오류가 발생했습니다."); }
+    finally { setProfileSaving(false); }
   }
 
   async function handlePwChange(e: React.FormEvent) {
@@ -448,10 +479,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* 탭 */}
           <div className="flex border-b border-gray-100">
             <button
-              onClick={() => { setProfileTab("info"); setProfileErr(""); setProfileMsg(""); }}
-              className={`flex-1 py-3 text-sm font-medium transition-colors ${profileTab === "info" ? "text-[#2E7D32] border-b-2 border-[#2E7D32]" : "text-gray-400 hover:text-gray-600"}`}
+              onClick={() => { setProfileTab("edit"); setProfileErr(""); setProfileMsg(""); }}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${profileTab === "edit" ? "text-[#2E7D32] border-b-2 border-[#2E7D32]" : "text-gray-400 hover:text-gray-600"}`}
             >
-              내 정보
+              프로필 수정
             </button>
             <button
               onClick={() => { setProfileTab("pw"); setProfileErr(""); setProfileMsg(""); }}
@@ -461,29 +492,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
           </div>
 
-          {/* 내 정보 탭 */}
-          {profileTab === "info" && (
-            <div className="px-6 py-5 space-y-3">
-              {[
-                { icon: <UserCircle className="w-4 h-4" />, label: "아이디", value: profileData.username || adminUser?.username || "-" },
-                { icon: <UserCircle className="w-4 h-4" />, label: "이름",   value: profileData.displayName || adminUser?.displayName || "-" },
-                { icon: <Building  className="w-4 h-4" />, label: "부서",   value: profileData.dept  || "-" },
-                { icon: <Phone     className="w-4 h-4" />, label: "연락처", value: profileData.phone || "-" },
-                { icon: <CalendarCheck className="w-4 h-4" />, label: "가입일", value: profileData.joined || "-" },
-              ].map(({ icon, label, value }) => (
-                <div key={label} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-                  <span className="text-gray-400 shrink-0">{icon}</span>
-                  <span className="text-xs text-gray-400 w-14 shrink-0">{label}</span>
-                  <span className="text-sm text-gray-800 font-medium">{value}</span>
-                </div>
-              ))}
-              <button
-                onClick={handleLogout}
-                className="w-full mt-2 py-2.5 border border-red-200 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
-              >
-                <LogOut className="w-4 h-4" /> 로그아웃
-              </button>
-            </div>
+          {/* 프로필 수정 탭 */}
+          {profileTab === "edit" && (
+            <form onSubmit={handleProfileSave} className="px-6 py-5 space-y-4">
+              {profileErr && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{profileErr}</p>}
+              {profileMsg && <p className="text-sm text-emerald-600 bg-emerald-50 rounded-lg px-3 py-2">{profileMsg}</p>}
+              {/* 아이디 (읽기전용) */}
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">아이디</label>
+                <p className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">{profileData.username || adminUser?.username || "-"}</p>
+              </div>
+              {/* 이름 */}
+              <div>
+                <label className="block text-xs text-gray-700 font-medium mb-1">이름</label>
+                <input type="text" value={editName} onChange={e => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+              </div>
+              {/* 연락처 */}
+              <div>
+                <label className="block text-xs text-gray-700 font-medium mb-1">연락처</label>
+                <input type="tel" value={editPhone} onChange={e => setEditPhone(e.target.value)} placeholder="010-0000-0000"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+              </div>
+              {/* 부서 */}
+              <div>
+                <label className="block text-xs text-gray-700 font-medium mb-1">부서</label>
+                <input type="text" value={editDept} onChange={e => setEditDept(e.target.value)} placeholder="예: 청년부"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+              </div>
+              {/* 가입일 (읽기전용) */}
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">가입일</label>
+                <p className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">{profileData.joined || "-"}</p>
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={handleLogout}
+                  className="py-2.5 px-4 border border-red-200 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center gap-1">
+                  <LogOut className="w-3.5 h-3.5" /> 로그아웃
+                </button>
+                <button type="submit" disabled={profileSaving}
+                  className="flex-1 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-60">
+                  {profileSaving ? "저장 중..." : "저장"}
+                </button>
+              </div>
+            </form>
           )}
 
           {/* 비밀번호 변경 탭 */}
