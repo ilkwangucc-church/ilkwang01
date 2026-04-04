@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff, Camera, Loader2 } from "lucide-react";
 import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
@@ -218,6 +219,10 @@ export default function MembersPage() {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarPreview, setAvatarPreview]     = useState<string>("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  /* Portal 마운트 플래그 (SSR 방지) */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const fetchMembers = useCallback(async () => {
     try {
@@ -488,9 +493,9 @@ export default function MembersPage() {
         </div>
       </div>
 
-      {/* ── 회원 추가 모달 ─────────────────────────────────────── */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      {/* ── 회원 추가 모달 (Portal → body 직접 마운트) ──────── */}
+      {mounted && showAddModal && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white rounded-t-2xl">
               <h2 className="text-lg font-bold text-gray-900">회원 추가</h2>
@@ -504,12 +509,13 @@ export default function MembersPage() {
               onSubmit={handleAddSubmit}
               onClose={() => setShowAddModal(false)} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* ── 편집 모달 — 프로필 이미지 클릭으로도 열림 ────────── */}
-      {showEditModal && editTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      {/* ── 편집 모달 (Portal → body 직접 마운트) ────────────── */}
+      {mounted && showEditModal && editTarget && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             {/* 헤더: 프로필 이미지 + 이름 */}
             <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white rounded-t-2xl">
@@ -555,7 +561,8 @@ export default function MembersPage() {
               onSubmit={handleEditSubmit}
               onClose={() => setShowEditModal(false)} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
