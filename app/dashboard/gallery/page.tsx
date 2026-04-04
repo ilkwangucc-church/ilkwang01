@@ -4,7 +4,7 @@ import { Plus, Trash2, Edit } from "lucide-react";
 export const metadata: Metadata = { title: "갤러리 관리 | 관리자" };
 
 const images = [
-  { id: 1, title: "2024 부활절 예배", date: "2024-03-31", category: "예배", url: "https://images.unsplash.com/photo-1565343182548-6df3c4bffe11?w=400&auto=format&fit=crop" },
+  { id: 1, title: "2024 부활절 예배", date: "2024-03-31", category: "예배", url: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=400&auto=format&fit=crop" },
   { id: 2, title: "청년부 수련회", date: "2024-03-28", category: "청년부", url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&auto=format&fit=crop" },
   { id: 3, title: "봄 부흥성회", date: "2024-03-25", category: "행사", url: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400&auto=format&fit=crop" },
   { id: 4, title: "소그룹 모임", date: "2024-03-20", category: "소그룹", url: "https://images.unsplash.com/photo-1522158637959-30385a09e0da?w=400&auto=format&fit=crop" },
