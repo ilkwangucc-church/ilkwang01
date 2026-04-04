@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -9,6 +10,7 @@ import {
   Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight,
   Camera, GraduationCap, FolderOpen, Users2, PenLine,
   Link2, HeartHandshake, BookText, Newspaper,
+  Eye, EyeOff, UserCircle, Lock, Phone, Building, CalendarCheck,
 } from "lucide-react";
 import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
 
@@ -172,6 +174,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   });
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
 
+  /* 프로필 모달 */
+  const [showProfile, setShowProfile]       = useState(false);
+  const [profileTab, setProfileTab]         = useState<"info" | "pw">("info");
+  const [profileData, setProfileData]       = useState<Record<string, string>>({});
+  const [pwForm, setPwForm]                 = useState({ current: "", next: "", confirm: "" });
+  const [showCurPw, setShowCurPw]           = useState(false);
+  const [showNewPw, setShowNewPw]           = useState(false);
+  const [profileMsg, setProfileMsg]         = useState("");
+  const [profileErr, setProfileErr]         = useState("");
+  const [profileSaving, setProfileSaving]   = useState(false);
+  const [mounted, setMounted]               = useState(false);
+  const pwInputRef = useRef<HTMLInputElement>(null);
+
   // 로그인 페이지는 레이아웃 없이 렌더
   if (pathname === "/dashboard/login") {
     return <>{children}</>;
@@ -179,6 +194,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    setMounted(true);
     const stored = sessionStorage.getItem("admin_user");
     if (stored) {
       try { setAdminUser(JSON.parse(stored)); } catch { /* noop */ }
@@ -188,6 +204,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .then(data => { if (data?.username) setAdminUser(data); })
       .catch(() => {});
   }, []);
+
+  async function openProfile() {
+    setProfileTab("info");
+    setProfileMsg("");
+    setProfileErr("");
+    setPwForm({ current: "", next: "", confirm: "" });
+    setShowProfile(true);
+    try {
+      const res = await fetch("/api/admin/profile");
+      if (res.ok) setProfileData(await res.json());
+    } catch { /* noop */ }
+  }
+
+  async function handlePwChange(e: React.FormEvent) {
+    e.preventDefault();
+    setProfileErr(""); setProfileMsg("");
+    if (pwForm.next !== pwForm.confirm) { setProfileErr("새 비밀번호가 일치하지 않습니다."); return; }
+    if (pwForm.next.length < 8)          { setProfileErr("8자 이상 입력해주세요."); return; }
+    setProfileSaving(true);
+    try {
+      const res  = await fetch("/api/admin/profile", {
+        method:  "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ currentPassword: pwForm.current, newPassword: pwForm.next }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setProfileErr(data.error || "오류가 발생했습니다."); return; }
+      setProfileMsg("비밀번호가 변경되었습니다.");
+      setPwForm({ current: "", next: "", confirm: "" });
+    } catch { setProfileErr("서버 오류가 발생했습니다."); }
+    finally  { setProfileSaving(false); }
+  }
 
   async function handleLogout() {
     await fetch("/api/admin/auth", { method: "DELETE" });
@@ -205,6 +253,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
+    <>
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* 사이드바 */}
       <aside className={`
@@ -341,12 +390,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             사이트 보기 →
           </Link>
           {adminUser && (
-            <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={openProfile}
+              className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+            >
               <div className="w-8 h-8 bg-[#2E7D32] rounded-full flex items-center justify-center text-white text-xs font-bold">
                 {adminUser.displayName?.[0] || adminUser.username[0]}
               </div>
               <span className="text-sm text-gray-700 hidden sm:block">{adminUser.displayName || adminUser.username}</span>
-            </div>
+            </button>
           )}
         </header>
 
@@ -369,5 +422,135 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </main>
       </div>
     </div>
+
+    {/* ── 내 프로필 모달 (Portal) ─────────────────────────── */}
+    {mounted && showProfile && createPortal(
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+          {/* 헤더 */}
+          <div className="bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] px-6 py-5 flex items-center gap-4 relative">
+            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-white text-2xl font-bold shrink-0">
+              {adminUser?.displayName?.[0] || adminUser?.username?.[0] || "?"}
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg leading-tight">{adminUser?.displayName || adminUser?.username}</p>
+              <span className="text-white/80 text-xs">{ROLE_LABELS[adminUser?.role ?? 0] || "회원"}</span>
+            </div>
+            <button
+              onClick={() => setShowProfile(false)}
+              className="absolute right-4 top-4 text-white/70 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* 탭 */}
+          <div className="flex border-b border-gray-100">
+            <button
+              onClick={() => { setProfileTab("info"); setProfileErr(""); setProfileMsg(""); }}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${profileTab === "info" ? "text-[#2E7D32] border-b-2 border-[#2E7D32]" : "text-gray-400 hover:text-gray-600"}`}
+            >
+              내 정보
+            </button>
+            <button
+              onClick={() => { setProfileTab("pw"); setProfileErr(""); setProfileMsg(""); }}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${profileTab === "pw" ? "text-[#2E7D32] border-b-2 border-[#2E7D32]" : "text-gray-400 hover:text-gray-600"}`}
+            >
+              비밀번호 변경
+            </button>
+          </div>
+
+          {/* 내 정보 탭 */}
+          {profileTab === "info" && (
+            <div className="px-6 py-5 space-y-3">
+              {[
+                { icon: <UserCircle className="w-4 h-4" />, label: "아이디", value: profileData.username || adminUser?.username || "-" },
+                { icon: <UserCircle className="w-4 h-4" />, label: "이름",   value: profileData.displayName || adminUser?.displayName || "-" },
+                { icon: <Building  className="w-4 h-4" />, label: "부서",   value: profileData.dept  || "-" },
+                { icon: <Phone     className="w-4 h-4" />, label: "연락처", value: profileData.phone || "-" },
+                { icon: <CalendarCheck className="w-4 h-4" />, label: "가입일", value: profileData.joined || "-" },
+              ].map(({ icon, label, value }) => (
+                <div key={label} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
+                  <span className="text-gray-400 shrink-0">{icon}</span>
+                  <span className="text-xs text-gray-400 w-14 shrink-0">{label}</span>
+                  <span className="text-sm text-gray-800 font-medium">{value}</span>
+                </div>
+              ))}
+              <button
+                onClick={handleLogout}
+                className="w-full mt-2 py-2.5 border border-red-200 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <LogOut className="w-4 h-4" /> 로그아웃
+              </button>
+            </div>
+          )}
+
+          {/* 비밀번호 변경 탭 */}
+          {profileTab === "pw" && (
+            <form onSubmit={handlePwChange} className="px-6 py-5 space-y-4">
+              {profileErr && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{profileErr}</p>}
+              {profileMsg && <p className="text-sm text-emerald-600 bg-emerald-50 rounded-lg px-3 py-2">{profileMsg}</p>}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">현재 비밀번호</label>
+                <div className="relative">
+                  <input
+                    ref={pwInputRef}
+                    type={showCurPw ? "text" : "password"}
+                    value={pwForm.current}
+                    onChange={e => setPwForm(p => ({ ...p, current: e.target.value }))}
+                    placeholder="현재 비밀번호"
+                    className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                  />
+                  <button type="button" onClick={() => setShowCurPw(v => !v)} tabIndex={-1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showCurPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">새 비밀번호 <span className="text-gray-400 text-xs">(8자 이상)</span></label>
+                <div className="relative">
+                  <input
+                    type={showNewPw ? "text" : "password"}
+                    value={pwForm.next}
+                    onChange={e => setPwForm(p => ({ ...p, next: e.target.value }))}
+                    placeholder="새 비밀번호"
+                    className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                  />
+                  <button type="button" onClick={() => setShowNewPw(v => !v)} tabIndex={-1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">새 비밀번호 확인</label>
+                <input
+                  type="password"
+                  value={pwForm.confirm}
+                  onChange={e => setPwForm(p => ({ ...p, confirm: e.target.value }))}
+                  placeholder="비밀번호 재입력"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                />
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={() => setShowProfile(false)}
+                  className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                  취소
+                </button>
+                <button type="submit" disabled={profileSaving}
+                  className="flex-1 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-60 flex items-center justify-center gap-1">
+                  <Lock className="w-3.5 h-3.5" />
+                  {profileSaving ? "변경 중..." : "변경 완료"}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>,
+      document.body
+    )}
+    </>
   );
 }
