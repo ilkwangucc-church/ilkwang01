@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Search, UserCheck, UserX, ChevronDown, X } from "lucide-react";
+import { Search, UserCheck, UserX, ChevronDown, X, Eye, EyeOff } from "lucide-react";
 import { ROLE_LABELS, ROLE_LABELS_SELECT, ROLE_COLORS } from "@/lib/adminAuth";
 
 interface Member {
@@ -14,52 +14,203 @@ interface Member {
   joined: string;
 }
 
-interface NewMember {
+interface MemberForm {
   name: string;
   email: string;
   phone: string;
   role: number;
   dept: string;
+  password: string;
+  confirmPassword: string;
 }
 
-const EMPTY_NEW: NewMember = { name: "", email: "", phone: "", role: 1, dept: "" };
+const EMPTY_FORM: MemberForm = {
+  name: "", email: "", phone: "", role: 1, dept: "", password: "", confirmPassword: "",
+};
 
+function memberToForm(m: Member): MemberForm {
+  return {
+    name: m.name,
+    email: m.email === "-" ? "" : m.email,
+    phone: m.phone === "-" ? "" : m.phone,
+    role: m.role,
+    dept: m.dept === "-" ? "" : m.dept,
+    password: "",
+    confirmPassword: "",
+  };
+}
+
+/* ── 비밀번호 표시/숨기기 토글 버튼 ─────────────────────────── */
+function PwToggle({ show, onToggle }: { show: boolean; onToggle: () => void }) {
+  return (
+    <button type="button" onClick={onToggle} tabIndex={-1}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+      {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+    </button>
+  );
+}
+
+/* ── 회원 폼 (추가 / 편집 공용) ────────────────────────────── */
+function MemberFormFields({
+  form, setForm, error, saving, isEdit,
+  onSubmit, onClose,
+}: {
+  form: MemberForm;
+  setForm: React.Dispatch<React.SetStateAction<MemberForm>>;
+  error: string;
+  saving: boolean;
+  isEdit: boolean;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+}) {
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  return (
+    <form onSubmit={onSubmit} className="p-6 space-y-4">
+      {error && (
+        <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+      )}
+
+      {/* 이름 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          이름 <span className="text-red-500">*</span>
+        </label>
+        <input type="text" value={form.name}
+          onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+          placeholder="홍길동"
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+      </div>
+
+      {/* 이메일 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          이메일 <span className="text-gray-400 text-xs">(이메일 또는 휴대폰 중 하나 필수)</span>
+        </label>
+        <input type="email" value={form.email}
+          onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+          placeholder="example@email.com"
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+      </div>
+
+      {/* 휴대폰 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">휴대폰</label>
+        <input type="tel" value={form.phone}
+          onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
+          placeholder="010-0000-0000"
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+      </div>
+
+      {/* 등급 · 부서 */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">등급</label>
+          <select value={form.role}
+            onChange={e => setForm(p => ({ ...p, role: Number(e.target.value) }))}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none">
+            {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
+              <option key={v} value={v}>{v}단계 · {label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            부서 <span className="text-gray-400 text-xs">(선택)</span>
+          </label>
+          <input type="text" value={form.dept}
+            onChange={e => setForm(p => ({ ...p, dept: e.target.value }))}
+            placeholder="예: 청년부"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+        </div>
+      </div>
+
+      {/* 비밀번호 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          비밀번호{" "}
+          <span className="text-gray-400 text-xs">
+            {isEdit ? "(변경 시에만 입력, 빈 칸이면 유지)" : "(선택 · 8자 이상)"}
+          </span>
+        </label>
+        <div className="relative">
+          <input type={showPw ? "text" : "password"} value={form.password}
+            onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+            placeholder={isEdit ? "변경할 비밀번호" : "8자 이상 (로그인용)"}
+            className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+          <PwToggle show={showPw} onToggle={() => setShowPw(v => !v)} />
+        </div>
+      </div>
+
+      {/* 비밀번호 확인 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호 확인</label>
+        <div className="relative">
+          <input type={showConfirm ? "text" : "password"} value={form.confirmPassword}
+            onChange={e => setForm(p => ({ ...p, confirmPassword: e.target.value }))}
+            placeholder="비밀번호 재입력"
+            className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+          <PwToggle show={showConfirm} onToggle={() => setShowConfirm(v => !v)} />
+        </div>
+      </div>
+
+      {/* 버튼 */}
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onClose}
+          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+          취소
+        </button>
+        <button type="submit" disabled={saving}
+          className="flex-1 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-60">
+          {saving ? "저장 중..." : isEdit ? "수정 완료" : "추가 완료"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+/* ── 메인 페이지 ─────────────────────────────────────────── */
 export default function MembersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(0);
-  const [editId, setEditId] = useState<number | null>(null);
+  const [inlineEditId, setInlineEditId] = useState<number | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
+
+  /* 추가 모달 */
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newMember, setNewMember] = useState<NewMember>(EMPTY_NEW);
+  const [addForm, setAddForm] = useState<MemberForm>(EMPTY_FORM);
   const [addError, setAddError] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [addSaving, setAddSaving] = useState(false);
+
+  /* 편집 모달 */
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTarget, setEditTarget] = useState<Member | null>(null);
+  const [editForm, setEditForm] = useState<MemberForm>(EMPTY_FORM);
+  const [editError, setEditError] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
 
   const fetchMembers = useCallback(async () => {
     try {
       const res = await fetch("/api/members");
-      if (res.ok) {
-        const data = await res.json();
-        setMembers(data);
-      }
+      if (res.ok) setMembers(await res.json());
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+  useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
   const filtered = members.filter((m) => {
     const matchSearch = !search || m.name.includes(search) || m.email.includes(search) || m.phone.includes(search);
-    const matchRole = roleFilter === 0 || m.role === roleFilter;
-    return matchSearch && matchRole;
+    return matchSearch && (roleFilter === 0 || m.role === roleFilter);
   });
 
+  /* 인라인 등급 변경 */
   async function handleRoleChange(id: number, newRole: number) {
     setMembers(prev => prev.map(m => m.id === id ? { ...m, role: newRole } : m));
-    setEditId(null);
+    setInlineEditId(null);
     await fetch(`/api/members/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -67,35 +218,76 @@ export default function MembersPage() {
     });
   }
 
+  /* 추가 제출 */
   async function handleAddSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!newMember.name.trim()) { setAddError("이름을 입력해 주세요."); return; }
-    if (!newMember.email.trim() && !newMember.phone.trim()) {
-      setAddError("이메일 또는 휴대폰 번호 중 하나는 입력해야 합니다."); return;
-    }
-    setSaving(true);
-    setAddError("");
+    if (!addForm.name.trim()) { setAddError("이름을 입력해 주세요."); return; }
+    if (!addForm.email.trim() && !addForm.phone.trim()) { setAddError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return; }
+    if (addForm.password && addForm.password.length < 8) { setAddError("비밀번호는 8자 이상이어야 합니다."); return; }
+    if (addForm.password !== addForm.confirmPassword) { setAddError("비밀번호가 일치하지 않습니다."); return; }
+
+    setAddSaving(true); setAddError("");
     try {
+      const body: Record<string, unknown> = {
+        name: addForm.name, email: addForm.email, phone: addForm.phone,
+        role: addForm.role, dept: addForm.dept,
+      };
+      if (addForm.password) body.password = addForm.password;
+
       const res = await fetch("/api/members", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newMember),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
-      if (!res.ok) {
-        const err = await res.json();
-        setAddError(err.error || "저장 중 오류가 발생했습니다.");
-        return;
-      }
+      if (!res.ok) { setAddError((await res.json()).error || "저장 중 오류가 발생했습니다."); return; }
       await fetchMembers();
-      setNewMember(EMPTY_NEW);
+      setAddForm(EMPTY_FORM);
       setShowAddModal(false);
     } catch {
       setAddError("저장 중 오류가 발생했습니다.");
     } finally {
-      setSaving(false);
+      setAddSaving(false);
     }
   }
 
+  /* 편집 열기 */
+  function openEdit(m: Member) {
+    setEditTarget(m);
+    setEditForm(memberToForm(m));
+    setEditError("");
+    setShowEditModal(true);
+  }
+
+  /* 편집 제출 */
+  async function handleEditSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editForm.name.trim()) { setEditError("이름을 입력해 주세요."); return; }
+    if (!editForm.email.trim() && !editForm.phone.trim()) { setEditError("이메일 또는 휴대폰 번호 중 하나는 필수입니다."); return; }
+    if (editForm.password && editForm.password.length < 8) { setEditError("비밀번호는 8자 이상이어야 합니다."); return; }
+    if (editForm.password !== editForm.confirmPassword) { setEditError("비밀번호가 일치하지 않습니다."); return; }
+
+    setEditSaving(true); setEditError("");
+    try {
+      const body: Record<string, unknown> = {
+        name: editForm.name, email: editForm.email || "-", phone: editForm.phone || "-",
+        role: editForm.role, dept: editForm.dept || "-",
+      };
+      if (editForm.password) body.password = editForm.password;
+
+      const res = await fetch(`/api/members/${editTarget!.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) { setEditError((await res.json()).error || "저장 중 오류가 발생했습니다."); return; }
+      await fetchMembers();
+      setShowEditModal(false);
+    } catch {
+      setEditError("저장 중 오류가 발생했습니다.");
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
+  /* 삭제 */
   async function handleDelete(id: number) {
     if (!confirm("이 회원을 삭제하시겠습니까?")) return;
     await fetch(`/api/members/${id}`, { method: "DELETE" });
@@ -104,15 +296,15 @@ export default function MembersPage() {
 
   return (
     <div className="space-y-6">
+      {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">회원 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 6단계 등급 관리</p>
         </div>
         <button
-          onClick={() => { setShowAddModal(true); setAddError(""); setNewMember(EMPTY_NEW); }}
-          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
-        >
+          onClick={() => { setShowAddModal(true); setAddError(""); setAddForm(EMPTY_FORM); }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
           + 회원 추가
         </button>
       </div>
@@ -121,19 +313,12 @@ export default function MembersPage() {
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="이름·이메일·전화번호 검색..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-          />
+            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
         </div>
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(Number(e.target.value))}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
-        >
+        <select value={roleFilter} onChange={(e) => setRoleFilter(Number(e.target.value))}
+          className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none">
           <option value={0}>전체 등급</option>
           {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
             <option key={v} value={v}>{v}단계 · {label}</option>
@@ -175,46 +360,36 @@ export default function MembersPage() {
                     </td>
                     <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
                     <td className="px-5 py-3">
-                      {editId === m.id ? (
-                        <select
-                          defaultValue={m.role}
+                      {inlineEditId === m.id ? (
+                        <select defaultValue={m.role}
                           onChange={(e) => handleRoleChange(m.id, Number(e.target.value))}
-                          onBlur={() => setEditId(null)}
-                          autoFocus
-                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                        >
+                          onBlur={() => setInlineEditId(null)} autoFocus
+                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30">
                           {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
                             <option key={v} value={v}>{v}. {label}</option>
                           ))}
                         </select>
                       ) : (
-                        <button
-                          onClick={() => setEditId(m.id)}
+                        <button onClick={() => setInlineEditId(m.id)}
                           className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}
-                          title="클릭하여 등급 변경"
-                        >
+                          title="클릭하여 등급 변경">
                           {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
                         </button>
                       )}
                     </td>
                     <td className="px-5 py-3 hidden sm:table-cell">
-                      {m.matched ? (
-                        <span className="flex items-center gap-1 text-emerald-600 text-xs"><UserCheck className="w-3 h-3" />완료</span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>
-                      )}
+                      {m.matched
+                        ? <span className="flex items-center gap-1 text-emerald-600 text-xs"><UserCheck className="w-3 h-3" />완료</span>
+                        : <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>}
                     </td>
                     <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
                     <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.joined}</td>
                     <td className="px-5 py-3">
                       <div className="flex gap-2">
-                        <button className="text-xs text-[#2E7D32] hover:underline">편집</button>
-                        <button
-                          onClick={() => handleDelete(m.id)}
-                          className="text-xs text-red-500 hover:underline"
-                        >
-                          삭제
-                        </button>
+                        <button onClick={() => openEdit(m)}
+                          className="text-xs text-[#2E7D32] hover:underline">편집</button>
+                        <button onClick={() => handleDelete(m.id)}
+                          className="text-xs text-red-500 hover:underline">삭제</button>
                       </div>
                     </td>
                   </tr>
@@ -246,91 +421,40 @@ export default function MembersPage() {
         </div>
       </div>
 
-      {/* 회원 추가 모달 */}
+      {/* ── 회원 추가 모달 ─────────────────────────────────────── */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white rounded-t-2xl">
               <h2 className="text-lg font-bold text-gray-900">회원 추가</h2>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
-              {addError && (
-                <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{addError}</p>
-              )}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">이름 <span className="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  value={newMember.name}
-                  onChange={e => setNewMember(p => ({ ...p, name: e.target.value }))}
-                  placeholder="홍길동"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">이메일 <span className="text-gray-400 text-xs">(이메일 또는 휴대폰 중 하나 필수)</span></label>
-                <input
-                  type="email"
-                  value={newMember.email}
-                  onChange={e => setNewMember(p => ({ ...p, email: e.target.value }))}
-                  placeholder="example@email.com"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">휴대폰</label>
-                <input
-                  type="tel"
-                  value={newMember.phone}
-                  onChange={e => setNewMember(p => ({ ...p, phone: e.target.value }))}
-                  placeholder="010-0000-0000"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">등급</label>
-                  <select
-                    value={newMember.role}
-                    onChange={e => setNewMember(p => ({ ...p, role: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none"
-                  >
-                    {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
-                      <option key={v} value={v}>{v}단계 · {label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">부서 <span className="text-gray-400 text-xs">(선택)</span></label>
-                  <input
-                    type="text"
-                    value={newMember.dept}
-                    onChange={e => setNewMember(p => ({ ...p, dept: e.target.value }))}
-                    placeholder="예: 청년부"
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-                >
-                  취소
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="flex-1 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-60"
-                >
-                  {saving ? "저장 중..." : "추가 완료"}
-                </button>
-              </div>
-            </form>
+            <MemberFormFields
+              form={addForm} setForm={setAddForm}
+              error={addError} saving={addSaving} isEdit={false}
+              onSubmit={handleAddSubmit}
+              onClose={() => setShowAddModal(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* ── 편집 모달 ───────────────────────────────────────────── */}
+      {showEditModal && editTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white rounded-t-2xl">
+              <h2 className="text-lg font-bold text-gray-900">회원 편집 — {editTarget.name}</h2>
+              <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <MemberFormFields
+              form={editForm} setForm={setEditForm}
+              error={editError} saving={editSaving} isEdit={true}
+              onSubmit={handleEditSubmit}
+              onClose={() => setShowEditModal(false)} />
           </div>
         </div>
       )}

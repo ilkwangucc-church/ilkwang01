@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifySessionToken } from "@/lib/adminAuth";
+import { verifySessionToken, hashPassword } from "@/lib/adminAuth";
 import { readMembers, writeMembers, generateMemberId } from "@/lib/members";
 
 /** GET — 회원 목록 */
@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
     if (!body.email?.trim() && !body.phone?.trim()) {
       return NextResponse.json({ error: "이메일 또는 휴대폰 번호 중 하나는 필수입니다" }, { status: 400 });
     }
+    if (body.password && body.password.length < 8) {
+      return NextResponse.json({ error: "비밀번호는 8자 이상이어야 합니다" }, { status: 400 });
+    }
 
     const members = await readMembers();
     const newMember = {
@@ -49,11 +52,14 @@ export async function POST(req: NextRequest) {
       dept: body.dept?.trim() || "-",
       matched: false,
       joined: new Date().toISOString().slice(0, 10),
+      // 비밀번호가 입력된 경우에만 해싱 후 저장
+      ...(body.password ? { passwordHash: hashPassword(body.password) } : {}),
     };
     members.push(newMember);
     await writeMembers(members);
 
-    return NextResponse.json({ success: true, member: newMember });
+    const { passwordHash: _pw, ...safeNewMember } = newMember as typeof newMember & { passwordHash?: string };
+    return NextResponse.json({ success: true, member: safeNewMember });
   } catch {
     return NextResponse.json({ error: "서버 오류" }, { status: 500 });
   }
