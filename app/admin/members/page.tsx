@@ -60,25 +60,30 @@ function Avatar({
   clickable?: boolean;
   onClick?: () => void;
 }) {
-  const dim  = size === "lg" ? "w-20 h-20 text-2xl" : "w-9 h-9 text-xs";
-  const ring = clickable
-    ? "cursor-pointer hover:ring-2 hover:ring-[#2E7D32] hover:ring-offset-1 transition-all"
-    : "";
+  const dim  = size === "lg" ? "w-20 h-20" : "w-9 h-9";
+  const font = size === "lg" ? "text-2xl" : "text-xs";
 
-  if (member.profileUrl) {
+  const inner = member.profileUrl ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={member.profileUrl} alt={member.name} className="w-full h-full object-cover" />
+  ) : (
+    <span className={`${font} text-[#2E7D32] font-bold`}>{member.name?.[0]}</span>
+  );
+
+  if (clickable) {
     return (
-      <div className={`${dim} rounded-full overflow-hidden shrink-0 ${ring}`} onClick={onClick}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={member.profileUrl} alt={member.name} className="w-full h-full object-cover" />
-      </div>
+      <button
+        type="button"
+        onClick={onClick}
+        className={`${dim} rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-[#E8F5E9] cursor-pointer border-0 p-0 hover:ring-2 hover:ring-[#2E7D32] hover:ring-offset-1 transition-all`}
+      >
+        {inner}
+      </button>
     );
   }
   return (
-    <div
-      className={`${dim} bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold shrink-0 ${ring}`}
-      onClick={onClick}
-    >
-      {member.name[0]}
+    <div className={`${dim} bg-[#E8F5E9] rounded-full overflow-hidden flex items-center justify-center shrink-0`}>
+      {inner}
     </div>
   );
 }
