@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hashPassword, createSessionToken } from "@/lib/adminAuth";
+import { readMembers } from "@/lib/members";
 
 /** 관리자 계정 목록 (환경변수 또는 기본값) */
 function getAdminAccounts() {
@@ -33,6 +34,33 @@ export async function POST(req: NextRequest) {
     );
 
     if (!account || !account.isActive || account.passwordHash !== passwordHash) {
+      // 하드코딩 계정에 없으면 members.json 에서 이메일로 찾기
+      if (isEmail) {
+        const members = await readMembers();
+        const member = members.find(
+          (m) =>
+            m.email !== "-" &&
+            m.email.toLowerCase() === id.toLowerCase() &&
+            m.passwordHash === passwordHash
+        );
+        if (member) {
+          const mToken = createSessionToken(member.email, member.role, member.name);
+          const mRes = NextResponse.json({
+            success: true,
+            username: member.email,
+            role: member.role,
+            displayName: member.name,
+          });
+          mRes.cookies.set("admin_session", mToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60,
+            path: "/",
+          });
+          return mRes;
+        }
+      }
       return NextResponse.json({ error: "아이디/이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
     }
 

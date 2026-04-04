@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
     return true;
   });
 
-  return NextResponse.json(filtered);
+  // passwordHash 는 클라이언트에 노출하지 않음
+  const safe = filtered.map(({ passwordHash: _pw, ...rest }) => rest);
+  return NextResponse.json(safe);
 }
 
 /** POST — 회원 추가 */

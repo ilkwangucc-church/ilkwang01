@@ -19,12 +19,35 @@ export default function RegisterPage() {
       setMessage("비밀번호가 일치하지 않습니다.");
       return;
     }
+    if (form.password.length < 8) {
+      setMessage("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
     setLoading(true);
     setMessage("");
-    // TODO: Supabase Auth signUp
-    await new Promise((r) => setTimeout(r, 800));
-    setMessage("회원가입이 완료되었습니다. 이메일 인증 후 로그인하세요.");
-    setLoading(false);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          password: form.password,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data.error || "회원가입 중 오류가 발생했습니다.");
+      } else {
+        setMessage("회원가입이 완료되었습니다. 이메일로 로그인하세요.");
+        setForm({ name: "", email: "", phone: "", password: "", confirm: "" });
+      }
+    } catch {
+      setMessage("서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const EyeIcon = (
