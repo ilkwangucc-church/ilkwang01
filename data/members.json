@@ -87,7 +87,8 @@
     "role": 7,
     "dept": "관리",
     "matched": true,
-    "joined": "2026-04-04"
+    "joined": "2026-04-04",
+    "passwordHash": "6beb97e2db6dedd29b9e8cade609c8ee105380600a46d70198b4eb7a827dc3fd"
   },
   {
     "id": 10,
