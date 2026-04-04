@@ -76,8 +76,6 @@ export default function Navbar() {
   const [open, setOpen]             = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled]     = useState(false);
-  const [visible, setVisible]       = useState(true);
-  const lastScrollY                 = useRef(0);
   const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [loggedIn, setLoggedIn]     = useState(false);
 
@@ -97,28 +95,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 30);
-
-      // 최상단 근처면 항상 노출
-      if (y < 80) {
-        setVisible(true);
-        lastScrollY.current = y;
-        return;
-      }
-
-      const diff = y - lastScrollY.current;
-
-      // 10px 미만 미세 움직임은 무시 → 반복 깜빡임 방지
-      if (Math.abs(diff) < 10) return;
-
-      if (diff > 0) {
-        setVisible(false);  // 다운 스크롤 → 숨김
-      } else {
-        setVisible(true);   // 업 스크롤 → 노출
-      }
-
-      lastScrollY.current = y;
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -138,7 +115,7 @@ export default function Navbar() {
   const activeItem = nav.find((n) => n.href === activeMenu);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out ${visible ? "translate-y-0" : "-translate-y-full"}`}>
+    <header className="fixed top-0 left-0 right-0 z-50">
 
       {/* Top Bar — 모바일 숨김, 스크롤 시 위로 사라짐 */}
       <div className={`hidden md:block bg-[#1a2744] transition-transform duration-500 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>

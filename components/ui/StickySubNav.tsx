@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 
 type NavItem = { label: string; href: string };
 
@@ -36,9 +37,28 @@ export const NEWS_NAV: NavItem[] = [
 
 export default function StickySubNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 100) {
+        setVisible(true);
+        lastScrollY.current = y;
+        return;
+      }
+      const diff = y - lastScrollY.current;
+      if (Math.abs(diff) < 5) return;
+      setVisible(diff < 0); // 업 스크롤 → 노출, 다운 스크롤 → 숨김
+      lastScrollY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <div className="bg-white border-b sticky top-[72px] z-40">
+    <div className={`bg-white border-b sticky top-[72px] z-40 transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="max-w-[1400px] mx-auto px-4 flex gap-1 overflow-x-auto">
         {items.map((m) => (
           <Link
