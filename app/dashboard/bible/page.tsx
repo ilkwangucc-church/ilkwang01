@@ -87,10 +87,21 @@ export default function BiblePage() {
       .finally(() => setLoadingVids(false));
   }, []);
 
-  /* ══ 장 클릭 → 영상 즉시 로드 ══ */
+  /* ══ 로딩 완료 → 대기 중인 선택 장으로 자동 재생 ══ */
+  useEffect(() => {
+    if (!loadingVids && allVideos.length > 0 && selectedChapter !== null && !activeVideo) {
+      const exact    = allVideos.find((v) => v.books.includes(selectedBook) && v.chapter === selectedChapter);
+      const fallback = allVideos.find((v) => v.books.includes(selectedBook));
+      setActiveVideo(exact ?? fallback ?? null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadingVids]);
+
+  /* ══ 장 클릭 → 영상 즉시 로드 (로딩 중이면 선택만 저장) ══ */
   function handleChapterClick(book: string, chapter: number) {
     setSelectedBook(book);
     setSelectedChapter(chapter);
+    if (loadingVids) return; // 로딩 완료 후 위 effect가 처리
     const exact    = allVideos.find((v) => v.books.includes(book) && v.chapter === chapter);
     const fallback = allVideos.find((v) => v.books.includes(book));
     setActiveVideo(exact ?? fallback ?? null);
@@ -309,42 +320,57 @@ export default function BiblePage() {
           )}
         </div>
 
-        {/* ── 영상 + 재생목록 (나란히, 고정 높이로 스크롤 보장) ── */}
-        <div
-          className="flex shrink-0"
-          style={{ height: "clamp(260px, 50vh, 500px)" }}
-        >
+        {/* ── 영상 + 재생목록 (나란히, 16:9 자동 높이) ── */}
+        <div className="flex shrink-0">
 
-          {/* 영상: 컨테이너 꽉 채움 (flex-1로 크게) */}
-          <div className="flex-1 bg-[#0f0f0f] min-w-0">
-            {loadingVids ? (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                <div className="w-7 h-7 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
-                <p className="text-gray-500 text-[11px]">@PRS 영상 불러오는 중...</p>
-              </div>
-            ) : activeVideo ? (
+          {/* 영상: flex-1 + 16:9 → 검은 여백 없음 */}
+          <div
+            className="flex-1 min-w-0 bg-[#0f0f0f] relative"
+            style={{ aspectRatio: "16/9" }}
+          >
+            {activeVideo ? (
+              /* 장 클릭 시 바로 재생 */
               <iframe
                 key={activeVideo.id}
                 src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
-                className="w-full h-full block"
+                className="absolute inset-0 w-full h-full block"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title={activeVideo.title}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-2 px-4">
-                <BookText className="w-8 h-8 text-white/15" />
-                <p className="text-gray-500 text-xs text-center leading-relaxed">
-                  {selectedChapter
-                    ? `${selectedBook} ${selectedChapter}장 영상 없음`
-                    : "장 번호를 클릭하세요"}
-                </p>
+              /* 썸네일 플레이스홀더 — 스피너 없음 */
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none bg-[#0f0f0f]">
+                {/* 배경 장식 */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+                  <BookText className="w-40 h-40 text-white" />
+                </div>
+                {/* 텍스트 */}
+                <div className="relative text-center px-6">
+                  <p className="text-white/60 text-2xl font-bold tracking-wide">
+                    {selectedBook}
+                  </p>
+                  <p className="text-white/30 text-sm mt-2">
+                    {selectedChapter
+                      ? loadingVids
+                        ? `${selectedChapter}장 영상 연결 중...`
+                        : `${selectedChapter}장 영상 없음`
+                      : "오른쪽 목록에서 장을 선택하세요"}
+                  </p>
+                  {/* 로딩 중일 때만 작은 스피너 */}
+                  {loadingVids && (
+                    <div className="mt-3 flex items-center justify-center gap-1.5">
+                      <div className="w-3.5 h-3.5 border border-white/20 border-t-white/50 rounded-full animate-spin" />
+                      <span className="text-white/25 text-[10px]">영상 목록 불러오는 중...</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
 
-          {/* 재생목록: 고정 폭 (영상 대비 절반 수준) */}
-          <div className="w-40 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
+          {/* 재생목록: 즉시 렌더링 (로딩 대기 없음) */}
+          <div className="w-40 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
@@ -352,73 +378,64 @@ export default function BiblePage() {
               </p>
               <p className="text-gray-500 text-[10px] mt-0.5">
                 {loadingVids
-                  ? "로딩 중..."
+                  ? "연결 중..."
                   : `${bookVideoCount}개 영상 · 전체 ${CHAPTER_COUNTS[selectedBook] ?? 1}장`}
               </p>
             </div>
 
-            {/* 장 목록 — 스크롤로 모든 장 탐색 가능 */}
+            {/* 장 목록 — 로딩 여부 관계없이 즉시 표시 */}
             <div ref={playlistRef} className="flex-1 overflow-y-auto overscroll-contain">
-              {loadingVids ? (
-                <div className="flex items-center justify-center h-20">
-                  <div className="w-5 h-5 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
-                </div>
-              ) : (
-                Array.from(
-                  { length: CHAPTER_COUNTS[selectedBook] ?? 1 },
-                  (_, i) => i + 1
-                ).map((ch) => {
-                  const video    = bookVideoMap[ch];
-                  const isActive = selectedChapter === ch;
+              {Array.from(
+                { length: CHAPTER_COUNTS[selectedBook] ?? 1 },
+                (_, i) => i + 1
+              ).map((ch) => {
+                const video    = bookVideoMap[ch];       // 로딩 전엔 undefined
+                const isActive = selectedChapter === ch;
 
-                  return (
-                    <button
-                      key={ch}
-                      data-ch={ch}
-                      onClick={() => video && handlePlaylistClick(ch)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
+                return (
+                  <button
+                    key={ch}
+                    data-ch={ch}
+                    onClick={() => handlePlaylistClick(ch)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
+                      isActive
+                        ? "bg-[#2E7D32]"
+                        : video
+                          ? "hover:bg-white/10 cursor-pointer"
+                          : loadingVids
+                            ? "hover:bg-white/5 cursor-pointer"   // 로딩 중엔 클릭 허용 (대기)
+                            : "cursor-default opacity-35"
+                    }`}
+                  >
+                    {/* 장 번호 */}
+                    <span
+                      className={`w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold shrink-0 ${
                         isActive
-                          ? "bg-[#2E7D32]"
+                          ? "bg-white/25 text-white"
                           : video
-                            ? "hover:bg-white/10 cursor-pointer"
-                            : "cursor-default opacity-40"
+                            ? "bg-white/10 text-gray-300"
+                            : "bg-white/5 text-gray-500"
                       }`}
                     >
-                      {/* 장 번호 뱃지 */}
-                      <span
-                        className={`w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold shrink-0 ${
-                          isActive
-                            ? "bg-white/25 text-white"
-                            : video
-                              ? "bg-white/10 text-gray-300"
-                              : "bg-white/5 text-gray-500"
-                        }`}
-                      >
-                        {ch}
-                      </span>
+                      {ch}
+                    </span>
 
-                      {/* 제목 */}
-                      <div className="flex-1 min-w-0">
-                        <p
-                          className={`text-[11px] leading-tight truncate ${
-                            isActive ? "text-white font-medium" : video ? "text-gray-300" : "text-gray-500"
-                          }`}
-                        >
-                          {video ? video.title : `${selectedBook} ${ch}장`}
-                        </p>
-                        {video && !isActive && (
-                          <p className="text-[9px] text-gray-600 mt-0.5">{video.publishedAt}</p>
-                        )}
-                      </div>
-
-                      {/* 재생 중 표시 */}
-                      {isActive && (
-                        <Play className="w-3 h-3 text-green-400 shrink-0 fill-green-400" />
+                    {/* 제목 */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-[11px] leading-tight truncate ${
+                        isActive ? "text-white font-medium" : video ? "text-gray-300" : "text-gray-600"
+                      }`}>
+                        {video ? video.title : `${selectedBook} ${ch}장`}
+                      </p>
+                      {video && !isActive && (
+                        <p className="text-[9px] text-gray-600 mt-0.5">{video.publishedAt}</p>
                       )}
-                    </button>
-                  );
-                })
-              )}
+                    </div>
+
+                    {isActive && <Play className="w-3 h-3 text-green-400 shrink-0 fill-green-400" />}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
