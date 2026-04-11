@@ -236,6 +236,12 @@ export default function MembersPage() {
 
   useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
+  useEffect(() => {
+    const handle = () => { if (document.visibilityState === "visible") fetchMembers(); };
+    document.addEventListener("visibilitychange", handle);
+    return () => document.removeEventListener("visibilitychange", handle);
+  }, [fetchMembers]);
+
   const filtered = members
     .filter((m) => {
       const matchSearch = !search ||
