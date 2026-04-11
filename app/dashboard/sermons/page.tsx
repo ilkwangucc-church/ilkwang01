@@ -1,271 +1,407 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Send, Trash2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Play, Pencil, X, Video, Send, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 
-const CATEGORIES = ["전체", "주일예배", "수요예배", "새벽기도", "특별예배"];
-
-interface Sermon {
-  id: number;
-  title: string;
-  preacher: string;
-  date: string;
-  scripture: string;
-  category: string;
-  youtubeUrl: string;
-  youtubeId: string;
-  description: string;
-  published: boolean;
+interface SermonVideo {
+  id:          string;
+  title:       string;
+  publishedAt: string;
+  year:        number;
+  duration:    string;
+  thumbnail:   string;
 }
 
-interface Comment {
-  id: number;
-  sermonId: number;
-  authorName: string;
-  authorEmail: string;
-  content: string;
-  createdAt: string;
+interface SermonSharing {
+  id:         number;
+  memberName: string;
+  text:       string;
+  date:       string;
+  book:       string;
+  chapter:    number | null;
 }
 
-export default function DashboardSermonsPage() {
-  const [sermons, setSermons]       = useState<Sermon[]>([]);
-  const [selected, setSelected]     = useState<Sermon | null>(null);
-  const [category, setCategory]     = useState("전체");
-  const [comments, setComments]     = useState<Comment[]>([]);
-  const [text, setText]             = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [deleting, setDeleting]     = useState<number | null>(null);
-  const commentBottomRef            = useRef<HTMLDivElement>(null);
+export default function SermonsPage() {
+  /* ─ 영상 데이터 ─ */
+  const [sermons,       setSermons]       = useState<SermonVideo[]>([]);
+  const [loading,       setLoading]       = useState(true);
+  const [activeVideo,   setActiveVideo]   = useState<SermonVideo | null>(null);
+  const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>({});
 
+  /* ─ 설교 노트 ─ */
+  const [notes, setNotes] = useState("");
+
+  /* ─ 나눔 ─ */
+  const [sharings,    setSharings]    = useState<SermonSharing[]>([]);
+  const [sharingText, setSharingText] = useState("");
+  const [submitting,  setSubmitting]  = useState(false);
+  const [loadingCmt,  setLoadingCmt]  = useState(false);
+
+  /* ─ 영상 영역 높이 (정확한 16:9) ─ */
+  const videoRowRef = useRef<HTMLDivElement>(null);
+  const [videoRowH, setVideoRowH] = useState(360);
+  const playlistRef = useRef<HTMLDivElement>(null);
+
+  /* ══ ResizeObserver — 16:9 ══ */
   useEffect(() => {
-    fetch("/api/sermons")
+    const el = videoRowRef.current;
+    if (!el) return;
+    const update = () => {
+      const containerW = el.offsetWidth;
+      const playlistW  = 260;
+      const videoW     = Math.max(containerW - playlistW, 80);
+      setVideoRowH(Math.round(videoW * 9 / 16));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  /* ══ @ilkwangucc 영상 로드 ══ */
+  useEffect(() => {
+    fetch("/api/ilkwang-sermons")
       .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setSermons(data);
-          setSelected(data[0]);
+      .then((d: SermonVideo[]) => {
+        const arr = Array.isArray(d) ? d : [];
+        setSermons(arr);
+        if (arr.length > 0) {
+          const latestYear = arr[0].year;
+          setExpandedYears({ [latestYear]: true });
+          setActiveVideo(arr[0]);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  const loadComments = useCallback((sermonId: number) => {
-    fetch(`/api/sermons/comments?sermonId=${sermonId}`)
-      .then((r) => r.json())
-      .then((data) => Array.isArray(data) && setComments(data))
-      .catch(() => {});
-  }, []);
-
+  /* ══ 나눔 로드 ══ */
   useEffect(() => {
-    if (selected) loadComments(selected.id);
-  }, [selected, loadComments]);
+    setLoadingCmt(true);
+    fetch("/api/bible-sharing?book=%EC%84%A4%EA%B5%90")
+      .then((r) => r.json())
+      .then((d) => setSharings(Array.isArray(d) ? d : []))
+      .catch(() => setSharings([]))
+      .finally(() => setLoadingCmt(false));
+  }, [activeVideo]);
 
-  function selectSermon(s: Sermon) {
-    setSelected(s);
-    setComments([]);
-    setText("");
-  }
-
-  async function handleSubmit() {
-    if (!selected || !text.trim()) return;
+  async function submitSharing(e: React.FormEvent) {
+    e.preventDefault();
+    if (!sharingText.trim()) return;
     setSubmitting(true);
-    const res = await fetch("/api/sermons/comments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sermonId: selected.id, content: text }),
-    });
-    setSubmitting(false);
-    if (res.ok) {
-      setText("");
-      loadComments(selected.id);
-      setTimeout(() => commentBottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-    } else {
-      const j = await res.json();
-      alert(j.error || "오류가 발생했습니다.");
-    }
+    try {
+      const res = await fetch("/api/bible-sharing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: sharingText.trim(), book: "설교", chapter: null }),
+      });
+      if (res.ok) {
+        setSharingText("");
+        const d = await fetch("/api/bible-sharing?book=%EC%84%A4%EA%B5%90").then((r) => r.json());
+        setSharings(Array.isArray(d) ? d : []);
+      }
+    } finally { setSubmitting(false); }
   }
 
-  async function handleDelete(commentId: number) {
-    if (!selected) return;
-    setDeleting(commentId);
-    const res = await fetch("/api/sermons/comments", {
+  async function deleteSharing(id: number) {
+    if (!confirm("나눔을 삭제하시겠습니까?")) return;
+    const res = await fetch("/api/bible-sharing", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: commentId }),
+      body: JSON.stringify({ id }),
     });
-    setDeleting(null);
-    if (res.ok) loadComments(selected.id);
+    if (res.ok) setSharings((p) => p.filter((s) => s.id !== id));
   }
 
-  const filtered = sermons.filter((s) => category === "전체" || s.category === category);
+  /* ══ 연도별 그룹 ══ */
+  const yearGroups = sermons.reduce<Record<number, SermonVideo[]>>((acc, v) => {
+    if (!acc[v.year]) acc[v.year] = [];
+    acc[v.year].push(v);
+    return acc;
+  }, {});
+  const years = Object.keys(yearGroups).map(Number).sort((a, b) => b - a);
 
+  /* ══ 재생목록 스크롤 ══ */
+  useEffect(() => {
+    if (!playlistRef.current || !activeVideo) return;
+    const el = playlistRef.current.querySelector<HTMLElement>(`[data-id="${activeVideo.id}"]`);
+    el?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [activeVideo]);
+
+  /* ═══ 렌더 ═══ */
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">설교보기</h1>
-        <p className="text-gray-500 text-sm mt-0.5">말씀 영상을 시청하고 은혜를 나눠주세요</p>
-      </div>
+    <div className="-mx-5 -my-5 lg:-mx-6 lg:-my-6 flex h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
 
-      {/* 카테고리 탭 */}
-      <div className="flex gap-1.5 overflow-x-auto pb-1">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              category === cat
-                ? "bg-[#2E7D32] text-white"
-                : "bg-white border border-gray-200 text-gray-600 hover:border-[#2E7D32] hover:text-[#2E7D32]"
-            }`}
+      {/* ════════════════════════════════
+          LEFT — 연도별 설교 목록
+      ════════════════════════════════ */}
+      <aside className="w-52 lg:w-56 bg-white border-r border-gray-200 flex flex-col overflow-hidden shrink-0">
+        <div className="px-3 py-2 border-b border-gray-100 shrink-0">
+          <p className="text-[11px] font-bold text-blue-700 flex items-center gap-1.5">
+            <Video className="w-3.5 h-3.5" /> 설교 영상
+          </p>
+        </div>
+
+        <div className="flex-1 overflow-y-auto text-xs">
+          {loading ? (
+            <div className="px-3 py-4 text-center text-gray-400 text-[11px]">영상 불러오는 중...</div>
+          ) : years.length === 0 ? (
+            <div className="px-3 py-4 text-center text-gray-400 text-[11px]">영상이 없습니다</div>
+          ) : (
+            years.map((year) => (
+              <div key={year}>
+                <button
+                  onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
+                  className="w-full flex items-center justify-between px-3 py-1.5 bg-blue-50 border-b border-gray-100 hover:bg-blue-100 sticky top-0 z-10"
+                >
+                  <span className="text-[11px] font-bold text-blue-700">{year}년</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-blue-400">{yearGroups[year].length}편</span>
+                    {expandedYears[year]
+                      ? <ChevronDown className="w-3 h-3 text-blue-400" />
+                      : <ChevronRight className="w-3 h-3 text-blue-400" />}
+                  </div>
+                </button>
+
+                {expandedYears[year] && yearGroups[year].map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVideo(v)}
+                    className={`w-full flex items-start gap-2 px-3 py-2 text-left transition-colors border-b border-gray-50 ${
+                      activeVideo?.id === v.id
+                        ? "bg-blue-50 text-blue-700 font-semibold"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Play className={`w-3 h-3 mt-0.5 shrink-0 ${
+                      activeVideo?.id === v.id ? "fill-blue-600 text-blue-600" : "text-gray-300"
+                    }`} />
+                    <div className="min-w-0">
+                      <p className="text-[11px] leading-tight line-clamp-2">{v.title}</p>
+                      <p className="text-[9px] text-gray-400 mt-0.5">{v.publishedAt}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ))
+          )}
+        </div>
+      </aside>
+
+      {/* ════════════════════════════════
+          CENTER — 영상 + 재생목록 + 나눔
+      ════════════════════════════════ */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+
+        {/* 헤더 */}
+        <div className="px-4 py-2 bg-white border-b border-gray-200 flex items-center gap-2 shrink-0">
+          <div className="min-w-0 flex-1">
+            <h1 className="font-bold text-gray-900 text-sm truncate">
+              {activeVideo ? activeVideo.title : "설교 보기"}
+            </h1>
+            <p className="text-[11px] text-gray-400 truncate">
+              {loading
+                ? "@ilkwangucc 영상 로딩 중..."
+                : activeVideo
+                  ? `${activeVideo.publishedAt}${activeVideo.duration ? " · " + activeVideo.duration : ""}`
+                  : "왼쪽에서 설교를 선택하세요"}
+            </p>
+          </div>
+        </div>
+
+        {/* ── 영상 + 재생목록 ── */}
+        <div
+          ref={videoRowRef}
+          className="flex shrink-0 bg-[#0f0f0f]"
+          style={{ height: videoRowH }}
+        >
+          {/* 영상 */}
+          <div
+            className="shrink-0 bg-black relative"
+            style={{ width: videoRowH * (16 / 9) }}
           >
-            {cat}
-          </button>
-        ))}
-      </div>
+            <img
+              src="/ilkwang01.png"
+              alt="일광교회"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
-      {/* 메인: 좌측 영상+목록 / 우측 은혜나눔 */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
-
-        {/* ── 좌측: 영상 플레이어 + 목록 ── */}
-        <div className="lg:col-span-3 space-y-4">
-
-          {/* YouTube 임베드 */}
-          {selected ? (
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
-              <div className="relative" style={{ paddingTop: "56.25%" }}>
+            {activeVideo ? (
+              <>
+                <img
+                  src={activeVideo.thumbnail}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  aria-hidden
+                />
                 <iframe
-                  key={selected.youtubeId}
-                  src={`https://www.youtube.com/embed/${selected.youtubeId}?rel=0`}
+                  key={activeVideo.id}
+                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
                   className="absolute inset-0 w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  title={activeVideo.title}
                 />
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2 select-none">
+                <Video className="w-10 h-10 text-white/30" />
+                <p className="text-white/50 text-xs">왼쪽에서 설교를 선택하세요</p>
               </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h2 className="font-bold text-gray-900 text-base leading-tight">{selected.title}</h2>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {selected.scripture && <span>{selected.scripture} · </span>}
-                      {selected.preacher} · {selected.date}
-                    </p>
-                  </div>
-                  <span className="shrink-0 text-xs px-2 py-0.5 bg-[#E8F5E9] text-[#2E7D32] rounded-full">{selected.category}</span>
-                </div>
-                {selected.description && (
-                  <p className="text-sm text-gray-600 mt-2 leading-relaxed">{selected.description}</p>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm flex items-center justify-center" style={{ paddingTop: "30%" }}>
-              <p className="text-gray-400 text-sm">등록된 설교가 없습니다.</p>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* 설교 목록 */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-5 py-3 border-b border-gray-50">
-              <h2 className="font-semibold text-gray-900 text-sm">설교 목록 ({filtered.length}편)</h2>
+          {/* 재생목록 260px */}
+          <div className="w-[260px] shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
+            <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
+              <p className="text-white text-xs font-bold">설교 재생목록</p>
+              <p className="text-gray-500 text-[10px] mt-0.5">
+                {loading ? "연결 중..." : `전체 ${sermons.length}편`}
+              </p>
             </div>
-            <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
-              {filtered.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => selectSermon(s)}
-                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 ${
-                    selected?.id === s.id ? "bg-[#E8F5E9]" : ""
-                  }`}
-                >
-                  <img
-                    src={`https://img.youtube.com/vi/${s.youtubeId}/mqdefault.jpg`}
-                    alt={s.title}
-                    className="w-20 h-12 object-cover rounded-md shrink-0 bg-gray-100"
-                  />
-                  <div className="min-w-0">
-                    <p className={`font-medium text-sm truncate ${selected?.id === s.id ? "text-[#2E7D32]" : "text-gray-900"}`}>
-                      {s.title}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {s.scripture && <span>{s.scripture} · </span>}{s.date}
-                    </p>
-                    <span className="text-xs px-1.5 py-0.5 bg-[#E8F5E9] text-[#2E7D32] rounded-full">{s.category}</span>
-                  </div>
-                </button>
-              ))}
-              {filtered.length === 0 && (
-                <div className="text-center py-8 text-gray-400 text-sm">해당 분류의 설교가 없습니다.</div>
-              )}
+            <div ref={playlistRef} className="flex-1 overflow-y-auto overscroll-contain">
+              {sermons.map((v) => {
+                const isActive = activeVideo?.id === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    data-id={v.id}
+                    onClick={() => setActiveVideo(v)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
+                      isActive ? "bg-blue-700" : "hover:bg-white/10"
+                    }`}
+                  >
+                    {/* 썸네일 */}
+                    <div className="w-12 h-[27px] shrink-0 rounded overflow-hidden bg-black/30 relative">
+                      <img
+                        src={v.thumbnail}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      {v.duration && (
+                        <span className="absolute bottom-0.5 right-0.5 bg-black/80 text-white text-[8px] px-0.5 rounded leading-tight">
+                          {v.duration}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* 정보 */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-[11px] leading-tight line-clamp-2 ${
+                        isActive ? "text-white font-medium" : "text-gray-300"
+                      }`}>
+                        {v.title}
+                      </p>
+                      <p className="text-[9px] text-gray-600 mt-0.5">{v.publishedAt}</p>
+                    </div>
+
+                    {isActive && <Play className="w-3 h-3 text-blue-300 shrink-0 fill-blue-300" />}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* ── 우측: 은혜나눔 ── */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col" style={{ minHeight: "520px" }}>
-            <div className="px-5 py-4 border-b border-gray-50">
-              <h2 className="font-semibold text-gray-900">은혜나눔</h2>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {selected ? `"${selected.title}" 말씀의 은혜를 나눠주세요` : "설교를 선택해주세요"}
-              </p>
-            </div>
-
-            {/* 댓글 목록 */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ maxHeight: "360px" }}>
-              {comments.length === 0 ? (
-                <div className="text-center py-10 text-gray-400 text-sm">
-                  <p className="text-2xl mb-2">🙏</p>
-                  첫 번째 은혜를 나눠주세요
-                </div>
-              ) : (
-                comments.map((c) => (
-                  <div key={c.id} className="bg-gray-50 rounded-xl p-3 group">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] text-xs font-bold shrink-0">
-                          {c.authorName[0]}
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">{c.authorName}</span>
-                        <span className="text-xs text-gray-400">{c.createdAt}</span>
-                      </div>
-                      <button
-                        onClick={() => handleDelete(c.id)}
-                        disabled={deleting === c.id}
-                        className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all disabled:opacity-40"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-700 leading-relaxed pl-9">{c.content}</p>
-                  </div>
-                ))
-              )}
-              <div ref={commentBottomRef} />
-            </div>
-
-            {/* 입력 영역 */}
-            <div className="p-4 border-t border-gray-50">
+        {/* ── 설교 나눔 ── */}
+        <div className="flex-1 overflow-y-auto flex flex-col bg-white">
+          {/* 입력 폼 */}
+          <form onSubmit={submitSharing} className="px-4 py-3 border-b border-gray-100 shrink-0">
+            <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
+              💬 설교 나눔
+              <span className="font-normal text-gray-400">· {sharings.length}개</span>
+            </p>
+            <p className="text-[10px] text-blue-500 mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
+            <div className="flex gap-2">
               <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit(); }}
-                placeholder={selected ? "말씀을 듣고 받은 은혜를 나눠주세요..." : "먼저 설교를 선택해주세요"}
-                disabled={!selected}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 resize-none disabled:bg-gray-50 disabled:text-gray-400"
+                value={sharingText}
+                onChange={(e) => setSharingText(e.target.value)}
+                placeholder="설교 말씀에서 받은 은혜를 나눠주세요..."
+                rows={2}
+                className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
               />
               <button
-                onClick={handleSubmit}
-                disabled={submitting || !text.trim() || !selected}
-                className="mt-2 w-full flex items-center justify-center gap-2 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] disabled:opacity-40 transition-colors"
+                type="submit"
+                disabled={submitting || !sharingText.trim()}
+                className="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
               >
                 <Send className="w-3.5 h-3.5" />
-                {submitting ? "나누는 중..." : "은혜 나누기"}
+                <span className="text-[9px]">{submitting ? "..." : "등록"}</span>
               </button>
-              <p className="text-xs text-gray-400 text-center mt-1.5">Cmd+Enter로 빠르게 등록</p>
             </div>
+          </form>
+
+          {/* 나눔 목록 */}
+          <div className="flex-1 overflow-y-auto">
+            {loadingCmt ? (
+              <div className="text-center py-6 text-xs text-gray-400">불러오는 중...</div>
+            ) : sharings.length === 0 ? (
+              <div className="text-center py-8 text-xs text-gray-400 flex flex-col items-center gap-2">
+                <span className="text-2xl">🙏</span>첫 번째 나눔을 남겨주세요
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-50">
+                {sharings.map((s) => (
+                  <div key={s.id} className="px-4 py-3 hover:bg-gray-50 group">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] font-semibold text-blue-600">{s.memberName}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-gray-400">{s.date}</span>
+                        <button
+                          onClick={() => deleteSharing(s.id)}
+                          className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{s.text}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* ════════════════════════════════
+          RIGHT — 설교 노트
+      ════════════════════════════════ */}
+      <div className="w-60 lg:w-72 border-l border-gray-200 bg-white flex flex-col overflow-hidden shrink-0">
+        <div className="px-4 py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+              <Pencil className="w-3.5 h-3.5 text-blue-600" /> 설교 노트
+            </h2>
+            <p className="text-[11px] text-gray-400 mt-0.5">
+              {activeVideo ? activeVideo.publishedAt : "설교를 선택하세요"}
+            </p>
+          </div>
+          {notes && (
+            <button
+              onClick={() => { if (confirm("초기화하시겠습니까?")) setNotes(""); }}
+              className="text-gray-400 hover:text-red-500 transition-colors"
+              title="초기화"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex-1 p-3 overflow-hidden flex flex-col">
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder={"설교 말씀을 기록하세요.\n\n예)\n- 본문:\n- 핵심 메시지:\n- 적용:"}
+            className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-serif placeholder:text-xs placeholder:text-gray-400"
+          />
+        </div>
+
+        <div className="px-4 py-2 border-t border-gray-100 shrink-0">
+          <p className="text-[10px] text-gray-400 text-right">{notes.length.toLocaleString()}자</p>
+        </div>
+      </div>
+
     </div>
   );
 }

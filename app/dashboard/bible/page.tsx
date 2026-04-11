@@ -26,22 +26,22 @@ const CHAPTER_COUNTS: Record<string, number> = {
 const BIBLE = [
   {
     testament: "구약", color: "text-[#2E7D32]", bg: "bg-[#E8F5E9]",
-    sections: [
-      { name: "율법서",   books: ["창세기","출애굽기","레위기","민수기","신명기"] },
-      { name: "역사서",   books: ["여호수아","사사기","룻기","사무엘상","사무엘하","열왕기상","열왕기하","역대상","역대하","에스라","느헤미야","에스더"] },
-      { name: "시가서",   books: ["욥기","시편","잠언","전도서","아가"] },
-      { name: "대선지서", books: ["이사야","예레미야","예레미야애가","에스겔","다니엘"] },
-      { name: "소선지서", books: ["호세아","요엘","아모스","오바댜","요나","미가","나훔","하박국","스바냐","학개","스가랴","말라기"] },
+    books: [
+      "창세기","출애굽기","레위기","민수기","신명기",
+      "여호수아","사사기","룻기","사무엘상","사무엘하","열왕기상","열왕기하","역대상","역대하","에스라","느헤미야","에스더",
+      "욥기","시편","잠언","전도서","아가",
+      "이사야","예레미야","예레미야애가","에스겔","다니엘",
+      "호세아","요엘","아모스","오바댜","요나","미가","나훔","하박국","스바냐","학개","스가랴","말라기",
     ],
   },
   {
     testament: "신약", color: "text-blue-700", bg: "bg-blue-50",
-    sections: [
-      { name: "복음서",   books: ["마태복음","마가복음","누가복음","요한복음"] },
-      { name: "역사서",   books: ["사도행전"] },
-      { name: "바울서신", books: ["로마서","고린도전서","고린도후서","갈라디아서","에베소서","빌립보서","골로새서","데살로니가전서","데살로니가후서","디모데전서","디모데후서","디도서","빌레몬서"] },
-      { name: "일반서신", books: ["히브리서","야고보서","베드로전서","베드로후서","요한일서","요한이서","요한삼서","유다서"] },
-      { name: "예언서",   books: ["요한계시록"] },
+    books: [
+      "마태복음","마가복음","누가복음","요한복음",
+      "사도행전",
+      "로마서","고린도전서","고린도후서","갈라디아서","에베소서","빌립보서","골로새서","데살로니가전서","데살로니가후서","디모데전서","디모데후서","디도서","빌레몬서",
+      "히브리서","야고보서","베드로전서","베드로후서","요한일서","요한이서","요한삼서","유다서",
+      "요한계시록",
     ],
   },
 ];
@@ -57,7 +57,6 @@ export default function BiblePage() {
   const [selectedBook,    setSelectedBook]    = useState("창세기");
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [expandedBook,    setExpandedBook]    = useState<string>("창세기");
-  const [openSections,    setOpenSections]    = useState<Record<string, boolean>>({ 율법서: true });
 
   /* ─ 영상 목록 ─ */
   const [allVideos,   setAllVideos]   = useState<PRSVideo[]>([]);
@@ -220,77 +219,63 @@ export default function BiblePage() {
         </div>
 
         <div className="flex-1 overflow-y-auto text-xs">
-          {BIBLE.map(({ testament, color, bg, sections }) => (
+          {BIBLE.map(({ testament, color, bg, books }) => (
             <div key={testament}>
               <div className={`px-3 py-1.5 sticky top-0 z-10 ${bg} border-b border-gray-100`}>
                 <span className={`text-[11px] font-bold ${color}`}>{testament}</span>
               </div>
 
-              {sections.map((sec) => (
-                <div key={sec.name}>
-                  <button
-                    onClick={() => setOpenSections((p) => ({ ...p, [sec.name]: !p[sec.name] }))}
-                    className="w-full flex items-center justify-between px-3 py-1.5 bg-gray-50 border-b border-gray-100 hover:bg-gray-100"
-                  >
-                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">{sec.name}</span>
-                    {openSections[sec.name]
-                      ? <ChevronDown className="w-3 h-3 text-gray-400" />
-                      : <ChevronRight className="w-3 h-3 text-gray-400" />}
-                  </button>
+              {books.map((book) => {
+                const bvm        = videoMap[book] ?? {};
+                const totalCh    = CHAPTER_COUNTS[book] ?? 1;
+                const isExpanded = expandedBook === book;
 
-                  {openSections[sec.name] && sec.books.map((book) => {
-                    const bvm      = videoMap[book] ?? {};
-                    const totalCh  = CHAPTER_COUNTS[book] ?? 1;
-                    const isExpanded = expandedBook === book;
-
-                    return (
-                      <div key={book} className="border-b border-gray-50">
-                        <button
-                          onClick={() => handleBookClick(book)}
-                          className={`w-full flex items-center justify-between px-4 py-1.5 transition-colors ${
-                            selectedBook === book
-                              ? "bg-[#E8F5E9] text-[#2E7D32] font-semibold"
-                              : "text-gray-700 hover:bg-gray-50"
-                          }`}
-                        >
-                          <span>{book}</span>
-                          <div className="flex items-center gap-1">
-                            <span className="text-[9px] text-gray-400">{totalCh}장</span>
-                            {isExpanded
-                              ? <ChevronDown className="w-2.5 h-2.5 text-gray-400" />
-                              : <ChevronRight className="w-2.5 h-2.5 text-gray-400" />}
-                          </div>
-                        </button>
-
-                        {isExpanded && (
-                          <div className="px-2 py-2 bg-gray-50 grid grid-cols-6 gap-0.5">
-                            {Array.from({ length: totalCh }, (_, i) => i + 1).map((ch) => {
-                              const hasVideo = !!bvm[ch];
-                              const isActive = selectedBook === book && selectedChapter === ch;
-                              return (
-                                <button
-                                  key={ch}
-                                  onClick={() => handleChapterClick(book, ch)}
-                                  title={`${book} ${ch}장${hasVideo ? " (영상 있음)" : ""}`}
-                                  className={`h-7 rounded text-[10px] font-medium transition-colors ${
-                                    isActive
-                                      ? "bg-[#2E7D32] text-white"
-                                      : hasVideo
-                                        ? "bg-[#C8E6C9] text-[#2E7D32] hover:bg-[#A5D6A7]"
-                                        : "bg-gray-200 text-gray-400 hover:bg-gray-300"
-                                  }`}
-                                >
-                                  {ch}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
+                return (
+                  <div key={book} className="border-b border-gray-50">
+                    <button
+                      onClick={() => handleBookClick(book)}
+                      className={`w-full flex items-center justify-between px-3 py-1.5 transition-colors ${
+                        selectedBook === book
+                          ? "bg-[#E8F5E9] text-[#2E7D32] font-semibold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span>{book}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] text-gray-400">{totalCh}장</span>
+                        {isExpanded
+                          ? <ChevronDown className="w-2.5 h-2.5 text-gray-400" />
+                          : <ChevronRight className="w-2.5 h-2.5 text-gray-400" />}
                       </div>
-                    );
-                  })}
-                </div>
-              ))}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-2 py-2 bg-gray-50 grid grid-cols-6 gap-0.5">
+                        {Array.from({ length: totalCh }, (_, i) => i + 1).map((ch) => {
+                          const hasVideo = !!bvm[ch];
+                          const isActive = selectedBook === book && selectedChapter === ch;
+                          return (
+                            <button
+                              key={ch}
+                              onClick={() => handleChapterClick(book, ch)}
+                              title={`${book} ${ch}장${hasVideo ? " (영상 있음)" : ""}`}
+                              className={`h-7 rounded text-[10px] font-medium transition-colors ${
+                                isActive
+                                  ? "bg-[#2E7D32] text-white"
+                                  : hasVideo
+                                    ? "bg-[#C8E6C9] text-[#2E7D32] hover:bg-[#A5D6A7]"
+                                    : "bg-gray-200 text-gray-400 hover:bg-gray-300"
+                              }`}
+                            >
+                              {ch}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
