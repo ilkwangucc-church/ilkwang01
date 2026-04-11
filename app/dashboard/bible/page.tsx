@@ -312,14 +312,11 @@ export default function BiblePage() {
         {/* ── 영상 + 재생목록 (나란히, 고정 높이로 스크롤 보장) ── */}
         <div
           className="flex shrink-0"
-          style={{ height: "clamp(220px, 40vh, 380px)" }}
+          style={{ height: "clamp(260px, 50vh, 500px)" }}
         >
 
-          {/* 영상: 16:9 비율 유지, 검은 여백 없음 */}
-          <div
-            className="shrink-0 bg-[#0f0f0f] self-stretch"
-            style={{ width: "clamp(280px, 62%, 640px)" }}
-          >
+          {/* 영상: 컨테이너 꽉 채움 (flex-1로 크게) */}
+          <div className="flex-1 bg-[#0f0f0f] min-w-0">
             {loadingVids ? (
               <div className="w-full h-full flex flex-col items-center justify-center gap-2">
                 <div className="w-7 h-7 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
@@ -346,8 +343,8 @@ export default function BiblePage() {
             )}
           </div>
 
-          {/* 재생목록: 전체 높이, 모든 장 스크롤 가능 */}
-          <div className="flex-1 min-w-[160px] bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
+          {/* 재생목록: 고정 폭 (영상 대비 절반 수준) */}
+          <div className="w-40 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
