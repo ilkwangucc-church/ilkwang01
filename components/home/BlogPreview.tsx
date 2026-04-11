@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { fetchChannelVideos } from "@/lib/youtube";
+import { fetchSermonVideos } from "@/lib/youtube";
 import BlogVideoCard from "./BlogVideoCard";
 
 export default async function BlogPreview() {
-  const videos = await fetchChannelVideos();
+  const videos = await fetchSermonVideos(); // 라이브 스트리밍 제외
   // 첫 번째는 LatestSermon에서 사용 → 2~5번째 영상 표시
   const latest3 = videos.slice(1, 5);
 
