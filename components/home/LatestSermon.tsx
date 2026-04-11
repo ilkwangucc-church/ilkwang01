@@ -1,29 +1,34 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { ytWatch, YT_CHANNEL_URL } from "@/lib/youtube";
+import { fetchSermonVideos, ytWatch, YT_CHANNEL_URL } from "@/lib/youtube";
 import SermonStreamPlayer from "./SermonStreamPlayer";
 
+// ISR: 30분마다 자동 갱신 (매주 새 영상 자동 반영)
+export const revalidate = 1800;
+
 export default async function LatestSermon() {
-  // 2026.03.15 설교 영상 고정 — 35분~65분 구간 반복
-  const videoId = "BVamVjzwBIo";
-  const title = '2026.03.15. "지혜로운 마음" (시편 90편 1-17)';
+  const videos = await fetchSermonVideos(); // 라이브 제외 일반 설교 영상만
+  const latest = videos[0];
+
+  // 등록된 영상이 없으면 렌더링 안 함
+  if (!latest) return null;
 
   return (
     <section className="relative z-10 -mt-16">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
-          {/* ── 영상: 35분~65분 구간 반복 ── */}
+          {/* ── 영상: 처음부터 자동재생(음소거) ── */}
           <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[326px]">
-            <SermonStreamPlayer videoId={videoId} startSec={2100} endSec={3900} />
+            <SermonStreamPlayer videoId={latest.id} startSec={0} endSec={5400} />
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
           <div className="flex-1 pl-6 pr-8 py-8 flex flex-col justify-center">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
-              지난 주일 예배 · 소리 없이 재생 중
+              최신 설교 · 소리 없이 재생 중
             </p>
             <h2 className="text-xl font-black text-[#1a2744] mb-2 line-clamp-2">
-              {title}
+              {latest.title}
             </h2>
             <p className="text-gray-500 text-sm mb-6">
               매주 일요일 오전 9:30 · 11:00<br />
@@ -31,7 +36,7 @@ export default async function LatestSermon() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href={ytWatch(videoId)}
+                href={ytWatch(latest.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold text-sm rounded-[26px] hover:bg-[#1B5E20] transition-colors"

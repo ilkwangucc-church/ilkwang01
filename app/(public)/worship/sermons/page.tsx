@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { fetchChannelVideos, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
+import { fetchSermonVideos, ytEmbed, YT_CHANNEL_URL } from "@/lib/youtube";
 import SermonCard from "./SermonCard";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { WORSHIP_NAV } from "@/components/ui/StickySubNav";
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 1800;
 
 export default async function SermonsPage() {
-  const videos = await fetchChannelVideos();
+  const videos = await fetchSermonVideos(); // 라이브 스트리밍 제외
   const latest = videos[0];
 
   return (
