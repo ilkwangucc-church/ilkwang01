@@ -105,7 +105,7 @@ export default function Navbar() {
         noticeTimer.current = setTimeout(() => {
           setNoticePhase("normal");
           startCycle();
-        }, 16);
+        }, 50);
       }, 350);
     }, 5000);
   }, [noticeItems.length]); // eslint-disable-line react-hooks/exhaustive-deps
