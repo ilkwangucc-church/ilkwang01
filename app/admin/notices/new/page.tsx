@@ -7,7 +7,8 @@ import Link from "next/link";
 export default function NewNoticePage() {
   const router = useRouter();
   const [form, setForm] = useState({ title: "", category: "예배", content: "", pinned: false, published: true });
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving]   = useState(false);
+  const [error, setError]     = useState("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target;
@@ -16,10 +17,25 @@ export default function NewNoticePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSaving(false);
-    router.push("/admin/notices");
+    try {
+      const res = await fetch("/api/notices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "저장 중 오류가 발생했습니다.");
+        return;
+      }
+      router.push("/admin/notices");
+    } catch {
+      setError("서버 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -28,6 +44,10 @@ export default function NewNoticePage() {
         <Link href="/admin/notices" className="text-gray-400 hover:text-gray-700"><ArrowLeft className="w-5 h-5" /></Link>
         <h1 className="text-2xl font-bold text-gray-900">공지 작성</h1>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">{error}</div>
+      )}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         <div>

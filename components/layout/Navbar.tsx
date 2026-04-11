@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, ArrowRight, LogOut } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import Logo from "./Logo";
 
 type SubItem = { label: string; href: string; desc: string };
@@ -79,6 +79,57 @@ export default function Navbar() {
   const closeTimer                  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [loggedIn, setLoggedIn]     = useState(false);
 
+  /* ── 공지사항 순환 슬라이더 ──────────────────────────────── */
+  const [noticeItems, setNoticeItems]     = useState<string[]>([]);
+  const [noticeIdx, setNoticeIdx]         = useState(0);
+  const [noticePhase, setNoticePhase]     = useState<"normal" | "exit" | "enter">("normal");
+  const noticeTimer                       = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    fetch("/api/notices")
+      .then((r) => r.ok ? r.json() : [])
+      .then((data: { title: string; published: boolean }[]) => {
+        const titles = data.filter((n) => n.published).map((n) => n.title);
+        setNoticeItems(titles);
+      })
+      .catch(() => {});
+  }, []);
+
+  const startCycle = useCallback(() => {
+    if (noticeTimer.current) clearTimeout(noticeTimer.current);
+    noticeTimer.current = setTimeout(() => {
+      setNoticePhase("exit");
+      noticeTimer.current = setTimeout(() => {
+        setNoticeIdx((i) => (i + 1) % noticeItems.length);
+        setNoticePhase("enter");
+        noticeTimer.current = setTimeout(() => {
+          setNoticePhase("normal");
+          startCycle();
+        }, 16);
+      }, 350);
+    }, 5000);
+  }, [noticeItems.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (noticeItems.length <= 1) return;
+    startCycle();
+    return () => { if (noticeTimer.current) clearTimeout(noticeTimer.current); };
+  }, [noticeItems.length, startCycle]);
+
+  const noticeText  = noticeItems.length > 0
+    ? noticeItems[noticeIdx]
+    : "A Church Full of Grace and Truth";
+
+  const noticeStyle: React.CSSProperties = {
+    transform:
+      noticePhase === "exit"  ? "translateX(-50%) translateY(100%)"
+      : noticePhase === "enter" ? "translateX(-50%) translateY(-100%)"
+      : "translateX(-50%) translateY(0)",
+    opacity:    noticePhase === "normal" ? 1 : 0,
+    transition: noticePhase === "enter"  ? "none" : "transform 350ms ease-in-out, opacity 350ms ease-in-out",
+  };
+  /* ─────────────────────────────────────────────────────────── */
+
   // 로그인 상태 확인 (대시보드에서 프론트로 나와도 유지)
   useEffect(() => {
     fetch("/api/admin/auth/me")
@@ -119,9 +170,13 @@ export default function Navbar() {
 
       {/* Top Bar — 모바일 숨김, 스크롤 시 위로 사라짐 */}
       <div className={`hidden md:block bg-[#1a2744] transition-transform duration-500 ${scrolled ? "-translate-y-full absolute w-full" : "translate-y-0"}`}>
-        <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center">
-          <p className="absolute left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none">
-            A Church Full of Grace and Truth
+        <div className="max-w-[1400px] mx-auto px-6 h-9 relative flex items-center overflow-hidden">
+          {/* 공지사항 순환 슬라이더 — 위→아래 전환 */}
+          <p
+            className="absolute left-1/2 text-white/70 text-xs tracking-widest whitespace-nowrap pointer-events-none"
+            style={noticeStyle}
+          >
+            {noticeText}
           </p>
           <div className="ml-auto flex items-center gap-4">
             <Link href="/contact" className="text-white/70 hover:text-white text-xs transition-colors">문의하기</Link>

@@ -1,12 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { X, Download, FileText } from "lucide-react";
+import { X, Download, FileText, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
-/* ── 주보 데이터 타입 ─────────────────────────────────────────
-   /public/bulletins/ 폴더에 파일 저장
-   이미지: YYYY-MM-DD-1.jpg (앞면), YYYY-MM-DD-2.jpg (뒷면)
-   문서:   YYYY-MM-DD.hwp / .doc / .docx / .pdf / .ppt / .pptx
-─────────────────────────────────────────────────────────── */
 type Bulletin = {
   id: number;
   date: string;
@@ -17,25 +12,20 @@ type Bulletin = {
   fileType?: string;
 };
 
-/* 날짜 포맷 */
 const fmt = (d: string) => {
   const [y, m, day] = d.split("-");
   return `${y}년 ${parseInt(m)}월 ${parseInt(day)}일`;
 };
 
-/* 파일 타입별 레이블 */
-const fileLabel = (type?: string) => {
-  if (!type) return "다운로드";
-  return type.toUpperCase();
-};
+const fileLabel = (type?: string) => (type ? type.toUpperCase() : "다운로드");
 
-/* 이미지 로드 실패 시 회색 placeholder SVG */
+/* placeholder — 378:212 가로형 비율 */
 const PLACEHOLDER = (label: string) =>
   `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="595" height="842" fill="%23f3f4f6">
-      <rect width="595" height="842"/>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 378 212" fill="%23f3f4f6">
+      <rect width="378" height="212"/>
       <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-        fill="%23d1d5db" font-size="20" font-family="sans-serif">${label}</text>
+        fill="%23d1d5db" font-size="14" font-family="sans-serif">${label}</text>
     </svg>`
   )}`;
 
@@ -43,6 +33,7 @@ export default function BulletinViewer() {
   const [bulletins, setBulletins] = useState<Bulletin[]>([]);
   const [selected, setSelected]   = useState<Bulletin | null>(null);
   const [loading, setLoading]     = useState(true);
+  const [zoom, setZoom]           = useState(1);
 
   useEffect(() => {
     fetch("/api/bulletins")
@@ -50,6 +41,11 @@ export default function BulletinViewer() {
       .then((data) => { setBulletins(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  function openModal(b: Bulletin) {
+    setSelected(b);
+    setZoom(1);
+  }
 
   if (loading) {
     return (
@@ -64,8 +60,6 @@ export default function BulletinViewer() {
       {/* ── 주보 목록 ── */}
       <div className="max-w-[1400px] mx-auto px-4 py-12">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-
-          {/* 목록 헤더 */}
           <div className="hidden sm:grid sm:grid-cols-[160px_1fr_120px] bg-[#1a2744] px-6 py-3 text-xs font-bold text-white/70 uppercase tracking-wider">
             <div>날짜</div>
             <div>주요 내용</div>
@@ -81,17 +75,14 @@ export default function BulletinViewer() {
           {bulletins.map((b, idx) => (
             <div
               key={b.id}
-              onClick={() => setSelected(b)}
+              onClick={() => openModal(b)}
               className={`flex flex-col sm:grid sm:grid-cols-[160px_1fr_120px] items-start px-6 py-5 cursor-pointer transition-colors hover:bg-[#F1F8E9] group ${idx < bulletins.length - 1 ? "border-b border-gray-100" : ""}`}
             >
-              {/* 날짜 */}
               <div className="mb-2 sm:mb-0 shrink-0">
                 <span className="inline-block bg-[#E8F5E9] text-[#2E7D32] text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                   {fmt(b.date)}
                 </span>
               </div>
-
-              {/* 주요 사항 */}
               <div className="space-y-1.5">
                 {b.highlights.map((h, i) => (
                   <p key={i} className="text-sm text-gray-600 flex items-start gap-2 leading-snug">
@@ -100,8 +91,6 @@ export default function BulletinViewer() {
                   </p>
                 ))}
               </div>
-
-              {/* 문서 다운로드 */}
               <div
                 className="mt-3 sm:mt-0 self-center flex items-center justify-center shrink-0"
                 onClick={(e) => e.stopPropagation()}
@@ -120,7 +109,6 @@ export default function BulletinViewer() {
             </div>
           ))}
         </div>
-
         <p className="text-xs text-gray-400 mt-4 text-center">
           * 주보를 클릭하면 앞·뒷면을 확인할 수 있습니다.
         </p>
@@ -141,12 +129,8 @@ export default function BulletinViewer() {
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-[#6dbf73]" />
                 <div>
-                  <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.2em]">
-                    일광교회 주보
-                  </p>
-                  <h2 className="text-white font-black text-lg leading-tight">
-                    {fmt(selected.date)} 주보
-                  </h2>
+                  <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.2em]">일광교회 주보</p>
+                  <h2 className="text-white font-black text-lg leading-tight">{fmt(selected.date)} 주보</h2>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -169,54 +153,79 @@ export default function BulletinViewer() {
               </div>
             </div>
 
-            {/* 주보 이미지 — 앞·뒷면 */}
-            <div className="bg-gray-100 p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1200px] mx-auto">
+            {/* 돋보기 컨트롤 */}
+            <div className="flex items-center justify-center gap-3 px-6 py-3 bg-gray-50 border-b border-gray-100">
+              <button
+                onClick={() => setZoom((z) => Math.max(0.5, +(z - 0.25).toFixed(2)))}
+                disabled={zoom <= 0.5}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              >
+                <ZoomOut className="w-3.5 h-3.5" /> 축소
+              </button>
+              <span className="text-sm font-bold text-gray-700 min-w-[52px] text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={() => setZoom((z) => Math.min(4, +(z + 0.25).toFixed(2)))}
+                disabled={zoom >= 4}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              >
+                <ZoomIn className="w-3.5 h-3.5" /> 확대
+              </button>
+              <button
+                onClick={() => setZoom(1)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> 원래 크기
+              </button>
+            </div>
 
-                {/* 1면 (앞) */}
-                <div className="bg-white rounded-xl overflow-hidden shadow-md">
-                  <div className="bg-[#E8F5E9] px-4 py-2 text-center">
-                    <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-widest">
-                      1면 · 앞
-                    </span>
+            {/* 주보 이미지 — 앞·뒷면 (가로 378:212 비율) */}
+            <div className="bg-gray-100 p-6 overflow-auto" style={{ maxHeight: "75vh" }}>
+              {/* zoom > 1 이면 minWidth 를 넓혀 스크롤 가능하게 */}
+              <div style={{ minWidth: zoom > 1 ? `${zoom * 100}%` : "100%" }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1200px] mx-auto">
+
+                  {/* 1면 (앞) */}
+                  <div className="bg-white rounded-xl overflow-hidden shadow-md">
+                    <div className="bg-[#E8F5E9] px-4 py-2 text-center">
+                      <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-widest">1면 · 앞</span>
+                    </div>
+                    {/* 378:212 가로형 비율 — padding-top trick */}
+                    <div className="relative w-full" style={{ paddingTop: `${(212 / 378) * 100}%` }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selected.front || PLACEHOLDER("주보 1면")}
+                        alt={`${fmt(selected.date)} 주보 1면`}
+                        className="absolute inset-0 w-full h-full object-contain bg-gray-50"
+                        onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER("주보 1면"); }}
+                      />
+                    </div>
                   </div>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selected.front}
-                    alt={`${fmt(selected.date)} 주보 1면`}
-                    className="w-full h-auto block"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = PLACEHOLDER("주보 1면");
-                    }}
-                  />
-                </div>
 
-                {/* 2면 (뒤) */}
-                <div className="bg-white rounded-xl overflow-hidden shadow-md">
-                  <div className="bg-[#E8F5E9] px-4 py-2 text-center">
-                    <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-widest">
-                      2면 · 뒤
-                    </span>
+                  {/* 2면 (뒤) */}
+                  <div className="bg-white rounded-xl overflow-hidden shadow-md">
+                    <div className="bg-[#E8F5E9] px-4 py-2 text-center">
+                      <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-widest">2면 · 뒤</span>
+                    </div>
+                    <div className="relative w-full" style={{ paddingTop: `${(212 / 378) * 100}%` }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selected.back || PLACEHOLDER("주보 2면")}
+                        alt={`${fmt(selected.date)} 주보 2면`}
+                        className="absolute inset-0 w-full h-full object-contain bg-gray-50"
+                        onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER("주보 2면"); }}
+                      />
+                    </div>
                   </div>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selected.back}
-                    alt={`${fmt(selected.date)} 주보 2면`}
-                    className="w-full h-auto block"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = PLACEHOLDER("주보 2면");
-                    }}
-                  />
-                </div>
 
+                </div>
               </div>
             </div>
 
             {/* 모달 하단 */}
             <div className="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
-              <p className="text-xs text-gray-400">
-                이미지를 길게 누르거나 우클릭하여 저장할 수 있습니다.
-              </p>
+              <p className="text-xs text-gray-400">이미지를 길게 누르거나 우클릭하여 저장할 수 있습니다.</p>
               {selected.file && (
                 <a
                   href={selected.file}

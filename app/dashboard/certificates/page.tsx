@@ -1,65 +1,89 @@
 "use client";
-import { useState } from "react";
-import { Plus, Printer, Search } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Printer, Search, Send } from "lucide-react";
 
-const CERT_TYPES = ["등록 증명서", "세례 증명서", "혼인 증명서", "봉사 확인서", "출석 확인서"];
+const CERT_TYPES = ["등록 증명서", "세례 증명서", "봉사 확인서", "출석 확인서"];
 
-const ISSUED = [
-  { id: 1, name: "김성도", type: "등록 증명서", purpose: "이사 신고용", issuedAt: "2025-03-28", issuer: "일광교회" },
-  { id: 2, name: "이집사", type: "세례 증명서", purpose: "타교회 제출", issuedAt: "2025-03-20", issuer: "일광교회" },
-  { id: 3, name: "박권사", type: "봉사 확인서", purpose: "사회복지 기관 제출", issuedAt: "2025-03-15", issuer: "일광교회" },
-  { id: 4, name: "최성도", type: "출석 확인서", purpose: "학교 제출",   issuedAt: "2025-03-10", issuer: "일광교회" },
-];
+interface CertRequest {
+  id: number;
+  memberName: string;
+  memberEmail: string;
+  type: string;
+  purpose: string;
+  requestedAt: string;
+  status: "pending" | "approved";
+  issuedAt: string | null;
+  approvedBy: string | null;
+}
 
 export default function CertificatesPage() {
-  const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [certType, setCertType] = useState(CERT_TYPES[0]);
-  const [memberName, setMemberName] = useState("");
-  const [purpose, setPurpose] = useState("");
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split("T")[0]);
-  const [issued, setIssued] = useState(ISSUED);
+  const [requests, setRequests]   = useState<CertRequest[]>([]);
+  const [search, setSearch]       = useState("");
+  const [showApply, setShowApply] = useState(false);
+  const [certType, setCertType]   = useState(CERT_TYPES[0]);
+  const [purpose, setPurpose]     = useState("");
+  const [saving, setSaving]       = useState(false);
+  const [printTarget, setPrintTarget] = useState<CertRequest | null>(null);
 
-  const filtered = issued.filter((c) =>
-    !search || c.name.includes(search) || c.type.includes(search)
+  const loadRequests = useCallback(() => {
+    fetch("/api/certificates")
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) && setRequests(data))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => { loadRequests(); }, [loadRequests]);
+
+  const filtered = requests.filter(
+    (r) => !search || r.type.includes(search) || r.memberName.includes(search)
   );
 
-  function handleIssue() {
-    if (!memberName.trim()) { alert("성명을 입력해주세요."); return; }
-    setIssued(prev => [{
-      id: Date.now(),
-      name: memberName,
-      type: certType,
-      purpose,
-      issuedAt: issueDate,
-      issuer: "일광교회",
-    }, ...prev]);
-    setShowModal(false);
-    setMemberName("");
-    setPurpose("");
+  async function handleApply() {
+    setSaving(true);
+    const res = await fetch("/api/certificates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: certType, purpose }),
+    });
+    setSaving(false);
+    if (res.ok) {
+      setShowApply(false);
+      setPurpose("");
+      loadRequests();
+    } else {
+      const j = await res.json();
+      alert(j.error || "신청 중 오류가 발생했습니다.");
+    }
   }
+
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">증명서 발급</h1>
-          <p className="text-gray-500 text-sm mt-0.5">등록·세례·봉사·출석 증명서 발급 및 이력 관리</p>
+          <p className="text-gray-500 text-sm mt-0.5">등록·세례·봉사·출석 증명서 신청 및 발급 확인</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowApply(true)}
           className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
         >
-          <Plus className="w-4 h-4" /> 증명서 발급
+          <Send className="w-4 h-4" /> 증명서 신청
         </button>
       </div>
 
       {/* 증명서 종류 안내 */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {CERT_TYPES.map((type) => (
-          <div key={type} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+          <div
+            key={type}
+            onClick={() => { setCertType(type); setShowApply(true); }}
+            className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center cursor-pointer hover:border-[#2E7D32] hover:shadow-md transition-all"
+          >
             <div className="text-2xl mb-2">📜</div>
             <p className="text-sm font-medium text-gray-700">{type}</p>
+            <p className="text-xs text-[#2E7D32] mt-1">신청하기 →</p>
           </div>
         ))}
       </div>
@@ -72,48 +96,54 @@ export default function CertificatesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="이름·증명서 종류 검색..."
+            placeholder="증명서 종류 검색..."
             className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
           />
         </div>
       </div>
 
-      {/* 발급 이력 */}
+      {/* 신청/발급 이력 */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-50">
-          <h2 className="font-semibold text-gray-900">발급 이력</h2>
+          <h2 className="font-semibold text-gray-900">내 증명서 내역</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="text-left px-5 py-3">성명</th>
                 <th className="text-left px-5 py-3">증명서 종류</th>
                 <th className="text-left px-5 py-3 hidden md:table-cell">사용 목적</th>
-                <th className="text-left px-5 py-3">발급일</th>
+                <th className="text-left px-5 py-3">신청일</th>
+                <th className="text-left px-5 py-3">상태</th>
                 <th className="text-left px-5 py-3">출력</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filtered.map((c) => (
-                <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+              {filtered.map((r) => (
+                <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-xs shrink-0">
-                        {c.name[0]}
-                      </div>
-                      <span className="font-medium text-gray-900">{c.name}</span>
-                    </div>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">{r.type}</span>
+                  </td>
+                  <td className="px-5 py-3 hidden md:table-cell text-gray-600 text-xs">{r.purpose || "-"}</td>
+                  <td className="px-5 py-3 text-gray-500">{r.requestedAt}</td>
+                  <td className="px-5 py-3">
+                    {r.status === "approved" ? (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">발급완료</span>
+                    ) : (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">승인대기</span>
+                    )}
                   </td>
                   <td className="px-5 py-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">{c.type}</span>
-                  </td>
-                  <td className="px-5 py-3 hidden md:table-cell text-gray-600 text-xs">{c.purpose}</td>
-                  <td className="px-5 py-3 text-gray-500">{c.issuedAt}</td>
-                  <td className="px-5 py-3">
-                    <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#2E7D32] transition-colors">
-                      <Printer className="w-3.5 h-3.5" /> 출력
-                    </button>
+                    {r.status === "approved" ? (
+                      <button
+                        onClick={() => setPrintTarget(r)}
+                        className="flex items-center gap-1 text-xs text-[#2E7D32] hover:underline transition-colors"
+                      >
+                        <Printer className="w-3.5 h-3.5" /> 출력
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-300">-</span>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -121,36 +151,25 @@ export default function CertificatesPage() {
           </table>
         </div>
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">발급 이력이 없습니다.</div>
+          <div className="text-center py-12 text-gray-400 text-sm">신청 내역이 없습니다.</div>
         )}
       </div>
 
-      {/* 발급 모달 */}
-      {showModal && (
+      {/* 증명서 신청 모달 */}
+      {showApply && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h3 className="font-bold text-gray-900">증명서 발급</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+              <h3 className="font-bold text-gray-900">증명서 신청</h3>
+              <button onClick={() => setShowApply(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">증명서 종류 *</label>
                 <select value={certType} onChange={(e) => setCertType(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30">
-                  {CERT_TYPES.map(t => <option key={t}>{t}</option>)}
+                  {CERT_TYPES.map((t) => <option key={t}>{t}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">성명 *</label>
-                <input value={memberName} onChange={(e) => setMemberName(e.target.value)}
-                  placeholder="교인 성명 입력"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">발급일</label>
-                <input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">사용 목적</label>
@@ -158,11 +177,86 @@ export default function CertificatesPage() {
                   placeholder="예: 타교회 제출, 이사 신고용"
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
               </div>
+              <p className="text-xs text-gray-400">신청 후 관리자 승인이 완료되면 출력 가능합니다.</p>
             </div>
             <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">취소</button>
-              <button onClick={handleIssue} className="px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors">
-                발급 완료
+              <button onClick={() => setShowApply(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">취소</button>
+              <button onClick={handleApply} disabled={saving} className="px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] disabled:opacity-50 transition-colors">
+                {saving ? "신청 중..." : "신청하기"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 증명서 출력 모달 */}
+      {printTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h3 className="font-bold text-gray-900">증명서 미리보기</h3>
+              <button onClick={() => setPrintTarget(null)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+            </div>
+
+            {/* 증명서 양식 */}
+            <div id="cert-print-area" className="p-8">
+              <div className="border-4 border-[#1a2744] rounded-2xl p-8 space-y-6">
+                {/* 헤더 */}
+                <div className="text-center space-y-1">
+                  <p className="text-xs text-gray-400 tracking-widest">일광교회</p>
+                  <h1 className="text-3xl font-black text-[#1a2744] tracking-wider">{printTarget.type}</h1>
+                  <div className="w-16 h-1 bg-[#2E7D32] mx-auto mt-2" />
+                </div>
+
+                {/* 본문 */}
+                <div className="space-y-4 text-sm">
+                  <div className="flex gap-4 border-b border-gray-100 pb-3">
+                    <span className="w-24 text-gray-500 shrink-0">성명</span>
+                    <span className="font-bold text-gray-900">{printTarget.memberName}</span>
+                  </div>
+                  <div className="flex gap-4 border-b border-gray-100 pb-3">
+                    <span className="w-24 text-gray-500 shrink-0">증명서 종류</span>
+                    <span className="font-medium text-gray-900">{printTarget.type}</span>
+                  </div>
+                  {printTarget.purpose && (
+                    <div className="flex gap-4 border-b border-gray-100 pb-3">
+                      <span className="w-24 text-gray-500 shrink-0">사용 목적</span>
+                      <span className="text-gray-900">{printTarget.purpose}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-4 border-b border-gray-100 pb-3">
+                    <span className="w-24 text-gray-500 shrink-0">발급일</span>
+                    <span className="font-medium text-gray-900">{printTarget.issuedAt || today}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="w-24 text-gray-500 shrink-0">발급기관</span>
+                    <span className="font-medium text-gray-900">일광교회</span>
+                  </div>
+                </div>
+
+                {/* 확인 문구 */}
+                <p className="text-sm text-gray-600 text-center pt-2 leading-relaxed">
+                  위 사항은 교회 등록 정보에 의하여 틀림없음을 증명합니다.
+                </p>
+
+                {/* 날짜 및 도장 영역 */}
+                <div className="text-center space-y-1 pt-2">
+                  <p className="text-sm text-gray-700">{printTarget.issuedAt || today}</p>
+                  <p className="text-base font-bold text-[#1a2744]">일광교회 담임목사</p>
+                  <div className="inline-block mt-2 w-16 h-16 border-2 border-red-400 rounded-full flex items-center justify-center">
+                    <span className="text-red-400 text-xs font-bold">직인</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
+              <button onClick={() => setPrintTarget(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">닫기</button>
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-2 px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors"
+              >
+                <Printer className="w-4 h-4" /> 인쇄
               </button>
             </div>
           </div>
