@@ -8,9 +8,10 @@ export default function NewSermonPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: "", preacher: "담임목사", date: "", category: "주일예배",
-    scripture: "", youtube_url: "", description: "", published: true,
+    scripture: "", youtubeUrl: "", description: "", published: true,
   });
   const [saving, setSaving] = useState(false);
+  const [error, setError]   = useState("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target;
@@ -19,11 +20,25 @@ export default function NewSermonPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
     setSaving(true);
-    // TODO: Supabase INSERT into sermons
-    await new Promise((r) => setTimeout(r, 600));
-    setSaving(false);
-    router.push("/admin/sermons");
+    try {
+      const res = await fetch("/api/sermons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "저장 중 오류가 발생했습니다.");
+        return;
+      }
+      router.push("/admin/sermons");
+    } catch {
+      setError("서버 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -35,13 +50,17 @@ export default function NewSermonPage() {
         <h1 className="text-2xl font-bold text-gray-900">설교 등록</h1>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">{error}</div>
+      )}
+
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         {[
-          { label: "설교 제목", name: "title", type: "text", placeholder: "예: 부활의 증인으로 살라" },
+          { label: "설교 제목 *", name: "title", type: "text", placeholder: "예: 부활의 증인으로 살라" },
           { label: "설교자", name: "preacher", type: "text", placeholder: "담임목사" },
           { label: "설교 날짜", name: "date", type: "date" },
           { label: "본문 말씀", name: "scripture", type: "text", placeholder: "예: 고전 15:1-11" },
-          { label: "YouTube 링크", name: "youtube_url", type: "url", placeholder: "https://youtube.com/watch?v=..." },
+          { label: "YouTube URL *", name: "youtubeUrl", type: "url", placeholder: "https://youtube.com/watch?v=..." },
         ].map((f) => (
           <div key={f.name}>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">{f.label}</label>
