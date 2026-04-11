@@ -17,6 +17,7 @@ export interface BibleComment {
   date: string;
 }
 
+// key: videoId
 type CommentMap = Record<string, BibleComment[]>;
 
 function hasGithub() {
@@ -52,7 +53,7 @@ async function ghWriteText(ghPath: string, text: string, sha: string, msg: strin
     );
     if (!res.ok) {
       const body = await res.text().catch(() => "");
-      console.warn(`[bible-comments] GitHub PUT 실패: ${res.status} ${res.statusText} — ${body.slice(0, 200)}`);
+      console.warn(`[bible-comments] GitHub PUT 실패: ${res.status} — ${body.slice(0, 200)}`);
     }
     return res.ok;
   } catch (e) {
@@ -134,17 +135,16 @@ async function writeComments(data: CommentMap): Promise<void> {
   try { await writeFile(DEPLOY_PATH, json, "utf-8"); } catch { /* no-op */ }
 }
 
-/** GET — ?book=창세기 : 해당 권 댓글 목록 */
+/** GET — ?videoId=xxx : 해당 영상 댓글 */
 export async function GET(req: NextRequest) {
-  const book = req.nextUrl.searchParams.get("book");
-  if (!book) return NextResponse.json({ error: "book 파라미터 필요" }, { status: 400 });
+  const videoId = req.nextUrl.searchParams.get("videoId");
+  if (!videoId) return NextResponse.json({ error: "videoId 파라미터 필요" }, { status: 400 });
 
   const data = await readComments();
-  const comments = data[book] ?? [];
-  return NextResponse.json(comments, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(data[videoId] ?? [], { headers: { "Cache-Control": "no-store" } });
 }
 
-/** POST — { book, text } : 댓글 작성 (로그인 필요) */
+/** POST — { videoId, text } : 댓글 작성 (로그인 필요) */
 export async function POST(req: NextRequest) {
   const token = req.cookies.get("admin_session")?.value;
   if (!token) return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
@@ -152,12 +152,12 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "세션이 만료되었습니다." }, { status: 401 });
 
   try {
-    const { book, text } = await req.json();
-    if (!book?.trim()) return NextResponse.json({ error: "book 필요" }, { status: 400 });
-    if (!text?.trim()) return NextResponse.json({ error: "내용을 입력해주세요." }, { status: 400 });
+    const { videoId, text } = await req.json();
+    if (!videoId?.trim()) return NextResponse.json({ error: "videoId 필요" }, { status: 400 });
+    if (!text?.trim())    return NextResponse.json({ error: "내용을 입력해주세요." }, { status: 400 });
 
     const data = await readComments();
-    if (!data[book]) data[book] = [];
+    if (!data[videoId]) data[videoId] = [];
 
     const comment: BibleComment = {
       id:         Date.now(),
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
       text:       text.trim(),
       date:       new Date().toISOString().slice(0, 10),
     };
-    data[book].unshift(comment);
+    data[videoId].unshift(comment);
     await writeComments(data);
     return NextResponse.json({ success: true, comment });
   } catch {
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-/** DELETE — { book, id } : 댓글 삭제 (관리자만) */
+/** DELETE — { videoId, id } : 관리자만 삭제 */
 export async function DELETE(req: NextRequest) {
   const token = req.cookies.get("admin_session")?.value;
   if (!token) return NextResponse.json({ error: "인증 필요" }, { status: 401 });
@@ -181,10 +181,10 @@ export async function DELETE(req: NextRequest) {
   if (!session || session.role < 5) return NextResponse.json({ error: "권한 부족" }, { status: 403 });
 
   try {
-    const { book, id } = await req.json();
+    const { videoId, id } = await req.json();
     const data = await readComments();
-    if (data[book]) {
-      data[book] = data[book].filter((c) => c.id !== id);
+    if (data[videoId]) {
+      data[videoId] = data[videoId].filter((c) => c.id !== id);
     }
     await writeComments(data);
     return NextResponse.json({ success: true });
