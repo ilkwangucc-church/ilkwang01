@@ -50,6 +50,17 @@ function isLive(obj: Record<string, unknown>): boolean {
   return false;
 }
 
+/* ─── 제목에서 연도 추출 (예: "2025.11.16. 감사는..." → 2025) ─── */
+function yearFromTitle(title: string): number | null {
+  // "YYYY.MM.DD." 또는 "YYYY년 MM월 DD일" 형식으로 시작하는 제목
+  const m = title.match(/^(\d{4})[.\s년]/);
+  if (m) {
+    const y = parseInt(m[1]);
+    if (y >= 2010 && y <= 2100) return y;
+  }
+  return null;
+}
+
 /* ─── 연도 추정 ─── */
 function guessYear(publishedAt: string): number {
   const now = new Date();
@@ -230,7 +241,8 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
     id:          v.id,
     title:       v.title,
     publishedAt: v.publishedAt,
-    year:        guessYear(v.publishedAt),
+    // 제목에 날짜가 있으면 우선 사용 (업로드일과 설교일 불일치 보정)
+    year:        yearFromTitle(v.title) ?? guessYear(v.publishedAt),
     duration:    v.duration,
     thumbnail:   `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
   }));

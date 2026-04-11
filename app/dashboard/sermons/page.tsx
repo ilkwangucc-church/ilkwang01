@@ -33,34 +33,34 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
   return (
     <div className="flex flex-col h-full bg-white">
       <form onSubmit={submitSharing} className="px-4 py-3 border-b border-gray-100 shrink-0">
-        <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
+        <p className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
           💬 설교 나눔
           <span className="font-normal text-gray-400">· {sharings.length}개</span>
         </p>
-        <p className="text-[10px] text-blue-500 mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
+        <p className="text-sm text-blue-500 mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
         <div className="flex gap-2">
           <textarea
             value={sharingText}
             onChange={(e) => setSharingText(e.target.value)}
             placeholder="설교 말씀에서 받은 은혜를 나눠주세요..."
             rows={2}
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
+            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
           />
           <button
             type="submit"
             disabled={submitting || !sharingText.trim()}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
+            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
           >
             <Send className="w-3.5 h-3.5" />
-            <span className="text-[9px]">{submitting ? "..." : "등록"}</span>
+            <span className="text-sm">{submitting ? "..." : "등록"}</span>
           </button>
         </div>
       </form>
       <div className="flex-1 overflow-y-auto">
         {loadingCmt ? (
-          <div className="text-center py-6 text-xs text-gray-400">불러오는 중...</div>
+          <div className="text-center py-6 text-sm text-gray-400">불러오는 중...</div>
         ) : sharings.length === 0 ? (
-          <div className="text-center py-8 text-xs text-gray-400 flex flex-col items-center gap-2">
+          <div className="text-center py-8 text-sm text-gray-400 flex flex-col items-center gap-2">
             <span className="text-2xl">🙏</span>첫 번째 나눔을 남겨주세요
           </div>
         ) : (
@@ -68,9 +68,9 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
             {sharings.map((s) => (
               <div key={s.id} className="px-4 py-3 hover:bg-gray-50 group">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-semibold text-blue-600">{s.memberName}</span>
+                  <span className="text-sm font-semibold text-blue-600">{s.memberName}</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-gray-400">{s.date}</span>
+                    <span className="text-sm text-gray-400">{s.date}</span>
                     <button
                       onClick={() => deleteSharing(s.id)}
                       className="opacity-0 group-hover:opacity-100 active:opacity-100 text-gray-300 hover:text-red-500 transition-all"
@@ -79,7 +79,7 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
                     </button>
                   </div>
                 </div>
-                <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{s.text}</p>
+                <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{s.text}</p>
               </div>
             ))}
           </div>
@@ -101,7 +101,7 @@ function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
           <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
             <Pencil className="w-3.5 h-3.5 text-blue-600" /> 설교 노트
           </h2>
-          <p className="text-[11px] text-gray-400 mt-0.5">
+          <p className="text-sm text-gray-400 mt-0.5">
             {activeVideo ? activeVideo.publishedAt : "설교를 선택하세요"}
           </p>
         </div>
@@ -120,11 +120,11 @@ function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={"설교 말씀을 기록하세요.\n\n예)\n- 본문:\n- 핵심 메시지:\n- 적용:"}
-          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-serif placeholder:text-xs placeholder:text-gray-400"
+          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
         />
       </div>
       <div className="px-4 py-2 border-t border-gray-100 shrink-0">
-        <p className="text-[10px] text-gray-400 text-right">{notes.length.toLocaleString()}자</p>
+        <p className="text-sm text-gray-400 text-right">{notes.length.toLocaleString()}자</p>
       </div>
     </div>
   );
@@ -299,7 +299,7 @@ export default function SermonsPage() {
           <h1 className="font-bold text-gray-900 text-sm truncate">
             {activeVideo ? activeVideo.title : "설교 보기"}
           </h1>
-          <p className="text-[11px] text-gray-400 truncate">
+          <p className="text-sm text-gray-400 truncate">
             {loading
               ? "@ilkwangucc 로딩 중..."
               : activeVideo
@@ -321,7 +321,7 @@ export default function SermonsPage() {
             <button
               key={key}
               onClick={() => setMobileTab(key)}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors border-b-2 ${
+              className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-sm font-medium transition-colors border-b-2 ${
                 mobileTab === key
                   ? "text-blue-600 border-blue-600"
                   : "text-gray-400 border-transparent"
@@ -340,9 +340,9 @@ export default function SermonsPage() {
           {mobileTab === "list" && (
             <div>
               {loading ? (
-                <div className="text-center py-8 text-xs text-gray-400">영상 불러오는 중...</div>
+                <div className="text-center py-8 text-sm text-gray-400">영상 불러오는 중...</div>
               ) : years.length === 0 ? (
-                <div className="text-center py-8 text-xs text-gray-400">영상이 없습니다</div>
+                <div className="text-center py-8 text-sm text-gray-400">영상이 없습니다</div>
               ) : (
                 years.map((year) => (
                   <div key={year}>
@@ -352,7 +352,7 @@ export default function SermonsPage() {
                     >
                       <span className="text-sm font-bold text-blue-700">{year}년</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-blue-400">{yearGroups[year].length}편</span>
+                        <span className="text-sm text-blue-400">{yearGroups[year].length}편</span>
                         {expandedYears[year]
                           ? <ChevronDown className="w-4 h-4 text-blue-400" />
                           : <ChevronRight className="w-4 h-4 text-blue-400" />}
@@ -369,7 +369,7 @@ export default function SermonsPage() {
                         <div className="w-20 h-[45px] shrink-0 rounded overflow-hidden bg-black relative">
                           <img src={v.thumbnail} alt="" className="w-full h-full object-cover" loading="lazy" />
                           {v.duration && (
-                            <span className="absolute bottom-0.5 right-0.5 bg-black/80 text-white text-[8px] px-0.5 rounded leading-tight">
+                            <span className="absolute bottom-0.5 right-0.5 bg-black/80 text-white text-sm px-0.5 rounded leading-tight">
                               {v.duration}
                             </span>
                           )}
@@ -380,7 +380,7 @@ export default function SermonsPage() {
                           }`}>
                             {v.title}
                           </p>
-                          <p className="text-[11px] text-gray-400 mt-1">{v.publishedAt}</p>
+                          <p className="text-sm text-gray-400 mt-1">{v.publishedAt}</p>
                         </div>
                         {activeVideo?.id === v.id && (
                           <Play className="w-4 h-4 text-blue-500 fill-blue-500 shrink-0" />
@@ -421,15 +421,15 @@ export default function SermonsPage() {
         {/* LEFT — 연도별 설교 목록 */}
         <aside className="w-56 bg-white border-r border-gray-200 flex flex-col overflow-hidden shrink-0">
           <div className="px-3 py-2 border-b border-gray-100 shrink-0">
-            <p className="text-[11px] font-bold text-blue-700 flex items-center gap-1.5">
+            <p className="text-sm font-bold text-blue-700 flex items-center gap-1.5">
               <Play className="w-3.5 h-3.5" /> 설교 영상
             </p>
           </div>
-          <div className="flex-1 overflow-y-auto text-xs">
+          <div className="flex-1 overflow-y-auto text-sm">
             {loading ? (
-              <div className="px-3 py-4 text-center text-gray-400 text-[11px]">영상 불러오는 중...</div>
+              <div className="px-3 py-4 text-center text-gray-400 text-sm">영상 불러오는 중...</div>
             ) : years.length === 0 ? (
-              <div className="px-3 py-4 text-center text-gray-400 text-[11px]">영상이 없습니다</div>
+              <div className="px-3 py-4 text-center text-gray-400 text-sm">영상이 없습니다</div>
             ) : (
               years.map((year) => (
                 <div key={year}>
@@ -437,9 +437,9 @@ export default function SermonsPage() {
                     onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
                     className="w-full flex items-center justify-between px-3 py-1.5 bg-blue-50 border-b border-gray-100 hover:bg-blue-100 sticky top-0 z-10"
                   >
-                    <span className="text-[11px] font-bold text-blue-700">{year}년</span>
+                    <span className="text-sm font-bold text-blue-700">{year}년</span>
                     <div className="flex items-center gap-1">
-                      <span className="text-[9px] text-blue-400">{yearGroups[year].length}편</span>
+                      <span className="text-sm text-blue-400">{yearGroups[year].length}편</span>
                       {expandedYears[year]
                         ? <ChevronDown className="w-3 h-3 text-blue-400" />
                         : <ChevronRight className="w-3 h-3 text-blue-400" />}
@@ -459,8 +459,8 @@ export default function SermonsPage() {
                         activeVideo?.id === v.id ? "fill-blue-600 text-blue-600" : "text-gray-300"
                       }`} />
                       <div className="min-w-0">
-                        <p className="text-[11px] leading-tight line-clamp-2">{v.title}</p>
-                        <p className="text-[9px] text-gray-400 mt-0.5">{v.publishedAt}</p>
+                        <p className="text-sm leading-tight line-clamp-2">{v.title}</p>
+                        <p className="text-sm text-gray-400 mt-0.5">{v.publishedAt}</p>
                       </div>
                     </button>
                   ))}
@@ -478,7 +478,7 @@ export default function SermonsPage() {
               <h1 className="font-bold text-gray-900 text-sm truncate">
                 {activeVideo ? activeVideo.title : "설교 보기"}
               </h1>
-              <p className="text-[11px] text-gray-400 truncate">
+              <p className="text-sm text-gray-400 truncate">
                 {loading
                   ? "@ilkwangucc 영상 로딩 중..."
                   : activeVideo
@@ -495,8 +495,8 @@ export default function SermonsPage() {
             {/* 재생목록 260px */}
             <div className="w-[260px] shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
               <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
-                <p className="text-white text-xs font-bold">설교 재생목록</p>
-                <p className="text-gray-500 text-[10px] mt-0.5">
+                <p className="text-white text-sm font-bold">설교 재생목록</p>
+                <p className="text-gray-500 text-sm mt-0.5">
                   {loading ? "연결 중..." : `전체 ${sermons.length}편`}
                 </p>
               </div>
@@ -515,18 +515,18 @@ export default function SermonsPage() {
                       <div className="w-12 h-[27px] shrink-0 rounded overflow-hidden bg-black/30 relative">
                         <img src={v.thumbnail} alt="" className="w-full h-full object-cover" loading="lazy" />
                         {v.duration && (
-                          <span className="absolute bottom-0.5 right-0.5 bg-black/80 text-white text-[8px] px-0.5 rounded leading-tight">
+                          <span className="absolute bottom-0.5 right-0.5 bg-black/80 text-white text-sm px-0.5 rounded leading-tight">
                             {v.duration}
                           </span>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-[11px] leading-tight line-clamp-2 ${
+                        <p className={`text-sm leading-tight line-clamp-2 ${
                           isActive ? "text-white font-medium" : "text-gray-300"
                         }`}>
                           {v.title}
                         </p>
-                        <p className="text-[9px] text-gray-600 mt-0.5">{v.publishedAt}</p>
+                        <p className="text-sm text-gray-600 mt-0.5">{v.publishedAt}</p>
                       </div>
                       {isActive && <Play className="w-3 h-3 text-blue-300 shrink-0 fill-blue-300" />}
                     </button>
