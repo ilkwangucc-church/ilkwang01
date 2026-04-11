@@ -228,10 +228,6 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
     // 쇼츠: duration이 60초 이하 형식 (:ss 또는 0:ss)
     if (/^0?:\d\d$/.test(v.duration)) return false;
     if (/^#shorts/i.test(v.title)) return false;
-    // 2시간 이상 영상 = 예배 중계 전체 아카이브 제외
-    // "H:MM:SS" or "HH:MM:SS" 형식에서 시간 부분이 2 이상
-    const durationMatch = v.duration.match(/^(\d+):\d{2}:\d{2}$/);
-    if (durationMatch && parseInt(durationMatch[1]) >= 2) return false;
     return true;
   });
 
