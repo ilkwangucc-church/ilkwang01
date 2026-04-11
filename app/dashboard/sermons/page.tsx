@@ -260,7 +260,7 @@ export default function SermonsPage() {
     const showIframe = mobile ? !isDesktop : isDesktop;
     return (
       <div
-        className={mobile ? "relative w-full shrink-0 bg-black" : "shrink-0 bg-black relative"}
+        className={mobile ? "relative shrink-0 bg-black mx-[10px]" : "shrink-0 bg-black relative"}
         style={mobile
           ? { paddingTop: "56.25%" }
           : { width: videoRowH * (16 / 9) }

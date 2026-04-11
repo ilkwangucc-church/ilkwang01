@@ -451,7 +451,7 @@ export default function BiblePage() {
         </div>
 
         {/* 영상 (16:9) */}
-        <div className="relative w-full shrink-0 bg-black" style={{ paddingTop: "56.25%" }}>
+        <div className="relative shrink-0 bg-black mx-[10px]" style={{ paddingTop: "56.25%" }}>
           <img src="/ilkwang01.png" alt="일광교회" className="absolute inset-0 w-full h-full object-cover" />
           {activeVideo && (
             <>
