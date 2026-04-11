@@ -87,8 +87,8 @@ export default function BiblePage() {
     if (!el) return;
     const update = () => {
       const containerW = el.offsetWidth;
-      const playlistW  = 240;
-      const videoW     = Math.min(Math.max(containerW - playlistW, 200), 720);
+      const playlistW  = 208;                        // w-52 고정
+      const videoW     = Math.max(containerW - playlistW, 200);
       setVideoRowH(Math.round(videoW * 9 / 16));
     };
     update();
@@ -354,14 +354,23 @@ export default function BiblePage() {
             style={{ width: videoRowH * (16 / 9) }}
           >
             {activeVideo ? (
-              <iframe
-                key={activeVideo.id}
-                src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={activeVideo.title}
-              />
+              <>
+                {/* 썸네일 — iframe 로딩 전 커버 (포스터 역할) */}
+                <img
+                  src={`https://i.ytimg.com/vi/${activeVideo.id}/hqdefault.jpg`}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  aria-hidden
+                />
+                <iframe
+                  key={activeVideo.id}
+                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={activeVideo.title}
+                />
+              </>
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none">
                 <BookText className="w-16 h-16 text-white/10" />
@@ -369,22 +378,16 @@ export default function BiblePage() {
                   <p className="text-white/50 text-xl font-bold">{selectedBook}</p>
                   <p className="text-white/25 text-xs mt-1.5">
                     {selectedChapter
-                      ? loadingVids ? `${selectedChapter}장 연결 중...` : `${selectedChapter}장 영상 없음`
+                      ? `${selectedChapter}장 영상 없음`
                       : "오른쪽 목록에서 장을 선택하세요"}
                   </p>
-                  {loadingVids && (
-                    <div className="mt-3 flex items-center justify-center gap-1.5">
-                      <div className="w-3 h-3 border border-white/20 border-t-white/50 rounded-full animate-spin" />
-                      <span className="text-white/20 text-[10px]">영상 불러오는 중...</span>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
           </div>
 
-          {/* 재생목록: 나머지 폭, 영상과 같은 높이(self-stretch) */}
-          <div className="flex-1 min-w-[180px] bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
+          {/* 재생목록: 208px 고정 */}
+          <div className="w-52 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
