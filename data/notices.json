@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1775887359100,
+    "title": "테스트 공지 - 시스템 점검 안내",
+    "category": "예배",
+    "content": "API 저장 테스트입니다.",
+    "pinned": false,
+    "published": true,
+    "date": "2026-04-11"
+  }
+]
