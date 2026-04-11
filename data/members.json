@@ -100,5 +100,16 @@
     "matched": false,
     "joined": "2026-04-11",
     "passwordHash": "ac52c751c1b201412197b17813ba5e46989eb19cb754807c476b0a744fc75110"
+  },
+  {
+    "id": 12,
+    "name": "삼삼삼",
+    "email": "wonseok413@gmail.com",
+    "phone": "0104636",
+    "role": 1,
+    "dept": "-",
+    "matched": false,
+    "joined": "2026-04-11",
+    "passwordHash": "ac52c751c1b201412197b17813ba5e46989eb19cb754807c476b0a744fc75110"
   }
 ]
