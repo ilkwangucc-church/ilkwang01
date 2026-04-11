@@ -6,6 +6,7 @@ import path from "path";
 const DEPLOY_PATH  = path.join(process.cwd(), "data", "cert-requests.json");
 const TMP_PATH     = "/tmp/ilkwang-cert-requests.json";
 const TMP_TS_PATH  = "/tmp/ilkwang-cert-requests-ts.txt";
+const TMP_SHA_PATH = "/tmp/ilkwang-cert-sha.txt";
 const GH_FILE_PATH = "data/cert-requests.json";
 const CACHE_TTL    = 30;
 
@@ -78,20 +79,47 @@ async function readRequests(): Promise<CertRequest[]> {
 
 async function writeRequests(data: CertRequest[]): Promise<void> {
   const json = JSON.stringify(data, null, 2);
+
   if (hasGithub()) {
-    const gh = await ghReadText(GH_FILE_PATH);
-    if (gh) {
-      const ok = await ghWriteText(GH_FILE_PATH, json, gh.sha, "DB: 증명서 신청 데이터 업데이트");
-      if (ok) {
-        try {
-          await writeFile(TMP_PATH, json, "utf-8");
-          await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
-        } catch { /* ignore */ }
-        return;
+    try {
+      let sha: string | null = null;
+      try { sha = await readFile(TMP_SHA_PATH, "utf-8"); } catch { /* no-op */ }
+      if (!sha) {
+        const current = await ghReadText(GH_FILE_PATH);
+        sha = current?.sha ?? null;
       }
+      if (sha) {
+        const ok = await ghWriteText(GH_FILE_PATH, json, sha, "DB: 증명서 신청 데이터 업데이트");
+        if (ok) {
+          const updated = await ghReadText(GH_FILE_PATH);
+          if (updated) { try { await writeFile(TMP_SHA_PATH, updated.sha, "utf-8"); } catch { /* no-op */ } }
+          console.log("[cert] GitHub 저장 성공");
+        } else {
+          const fresh = await ghReadText(GH_FILE_PATH);
+          if (fresh) {
+            const retry = await ghWriteText(GH_FILE_PATH, json, fresh.sha, "DB: 증명서 신청 데이터 업데이트");
+            if (retry) {
+              const afterRetry = await ghReadText(GH_FILE_PATH);
+              if (afterRetry) { try { await writeFile(TMP_SHA_PATH, afterRetry.sha, "utf-8"); } catch { /* no-op */ } }
+              console.log("[cert] GitHub 저장 성공 (재시도)");
+            } else {
+              console.warn("[cert] GitHub 저장 실패 (재시도 후)");
+            }
+          }
+        }
+      } else {
+        console.warn("[cert] SHA 없음 — GitHub 읽기 실패");
+      }
+    } catch (e) {
+      console.warn("[cert] GitHub write 오류:", e);
     }
   }
-  await writeFile(DEPLOY_PATH, json, "utf-8");
+
+  try {
+    await writeFile(TMP_PATH, json, "utf-8");
+    await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
+  } catch { /* no-op */ }
+  try { await writeFile(DEPLOY_PATH, json, "utf-8"); } catch { /* Vercel 무시 */ }
 }
 
 /** GET — 목록 조회 (관리자: 전체 / 일반회원: 본인 것만) */

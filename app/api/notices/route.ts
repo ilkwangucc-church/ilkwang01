@@ -6,6 +6,7 @@ import path from "path";
 const DEPLOY_PATH  = path.join(process.cwd(), "data", "notices.json");
 const TMP_PATH     = "/tmp/ilkwang-notices.json";
 const TMP_TS_PATH  = "/tmp/ilkwang-notices-ts.txt";
+const TMP_SHA_PATH = "/tmp/ilkwang-notices-sha.txt";
 const GH_FILE_PATH = "data/notices.json";
 const CACHE_TTL    = 30;
 
@@ -50,8 +51,15 @@ async function ghWriteText(ghPath: string, text: string, sha: string, msg: strin
         cache: "no-store",
       }
     );
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.warn(`[notices] GitHub PUT 실패: ${res.status} ${res.statusText} — ${body.slice(0, 200)}`);
+    }
     return res.ok;
-  } catch { return false; }
+  } catch (e) {
+    console.warn("[notices] GitHub PUT 예외:", e);
+    return false;
+  }
 }
 
 async function readNotices(): Promise<Notice[]> {
@@ -66,6 +74,7 @@ async function readNotices(): Promise<Notice[]> {
       try {
         await writeFile(TMP_PATH, gh.content, "utf-8");
         await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
+        await writeFile(TMP_SHA_PATH, gh.sha, "utf-8");  // SHA 캐시
       } catch { /* ignore */ }
       return JSON.parse(gh.content);
     }
@@ -76,20 +85,59 @@ async function readNotices(): Promise<Notice[]> {
 
 async function writeNotices(data: Notice[]): Promise<void> {
   const json = JSON.stringify(data, null, 2);
+
+  // 1. GitHub 영구 저장 (writeMembers 패턴 동일 적용)
   if (hasGithub()) {
-    const gh = await ghReadText(GH_FILE_PATH);
-    if (gh) {
-      const ok = await ghWriteText(GH_FILE_PATH, json, gh.sha, "DB: 공지 데이터 업데이트");
-      if (ok) {
-        try {
-          await writeFile(TMP_PATH, json, "utf-8");
-          await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
-        } catch { /* ignore */ }
-        return;
+    try {
+      // SHA: /tmp 캐시 우선 → 없으면 GitHub에서 직접 읽기
+      let sha: string | null = null;
+      try { sha = await readFile(TMP_SHA_PATH, "utf-8"); } catch { /* no-op */ }
+
+      if (!sha) {
+        const current = await ghReadText(GH_FILE_PATH);
+        sha = current?.sha ?? null;
       }
+
+      if (sha) {
+        const ok = await ghWriteText(GH_FILE_PATH, json, sha, "DB: 공지 데이터 업데이트");
+        if (ok) {
+          const updated = await ghReadText(GH_FILE_PATH);
+          if (updated) {
+            try { await writeFile(TMP_SHA_PATH, updated.sha, "utf-8"); } catch { /* no-op */ }
+          }
+          console.log("[notices] GitHub 저장 성공");
+        } else {
+          // SHA 불일치 시 1회 재시도
+          const fresh = await ghReadText(GH_FILE_PATH);
+          if (fresh) {
+            const retry = await ghWriteText(GH_FILE_PATH, json, fresh.sha, "DB: 공지 데이터 업데이트");
+            if (retry) {
+              const afterRetry = await ghReadText(GH_FILE_PATH);
+              if (afterRetry) {
+                try { await writeFile(TMP_SHA_PATH, afterRetry.sha, "utf-8"); } catch { /* no-op */ }
+              }
+              console.log("[notices] GitHub 저장 성공 (재시도)");
+            } else {
+              console.warn("[notices] GitHub 저장 실패 (재시도 후)");
+            }
+          }
+        }
+      } else {
+        console.warn("[notices] SHA 없음 — GitHub 읽기 실패");
+      }
+    } catch (e) {
+      console.warn("[notices] GitHub write 오류:", e);
     }
   }
-  await writeFile(DEPLOY_PATH, json, "utf-8");
+
+  // 2. /tmp 캐시 항상 갱신 (현재 인스턴스에서 즉시 반영)
+  try {
+    await writeFile(TMP_PATH, json, "utf-8");
+    await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
+  } catch { /* no-op */ }
+
+  // 3. 로컬 파일 (Vercel에서는 실패 — 무시)
+  try { await writeFile(DEPLOY_PATH, json, "utf-8"); } catch { /* no-op */ }
 }
 
 /** GET — 공지 목록 (공개: published만 / 관리자: 전체) */

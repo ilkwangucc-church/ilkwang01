@@ -6,6 +6,7 @@ import path from "path";
 const DEPLOY_PATH  = path.join(process.cwd(), "data", "sermon-comments.json");
 const TMP_PATH     = "/tmp/ilkwang-sermon-comments.json";
 const TMP_TS_PATH  = "/tmp/ilkwang-sermon-comments-ts.txt";
+const TMP_SHA_PATH = "/tmp/ilkwang-sermon-comments-sha.txt";
 const GH_FILE_PATH = "data/sermon-comments.json";
 const CACHE_TTL    = 30;
 
@@ -75,20 +76,47 @@ async function readComments(): Promise<SermonComment[]> {
 
 async function writeComments(data: SermonComment[]): Promise<void> {
   const json = JSON.stringify(data, null, 2);
+
   if (hasGithub()) {
-    const gh = await ghReadText(GH_FILE_PATH);
-    if (gh) {
-      const ok = await ghWriteText(GH_FILE_PATH, json, gh.sha, "DB: 은혜나눔 댓글 업데이트");
-      if (ok) {
-        try {
-          await writeFile(TMP_PATH, json, "utf-8");
-          await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
-        } catch { /* ignore */ }
-        return;
+    try {
+      let sha: string | null = null;
+      try { sha = await readFile(TMP_SHA_PATH, "utf-8"); } catch { /* no-op */ }
+      if (!sha) {
+        const current = await ghReadText(GH_FILE_PATH);
+        sha = current?.sha ?? null;
       }
+      if (sha) {
+        const ok = await ghWriteText(GH_FILE_PATH, json, sha, "DB: 은혜나눔 댓글 업데이트");
+        if (ok) {
+          const updated = await ghReadText(GH_FILE_PATH);
+          if (updated) { try { await writeFile(TMP_SHA_PATH, updated.sha, "utf-8"); } catch { /* no-op */ } }
+          console.log("[comments] GitHub 저장 성공");
+        } else {
+          const fresh = await ghReadText(GH_FILE_PATH);
+          if (fresh) {
+            const retry = await ghWriteText(GH_FILE_PATH, json, fresh.sha, "DB: 은혜나눔 댓글 업데이트");
+            if (retry) {
+              const afterRetry = await ghReadText(GH_FILE_PATH);
+              if (afterRetry) { try { await writeFile(TMP_SHA_PATH, afterRetry.sha, "utf-8"); } catch { /* no-op */ } }
+              console.log("[comments] GitHub 저장 성공 (재시도)");
+            } else {
+              console.warn("[comments] GitHub 저장 실패 (재시도 후)");
+            }
+          }
+        }
+      } else {
+        console.warn("[comments] SHA 없음 — GitHub 읽기 실패");
+      }
+    } catch (e) {
+      console.warn("[comments] GitHub write 오류:", e);
     }
   }
-  await writeFile(DEPLOY_PATH, json, "utf-8");
+
+  try {
+    await writeFile(TMP_PATH, json, "utf-8");
+    await writeFile(TMP_TS_PATH, String(Date.now()), "utf-8");
+  } catch { /* no-op */ }
+  try { await writeFile(DEPLOY_PATH, json, "utf-8"); } catch { /* Vercel 무시 */ }
 }
 
 /** GET — 은혜나눔 목록 (?sermonId=xxx) */
