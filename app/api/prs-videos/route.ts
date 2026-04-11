@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readFile, writeFile } from "fs/promises";
 
-const CHANNEL_ID = "UCISl2wEDnzYeg-k_kElfN4Q"; // @PRS
+const CHANNEL_ID  = "UCISl2wEDnzYeg-k_kElfN4Q"; // @PRS
 const TMP_PATH    = "/tmp/ilkwang-prs-videos.json";
 const TMP_TS_PATH = "/tmp/ilkwang-prs-videos-ts.txt";
 const CACHE_TTL   = 60 * 60 * 6; // 6시간
@@ -9,7 +9,8 @@ const CACHE_TTL   = 60 * 60 * 6; // 6시간
 export interface PRSVideo {
   id: string;
   title: string;
-  books: string[]; // 매핑된 성경 권 이름(들)
+  books: string[];        // 매핑된 성경 권 이름(들)
+  chapter: number | null; // 단일 권 영상의 장/편 번호
   publishedAt: string;
 }
 
@@ -42,41 +43,80 @@ const ABBREV_MAP: [string, string][] = [
 
 const FULL_NAMES = ABBREV_MAP.map(([, name]) => name);
 
-/** 영상 제목에서 성경 권 이름 추출 */
+/** 영상/플레이리스트 제목에서 성경 권 이름 추출 */
 function extractBooks(title: string): string[] {
   const found = new Set<string>();
-
-  // 1) 전체 이름 직접 포함 여부
   for (const name of FULL_NAMES) {
     if (title.includes(name)) found.add(name);
   }
-
-  // 2) 약어 매칭 (긴 약어 먼저 처리)
   const sorted = [...ABBREV_MAP].sort((a, b) => b[0].length - a[0].length);
-  // 괄호 안과 제목 전체에서 "약어+숫자" 패턴 찾기
   for (const [abbr, name] of sorted) {
     if (found.has(name)) continue;
-    // 약어 뒤에 숫자 또는 공백+숫자가 오는 패턴
-    const re = new RegExp(`(?:^|[\\s,(])${abbr}\\s*\\d`, "i");
+    const re = new RegExp(`(?:^|[\\s,(\\[])${abbr}\\s*\\d`, "i");
     if (re.test(title)) found.add(name);
   }
-
   return Array.from(found);
 }
 
-/* ─── InnerTube 응답에서 영상 목록 + continuation 추출 ─── */
-function parseInnerTube(data: Record<string, unknown>): {
-  videos: Omit<PRSVideo, "books">[];
+/** 제목에서 장/편 번호 추출 — 단일 권 영상 전용 */
+function extractChapter(title: string, books: string[]): number | null {
+  if (books.length !== 1) return null;
+  // "N장" 또는 "N편" (시편 등) 패턴, "제N장" 허용
+  const m = title.match(/제?\s*(\d+)\s*[장편]/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+/* ─── InnerTube 공통 ─── */
+const INNERTUBE_CTX = {
+  client: {
+    clientName: "WEB",
+    clientVersion: "2.20231219.04.00",
+    hl: "ko",
+    gl: "KR",
+  },
+};
+
+const INNERTUBE_HEADERS = {
+  "Content-Type": "application/json",
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121 Safari/537.36",
+  "X-YouTube-Client-Name": "1",
+  "X-YouTube-Client-Version": "2.20231219.04.00",
+};
+
+async function innerTubePOST(
+  body: object
+): Promise<Record<string, unknown> | null> {
+  try {
+    const res = await fetch(
+      "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false",
+      {
+        method: "POST",
+        headers: INNERTUBE_HEADERS,
+        body: JSON.stringify(body),
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as Record<string, unknown>;
+  } catch (e) {
+    console.warn("[prs-videos] InnerTube POST 오류:", e);
+    return null;
+  }
+}
+
+/* ─── 응답 파서: 영상 항목 ─── */
+function parseVideoItems(data: Record<string, unknown>): {
+  videos: Omit<PRSVideo, "books" | "chapter">[];
   continuation: string | null;
 } {
-  const videos: Omit<PRSVideo, "books">[] = [];
+  const videos: Omit<PRSVideo, "books" | "chapter">[] = [];
   let continuation: string | null = null;
 
   function walk(node: unknown): void {
     if (!node || typeof node !== "object") return;
     const obj = node as Record<string, unknown>;
 
-    // 영상 항목
     if ("videoId" in obj && "title" in obj && typeof obj.videoId === "string") {
       const title =
         (obj.title as { runs?: { text: string }[]; simpleText?: string })
@@ -86,10 +126,9 @@ function parseInnerTube(data: Record<string, unknown>): {
       const publishedAt =
         (obj.publishedTimeText as { simpleText?: string })?.simpleText ?? "";
       if (title) videos.push({ id: obj.videoId, title, publishedAt });
-      return; // 더 깊이 파지 않음
+      return;
     }
 
-    // continuation 토큰
     if ("token" in obj && typeof obj.token === "string" && !continuation) {
       continuation = obj.token;
     }
@@ -104,20 +143,154 @@ function parseInnerTube(data: Record<string, unknown>): {
   return { videos, continuation };
 }
 
-const INNERTUBE_CTX = {
-  client: {
-    clientName: "WEB",
-    clientVersion: "2.20231219.04.00",
-    hl: "ko",
-    gl: "KR",
-  },
-};
+/* ─── 응답 파서: 플레이리스트 항목 ─── */
+function parsePlaylistItems(data: Record<string, unknown>): {
+  playlists: { id: string; title: string }[];
+  continuation: string | null;
+} {
+  const playlists: { id: string; title: string }[] = [];
+  let continuation: string | null = null;
 
-/** InnerTube로 채널 전체 영상 가져오기 (최대 MAX_PAGES × ~30개) */
-async function fetchAllVideosInnerTube(): Promise<Omit<PRSVideo, "books">[]> {
-  const all: Omit<PRSVideo, "books">[] = [];
+  function walk(node: unknown): void {
+    if (!node || typeof node !== "object") return;
+    const obj = node as Record<string, unknown>;
+
+    if (
+      "playlistId" in obj &&
+      "title" in obj &&
+      typeof obj.playlistId === "string"
+    ) {
+      const title =
+        (obj.title as { runs?: { text: string }[]; simpleText?: string })
+          ?.runs?.[0]?.text ??
+        (obj.title as { simpleText?: string })?.simpleText ??
+        "";
+      if (title) playlists.push({ id: obj.playlistId as string, title });
+      return;
+    }
+
+    if ("token" in obj && typeof obj.token === "string" && !continuation) {
+      continuation = obj.token;
+    }
+
+    for (const val of Object.values(obj)) {
+      if (Array.isArray(val)) val.forEach(walk);
+      else if (val && typeof val === "object") walk(val);
+    }
+  }
+
+  walk(data);
+  return { playlists, continuation };
+}
+
+/* ─── 채널 플레이리스트 탭 전체 가져오기 ─── */
+async function fetchChannelPlaylists(): Promise<
+  { id: string; title: string }[]
+> {
+  const all: { id: string; title: string }[] = [];
   let cont: string | null = null;
-  const MAX_PAGES = 60; // ~1800 개
+
+  for (let page = 0; page < 5; page++) {
+    const body = cont
+      ? { context: INNERTUBE_CTX, continuation: cont }
+      : {
+          context: INNERTUBE_CTX,
+          browseId: CHANNEL_ID,
+          params: "EglwbGF5bGlzdHMQAA==", // 재생목록 탭
+        };
+
+    const data = await innerTubePOST(body);
+    if (!data) break;
+
+    const { playlists, continuation } = parsePlaylistItems(data);
+    all.push(...playlists);
+    cont = continuation;
+    if (!cont) break;
+
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
+  return all;
+}
+
+/* ─── 특정 플레이리스트의 영상 가져오기 ─── */
+async function fetchPlaylistVideos(
+  playlistId: string
+): Promise<Omit<PRSVideo, "books" | "chapter">[]> {
+  const all: Omit<PRSVideo, "books" | "chapter">[] = [];
+  let cont: string | null = null;
+
+  for (let page = 0; page < 20; page++) {
+    const body = cont
+      ? { context: INNERTUBE_CTX, continuation: cont }
+      : { context: INNERTUBE_CTX, browseId: `VL${playlistId}` };
+
+    const data = await innerTubePOST(body);
+    if (!data) break;
+
+    const { videos, continuation } = parseVideoItems(data);
+    all.push(...videos);
+    cont = continuation;
+    if (!cont) break;
+
+    await new Promise((r) => setTimeout(r, 150));
+  }
+
+  return all;
+}
+
+/* ─── 플레이리스트 기반 통독 영상 전체 수집 ─── */
+async function fetchAllVideosFromPlaylists(): Promise<
+  Omit<PRSVideo, "books" | "chapter">[]
+> {
+  const playlists = await fetchChannelPlaylists();
+  if (playlists.length === 0) return [];
+
+  console.log(`[prs-videos] 플레이리스트 ${playlists.length}개 발견`);
+
+  // 성경 권 이름이 포함된 플레이리스트만 대상으로 삼음
+  // 매칭되는 것이 없으면 전체 플레이리스트 처리
+  const biblePlaylists = playlists.filter(
+    (p) => extractBooks(p.title).length > 0
+  );
+  const targets = biblePlaylists.length > 0 ? biblePlaylists : playlists;
+
+  console.log(`[prs-videos] 통독 대상 플레이리스트 ${targets.length}개`);
+
+  // 병렬 배치 처리 (10개씩)
+  const BATCH = 10;
+  const all: Omit<PRSVideo, "books" | "chapter">[] = [];
+  const seen = new Set<string>();
+
+  for (let i = 0; i < targets.length; i += BATCH) {
+    const batch = targets.slice(i, i + BATCH);
+    const results = await Promise.all(
+      batch.map((p) => fetchPlaylistVideos(p.id))
+    );
+    for (const videos of results) {
+      for (const v of videos) {
+        if (!seen.has(v.id)) {
+          seen.add(v.id);
+          all.push(v);
+        }
+      }
+    }
+    if (i + BATCH < targets.length) {
+      await new Promise((r) => setTimeout(r, 400));
+    }
+  }
+
+  console.log(`[prs-videos] 플레이리스트 수집 영상 총 ${all.length}개`);
+  return all;
+}
+
+/* ─── Fallback: 채널 videos 탭 전체 ─── */
+async function fetchAllVideosInnerTube(): Promise<
+  Omit<PRSVideo, "books" | "chapter">[]
+> {
+  const all: Omit<PRSVideo, "books" | "chapter">[] = [];
+  let cont: string | null = null;
+  const MAX_PAGES = 60;
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const body = cont
@@ -128,44 +301,22 @@ async function fetchAllVideosInnerTube(): Promise<Omit<PRSVideo, "books">[]> {
           params: "EgZ2aWRlb3MQAg==",
         };
 
-    try {
-      const res = await fetch(
-        "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121 Safari/537.36",
-            "X-YouTube-Client-Name": "1",
-            "X-YouTube-Client-Version": "2.20231219.04.00",
-          },
-          body: JSON.stringify(body),
-          cache: "no-store",
-        }
-      );
-      if (!res.ok) break;
+    const data = await innerTubePOST(body);
+    if (!data) break;
 
-      const data = (await res.json()) as Record<string, unknown>;
-      const { videos, continuation } = parseInnerTube(data);
+    const { videos, continuation } = parseVideoItems(data);
+    all.push(...videos);
+    cont = continuation;
+    if (!cont) break;
 
-      all.push(...videos);
-      cont = continuation;
-      if (!cont) break;
-
-      // 과부하 방지
-      await new Promise((r) => setTimeout(r, 250));
-    } catch (e) {
-      console.warn("[prs-videos] InnerTube error:", e);
-      break;
-    }
+    await new Promise((r) => setTimeout(r, 250));
   }
 
   return all;
 }
 
-/** RSS 피드 fallback (최신 15개) */
-async function fetchRSS(): Promise<Omit<PRSVideo, "books">[]> {
+/* ─── Fallback: RSS 피드 (최신 15개) ─── */
+async function fetchRSS(): Promise<Omit<PRSVideo, "books" | "chapter">[]> {
   try {
     const res = await fetch(
       `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`,
@@ -175,10 +326,9 @@ async function fetchRSS(): Promise<Omit<PRSVideo, "books">[]> {
     const ids     = [...xml.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)].map(m => m[1]);
     const titles  = [...xml.matchAll(/<title>([^<]+)<\/title>/g)].map(m => m[1]);
     const pubDates = [...xml.matchAll(/<published>([^<]+)<\/published>/g)].map(m => m[1]);
-
     return ids.map((id, i) => ({
       id,
-      title:       titles[i + 1] ?? "",  // +1: 첫 <title>은 채널명
+      title:       titles[i + 1] ?? "",
       publishedAt: pubDates[i + 1]?.slice(0, 10) ?? "",
     }));
   } catch {
@@ -200,15 +350,20 @@ export async function GET() {
     }
   } catch { /* miss */ }
 
-  // 신규 fetch
-  let raw = await fetchAllVideosInnerTube();
+  // 1차: 재생목록 기반 fetch
+  let raw = await fetchAllVideosFromPlaylists();
+
+  // 2차: 채널 videos 탭 fallback
+  if (raw.length === 0) raw = await fetchAllVideosInnerTube();
+
+  // 3차: RSS fallback
   if (raw.length === 0) raw = await fetchRSS();
 
-  // books 필드 추가
-  const videos: PRSVideo[] = raw.map((v) => ({
-    ...v,
-    books: extractBooks(v.title),
-  }));
+  // books + chapter 필드 추가
+  const videos: PRSVideo[] = raw.map((v) => {
+    const books = extractBooks(v.title);
+    return { ...v, books, chapter: extractChapter(v.title, books) };
+  });
 
   // 캐시 저장
   try {

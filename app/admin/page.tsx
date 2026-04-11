@@ -143,12 +143,12 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
           {[
             { level: 1, name: "일반회원",   color: "bg-gray-100 text-gray-600" },
-            { level: 2, name: "성도",       color: "bg-emerald-100 text-emerald-700" },
-            { level: 3, name: "제직",       color: "bg-blue-100 text-blue-700" },
-            { level: 4, name: "당회원",     color: "bg-indigo-100 text-indigo-700" },
-            { level: 5, name: "교역자",     color: "bg-purple-100 text-purple-700" },
-            { level: 6, name: "담임목사",   color: "bg-amber-100 text-amber-700" },
-            { level: 7, name: "최고관리자", color: "bg-red-100 text-red-700" },
+            { level: 2, name: "믿음회원",   color: "bg-emerald-100 text-emerald-700" },
+            { level: 3, name: "소망회원",   color: "bg-blue-100 text-blue-700" },
+            { level: 4, name: "사랑회원",   color: "bg-indigo-100 text-indigo-700" },
+            { level: 5, name: "일반관리자", color: "bg-purple-100 text-purple-700" },
+            { level: 6, name: "교역자",     color: "bg-amber-100 text-amber-700" },
+            { level: 7, name: "교역자(최고)", color: "bg-amber-100 text-amber-700" },
           ].map((g) => (
             <div key={g.level} className="flex flex-col items-center gap-1.5 p-3 bg-gray-50 rounded-xl text-center">
               <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${g.color}`}>{g.level}</span>
