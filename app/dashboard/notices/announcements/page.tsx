@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Pin, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { Pin, Trash2, Plus, Eye, EyeOff, Pencil } from "lucide-react";
 
 interface Notice {
   id: number;
@@ -133,10 +133,18 @@ export default function AnnouncementsPage() {
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
+                        <Link
+                          href={`/dashboard/notices/announcements/${n.id}/edit`}
+                          className="text-gray-400 hover:text-[#2E7D32] transition-colors"
+                          title="수정"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Link>
                         <button
                           onClick={() => handleDelete(n.id)}
                           disabled={deleting === n.id}
                           className="text-gray-400 hover:text-red-500 disabled:opacity-40 transition-colors"
+                          title="삭제"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
