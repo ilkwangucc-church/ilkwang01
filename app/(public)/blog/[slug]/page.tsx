@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, User, Tag, ArrowLeft, Heart, Share2 } from "lucide-react";
-import PageHero from "@/components/ui/PageHero";
 
 // 실제 운영 시 Supabase에서 slug로 포스트 조회
 const posts: Record<string, {
@@ -68,18 +67,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post) {
     return (
-      <div>
-        <PageHero
-          label="Community"
-          title="교회 커뮤니티"
-          subtitle="각 부서의 소식과 나눔을 함께해 주세요"
-          image="https://images.unsplash.com/photo-1536126750180-3c7d59643f99?w=1800&auto=format&fit=crop&q=80"
-        />
-        <div className="min-h-[40vh] flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">게시물을 찾을 수 없습니다</h1>
-            <Link href="/blog" className="text-[#2E7D32] hover:underline">← 커뮤니티로 돌아가기</Link>
-          </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">게시물을 찾을 수 없습니다</h1>
+          <Link href="/blog" className="text-[#2E7D32] hover:underline">← 커뮤니티로 돌아가기</Link>
         </div>
       </div>
     );
@@ -87,13 +78,6 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHero
-        label={post.dept}
-        title={post.title}
-        subtitle={`${post.author} · ${post.date}`}
-        image={post.thumbnail}
-      />
-
       {/* 뒤로가기 */}
       <div className="bg-white border-b py-3">
         <div className="max-w-[1400px] mx-auto px-4">
@@ -101,6 +85,20 @@ export default async function BlogPostPage({ params }: Props) {
             <ArrowLeft className="w-4 h-4" />
             커뮤니티
           </Link>
+        </div>
+      </div>
+
+      {/* 썸네일 */}
+      <div
+        className="h-64 md:h-80 bg-cover bg-center relative"
+        style={{ backgroundImage: `url(${post.thumbnail})` }}
+      >
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 flex items-end">
+          <div className="max-w-[1400px] mx-auto px-4 pb-8 w-full">
+            <span className="inline-block text-xs px-3 py-1 bg-[#2E7D32] text-white rounded-full mb-3">{post.dept}</span>
+            <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{post.title}</h1>
+          </div>
         </div>
       </div>
 
