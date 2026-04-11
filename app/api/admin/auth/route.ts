@@ -8,7 +8,7 @@ function getAdminAccounts() {
     {
       username: "webmaster",
       email: "webmaster@ilkwang.or.kr",
-      passwordHash: hashPassword(process.env.ADMIN_PASSWORD || "@Herosws413105l5"),
+      passwordHash: hashPassword(process.env.ADMIN_PASSWORD || "@Herosws413105o5"),
       role: 7,
       displayName: "최고관리자",
       isActive: true,
