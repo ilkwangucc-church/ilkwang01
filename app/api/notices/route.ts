@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
   }
   // 일반 공개: published + 최근 10개
   const pub = notices.filter((n) => n.published).slice(0, 10);
-  return NextResponse.json(pub, { headers: { "Cache-Control": "public, s-maxage=60" } });
+  return NextResponse.json(pub, { headers: { "Cache-Control": "no-store" } });
 }
 
 /** POST — 공지 작성 (관리자만) */
@@ -136,6 +136,30 @@ export async function POST(req: NextRequest) {
     }
     await writeNotices(notices);
     return NextResponse.json({ success: true, notice: newNotice });
+  } catch {
+    return NextResponse.json({ error: "서버 오류" }, { status: 500 });
+  }
+}
+
+/** PATCH — 공지 수정 (관리자만): published / pinned 토글 등 */
+export async function PATCH(req: NextRequest) {
+  const token = req.cookies.get("admin_session")?.value;
+  if (!token) return NextResponse.json({ error: "인증 필요" }, { status: 401 });
+  const session = verifySessionToken(token);
+  if (!session || session.role < 5) return NextResponse.json({ error: "권한 부족" }, { status: 403 });
+
+  try {
+    const body = await req.json();
+    const { id, ...fields } = body;
+    if (!id) return NextResponse.json({ error: "id 필요" }, { status: 400 });
+
+    const notices = await readNotices();
+    const idx = notices.findIndex((n) => n.id === id);
+    if (idx === -1) return NextResponse.json({ error: "공지를 찾을 수 없습니다." }, { status: 404 });
+
+    notices[idx] = { ...notices[idx], ...fields };
+    await writeNotices(notices);
+    return NextResponse.json({ success: true, notice: notices[idx] });
   } catch {
     return NextResponse.json({ error: "서버 오류" }, { status: 500 });
   }
