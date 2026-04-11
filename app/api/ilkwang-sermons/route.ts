@@ -102,7 +102,9 @@ function parseVideos(data: Record<string, unknown>): { videos: RawVideo[]; conti
       return;
     }
 
-    if ("token" in obj && typeof obj.token === "string" && !continuation) {
+    // continuation 토큰: 4qmFsg 로 시작하는 YouTube 페이지네이션 토큰
+    if ("token" in obj && typeof obj.token === "string"
+        && obj.token.startsWith("4qmFsg") && !continuation) {
       continuation = obj.token;
     }
 
@@ -124,7 +126,9 @@ async function resolveChannelId(handle: string): Promise<string | null> {
       cache: "no-store",
     });
     const html = await res.text();
-    const m = html.match(/"channelId"\s*:\s*"(UC[^"]+)"/);
+    // YouTube HTML은 externalId 또는 channelId 두 가지 중 하나를 사용
+    const m = html.match(/"externalId"\s*:\s*"(UC[^"]+)"/)
+           ?? html.match(/"channelId"\s*:\s*"(UC[^"]+)"/);
     return m ? m[1] : null;
   } catch { return null; }
 }
