@@ -321,12 +321,12 @@ export default function BiblePage() {
         </div>
 
         {/* ── 영상 + 재생목록 (나란히, 16:9 자동 높이) ── */}
-        <div className="flex shrink-0">
+        <div className="flex shrink-0 bg-[#0f0f0f]">
 
-          {/* 영상: flex-1 + 16:9 → 검은 여백 없음 */}
+          {/* 영상: 최대 720px 폭으로 제한 + 16:9 정비율 */}
           <div
-            className="flex-1 min-w-0 bg-[#0f0f0f] relative"
-            style={{ aspectRatio: "16/9" }}
+            className="shrink-0 bg-[#0f0f0f] relative"
+            style={{ flex: "1 1 0", maxWidth: "720px", aspectRatio: "16/9" }}
           >
             {activeVideo ? (
               /* 장 클릭 시 바로 재생 */
@@ -369,8 +369,8 @@ export default function BiblePage() {
             )}
           </div>
 
-          {/* 재생목록: 즉시 렌더링 (로딩 대기 없음) */}
-          <div className="w-40 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
+          {/* 재생목록: 즉시 렌더링, 넓게 */}
+          <div className="flex-1 min-w-[200px] max-w-[280px] bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
