@@ -191,7 +191,8 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
   const allSeenIds = new Set<string>(); // 페이지 간 중복 방지
   let cont: string | null = null;
   const MAX_PAGES = 60;
-  const STOP_YEAR = 2022; // 2022년 이전 영상은 수집 중단
+  const COLLECT_YEAR = 2022;   // 2022년 이전은 수집 안 함 (skip)
+  const HARD_STOP_YEAR = 2019; // 2019년 이전이면 완전 수집 중단
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const body = cont
@@ -202,18 +203,19 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
     if (!data) break;
 
     const { videos, continuation } = parseVideos(data);
-    let stop = false;
+    let hardStop = false;
 
     for (const v of videos) {
       if (allSeenIds.has(v.id)) continue; // 페이지 간 중복 제거
       allSeenIds.add(v.id);
       const year = guessYear(v.publishedAt);
-      if (year < STOP_YEAR) { stop = true; break; }
+      if (year < HARD_STOP_YEAR) { hardStop = true; break; } // 매우 오래된 영상 → 완전 중단
+      if (year < COLLECT_YEAR) continue; // 2022 이전 → skip하고 계속 (핀된 오래된 영상 대비)
       all.push(v);
     }
 
     cont = continuation;
-    if (!cont || stop) break;
+    if (!cont || hardStop) break;
     await new Promise((r) => setTimeout(r, 250));
   }
 
@@ -228,6 +230,9 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
     // 쇼츠: duration이 60초 이하 형식 (:ss 또는 0:ss)
     if (/^0?:\d\d$/.test(v.duration)) return false;
     if (/^#shorts/i.test(v.title)) return false;
+    // 2시간 이상 영상 = 예배 전체 중계 아카이브 제외
+    const durationMatch = v.duration.match(/^(\d+):\d{2}:\d{2}$/);
+    if (durationMatch && parseInt(durationMatch[1]) >= 2) return false;
     return true;
   });
 
