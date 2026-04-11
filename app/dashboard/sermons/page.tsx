@@ -37,14 +37,14 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
           💬 설교 나눔
           <span className="font-normal text-gray-400">· {sharings.length}개</span>
         </p>
-        <p className="text-sm text-blue-500 mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
+        <p className="text-sm text-gray-400 mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
         <div className="flex gap-2">
           <textarea
             value={sharingText}
             onChange={(e) => setSharingText(e.target.value)}
             placeholder="설교 말씀에서 받은 은혜를 나눠주세요..."
             rows={2}
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
+            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30"
           />
           <button
             type="submit"
@@ -99,7 +99,7 @@ function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
       <div className="px-4 py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
         <div>
           <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-            <Pencil className="w-3.5 h-3.5 text-blue-600" /> 설교 노트
+            <Pencil className="w-3.5 h-3.5 text-gray-500" /> 설교 노트
           </h2>
           <p className="text-sm text-gray-400 mt-0.5">
             {activeVideo ? activeVideo.publishedAt : "설교를 선택하세요"}
@@ -120,7 +120,7 @@ function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={"설교 말씀을 기록하세요.\n\n예)\n- 본문:\n- 핵심 메시지:\n- 적용:"}
-          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
+          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
         />
       </div>
       <div className="px-4 py-2 border-t border-gray-100 shrink-0">
@@ -323,7 +323,7 @@ export default function SermonsPage() {
               onClick={() => setMobileTab(key)}
               className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-sm font-medium transition-colors border-b-2 ${
                 mobileTab === key
-                  ? "text-blue-600 border-blue-600"
+                  ? "text-gray-700 border-gray-700"
                   : "text-gray-400 border-transparent"
               }`}
             >
@@ -348,14 +348,14 @@ export default function SermonsPage() {
                   <div key={year}>
                     <button
                       onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
-                      className="w-full flex items-center justify-between px-4 py-3 bg-blue-50 border-b border-gray-100 sticky top-0 z-10"
+                      className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 border-b border-gray-100 sticky top-0 z-10"
                     >
-                      <span className="text-sm font-bold text-blue-700">{year}년</span>
+                      <span className="text-sm font-bold text-gray-700">{year}년</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-blue-400">{yearGroups[year].length}편</span>
+                        <span className="text-sm text-gray-400">{yearGroups[year].length}편</span>
                         {expandedYears[year]
-                          ? <ChevronDown className="w-4 h-4 text-blue-400" />
-                          : <ChevronRight className="w-4 h-4 text-blue-400" />}
+                          ? <ChevronDown className="w-4 h-4 text-gray-400" />
+                          : <ChevronRight className="w-4 h-4 text-gray-400" />}
                       </div>
                     </button>
                     {expandedYears[year] && yearGroups[year].map((v) => (
@@ -363,7 +363,7 @@ export default function SermonsPage() {
                         key={v.id}
                         onClick={() => selectVideo(v)}
                         className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-gray-50 transition-colors active:bg-gray-100 ${
-                          activeVideo?.id === v.id ? "bg-blue-50" : "hover:bg-gray-50"
+                          activeVideo?.id === v.id ? "bg-gray-100" : "hover:bg-gray-50"
                         }`}
                       >
                         <div className="w-20 h-[45px] shrink-0 rounded overflow-hidden bg-black relative">
@@ -376,14 +376,14 @@ export default function SermonsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className={`text-sm leading-tight line-clamp-2 ${
-                            activeVideo?.id === v.id ? "text-blue-700 font-semibold" : "text-gray-800"
+                            activeVideo?.id === v.id ? "text-gray-700 font-semibold" : "text-gray-800"
                           }`}>
                             {v.title}
                           </p>
                           <p className="text-sm text-gray-400 mt-1">{v.publishedAt}</p>
                         </div>
                         {activeVideo?.id === v.id && (
-                          <Play className="w-4 h-4 text-blue-500 fill-blue-500 shrink-0" />
+                          <Play className="w-4 h-4 text-gray-600 fill-gray-600 shrink-0" />
                         )}
                       </button>
                     ))}
@@ -421,7 +421,7 @@ export default function SermonsPage() {
         {/* LEFT — 연도별 설교 목록 */}
         <aside className="w-56 bg-white border-r border-gray-200 flex flex-col overflow-hidden shrink-0">
           <div className="px-3 py-2 border-b border-gray-100 shrink-0">
-            <p className="text-sm font-bold text-blue-700 flex items-center gap-1.5">
+            <p className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
               <Play className="w-3.5 h-3.5" /> 설교 영상
             </p>
           </div>
@@ -435,14 +435,14 @@ export default function SermonsPage() {
                 <div key={year}>
                   <button
                     onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
-                    className="w-full flex items-center justify-between px-3 py-1.5 bg-blue-50 border-b border-gray-100 hover:bg-blue-100 sticky top-0 z-10"
+                    className="w-full flex items-center justify-between px-3 py-1.5 bg-gray-100 border-b border-gray-100 hover:bg-gray-200 sticky top-0 z-10"
                   >
-                    <span className="text-sm font-bold text-blue-700">{year}년</span>
+                    <span className="text-sm font-bold text-gray-700">{year}년</span>
                     <div className="flex items-center gap-1">
-                      <span className="text-sm text-blue-400">{yearGroups[year].length}편</span>
+                      <span className="text-sm text-gray-400">{yearGroups[year].length}편</span>
                       {expandedYears[year]
-                        ? <ChevronDown className="w-3 h-3 text-blue-400" />
-                        : <ChevronRight className="w-3 h-3 text-blue-400" />}
+                        ? <ChevronDown className="w-3 h-3 text-gray-400" />
+                        : <ChevronRight className="w-3 h-3 text-gray-400" />}
                     </div>
                   </button>
                   {expandedYears[year] && yearGroups[year].map((v) => (
@@ -451,12 +451,12 @@ export default function SermonsPage() {
                       onClick={() => selectVideo(v)}
                       className={`w-full flex items-start gap-2 px-3 py-2 text-left transition-colors border-b border-gray-50 ${
                         activeVideo?.id === v.id
-                          ? "bg-blue-50 text-blue-700 font-semibold"
+                          ? "bg-gray-100 text-gray-700 font-semibold"
                           : "text-gray-700 hover:bg-gray-50"
                       }`}
                     >
                       <Play className={`w-3 h-3 mt-0.5 shrink-0 ${
-                        activeVideo?.id === v.id ? "fill-blue-600 text-blue-600" : "text-gray-300"
+                        activeVideo?.id === v.id ? "fill-gray-600 text-gray-600" : "text-gray-300"
                       }`} />
                       <div className="min-w-0">
                         <p className="text-sm leading-tight line-clamp-2">{v.title}</p>
@@ -509,7 +509,7 @@ export default function SermonsPage() {
                       data-id={v.id}
                       onClick={() => selectVideo(v)}
                       className={`w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
-                        isActive ? "bg-blue-700" : "hover:bg-white/10"
+                        isActive ? "bg-gray-700" : "hover:bg-white/10"
                       }`}
                     >
                       <div className="w-12 h-[27px] shrink-0 rounded overflow-hidden bg-black/30 relative">
@@ -528,7 +528,7 @@ export default function SermonsPage() {
                         </p>
                         <p className="text-sm text-gray-600 mt-0.5">{v.publishedAt}</p>
                       </div>
-                      {isActive && <Play className="w-3 h-3 text-blue-300 shrink-0 fill-blue-300" />}
+                      {isActive && <Play className="w-3 h-3 text-gray-400 shrink-0 fill-gray-400" />}
                     </button>
                   );
                 })}
