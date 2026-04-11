@@ -91,16 +91,6 @@
     "passwordHash": "6beb97e2db6dedd29b9e8cade609c8ee105380600a46d70198b4eb7a827dc3fd"
   },
   {
-    "id": 10,
-    "name": "김대한",
-    "email": "-",
-    "phone": "-",
-    "role": 1,
-    "dept": "-",
-    "matched": false,
-    "joined": "2026-04-04"
-  },
-  {
     "id": 11,
     "name": "서원석",
     "email": "loganwseo@gmail.com",
