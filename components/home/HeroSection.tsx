@@ -17,7 +17,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-6 py-20 sm:py-24 lg:py-16 w-full flex flex-col lg:flex-row items-center justify-center lg:gap-12 min-h-[560px] sm:min-h-[700px] lg:min-h-[800px]">
-        <div className="max-w-2xl w-full text-center lg:text-left">
+        <div className="max-w-2xl w-full text-center lg:text-left lg:pl-[50px]">
           {/* Label */}
           <p className="text-[#a3c9a8] text-base sm:text-lg lg:text-[22px] font-bold mb-2">
             행복과 영원으로 초대하는
