@@ -87,7 +87,7 @@ export default function BiblePage() {
     if (!el) return;
     const update = () => {
       const containerW = el.offsetWidth;
-      const playlistW  = 240;                        // w-60 고정
+      const playlistW  = 260;                        // 260px 고정
       const videoW     = Math.max(containerW - playlistW, 80); // 최소 80px
       setVideoRowH(Math.round(videoW * 9 / 16));
     };
@@ -386,8 +386,8 @@ export default function BiblePage() {
             )}
           </div>
 
-          {/* 재생목록: 240px 고정 */}
-          <div className="w-60 shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
+          {/* 재생목록: 260px 고정 */}
+          <div className="w-[260px] shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
