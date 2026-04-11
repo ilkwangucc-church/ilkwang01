@@ -374,19 +374,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             />
           ))}
 
-          {/* 관리자 구분선 */}
-          <div className="mx-5 my-3 border-t border-gray-700" />
-          <p className="px-5 py-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">관리자</p>
-          {adminGroups.map((group) => (
-            <NavGroupSection
-              key={group.label}
-              group={group}
-              openGroups={openGroups}
-              toggleGroup={toggleGroup}
-              isActive={isActive}
-              setSidebarOpen={setSidebarOpen}
-            />
-          ))}
+          {/* 관리자 구분선 — 5단계(교역자) 이상에게만 표시 */}
+          {adminUser && adminUser.role >= 5 && (
+            <>
+              <div className="mx-5 my-3 border-t border-gray-700" />
+              <p className="px-5 py-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">관리자</p>
+              {adminGroups.map((group) => (
+                <NavGroupSection
+                  key={group.label}
+                  group={group}
+                  openGroups={openGroups}
+                  toggleGroup={toggleGroup}
+                  isActive={isActive}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              ))}
+            </>
+          )}
         </nav>
 
         {/* 로그아웃 */}
