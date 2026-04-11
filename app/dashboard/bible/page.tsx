@@ -353,9 +353,16 @@ export default function BiblePage() {
             className="shrink-0 bg-black relative"
             style={{ width: videoRowH * (16 / 9) }}
           >
+            {/* ── 항상 표시되는 교회 이미지 (기본 배경) ── */}
+            <img
+              src="/ilkwang01.png"
+              alt="일광교회"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+
             {activeVideo ? (
               <>
-                {/* 썸네일 — iframe 로딩 전 커버 (포스터 역할) */}
+                {/* YouTube 썸네일 — iframe 로딩 전 커버 */}
                 <img
                   src={`https://i.ytimg.com/vi/${activeVideo.id}/hqdefault.jpg`}
                   alt=""
@@ -372,16 +379,14 @@ export default function BiblePage() {
                 />
               </>
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none">
-                <BookText className="w-16 h-16 text-white/10" />
-                <div className="text-center px-6">
-                  <p className="text-white/50 text-xl font-bold">{selectedBook}</p>
-                  <p className="text-white/25 text-xs mt-1.5">
-                    {selectedChapter
-                      ? `${selectedChapter}장 영상 없음`
-                      : "오른쪽 목록에서 장을 선택하세요"}
-                  </p>
-                </div>
+              /* 영상 미선택 — 반투명 오버레이 + 안내 텍스트 */
+              <div className="absolute inset-0 bg-black/45 flex flex-col items-center justify-center gap-2 select-none">
+                <p className="text-white/90 text-lg font-bold drop-shadow">{selectedBook}</p>
+                <p className="text-white/60 text-xs drop-shadow">
+                  {selectedChapter
+                    ? `${selectedChapter}장 영상 없음`
+                    : "오른쪽 목록에서 장을 선택하세요"}
+                </p>
               </div>
             )}
           </div>
