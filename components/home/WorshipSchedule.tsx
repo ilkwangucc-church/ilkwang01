@@ -14,17 +14,17 @@ export default function WorshipSchedule() {
   return (
     <section className="py-24 bg-[#F8FAF8]">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 xl:grid-cols-[420px_1fr] gap-16 xl:gap-24 items-start">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-[420px_1fr] gap-10 xl:gap-24 items-start">
 
-          {/* Left */}
-          <div className="xl:sticky xl:top-28">
+          {/* Left — 모바일: 중앙정렬 / lg 이상: 좌측정렬 */}
+          <div className="xl:sticky xl:top-28 text-center lg:text-left flex flex-col items-center lg:items-start">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
               OUR MINISTRY
             </p>
             <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] leading-tight mb-6">
               지역 사회와 함께<br />성장하는 교회
             </h2>
-            <p className="text-gray-500 text-base leading-relaxed mb-8">
+            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-md">
               일광교회는 예배와 교육, 교제와 봉사를 통해 성도들이 하나님의 사람으로
               세워지도록 돕고 있습니다. 다양한 부서와 사역을 통해 모든 세대가 함께 합니다.
             </p>

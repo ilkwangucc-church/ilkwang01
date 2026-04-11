@@ -30,8 +30,8 @@ export default function PageHero({ label, title, subtitle, image }: PageHeroProp
       {/* 그라디언트 오버레이: 상단 가볍게 → 하단 짙게 */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320]/85 via-[#0b1320]/45 to-[#0b1320]/25" />
 
-      {/* 콘텐츠 (하단 왼쪽 정렬) */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pb-14">
+      {/* 콘텐츠 — 모바일: 중앙정렬 / sm 이상: 좌측정렬 */}
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pb-14 text-center sm:text-left">
         <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.3em] mb-4">
           {label}
         </p>
@@ -40,12 +40,12 @@ export default function PageHero({ label, title, subtitle, image }: PageHeroProp
           {title}
         </h1>
         {subtitle && (
-          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0">
             {subtitle}
           </p>
         )}
         {/* 하단 구분선 */}
-        <div className="mt-8 w-16 h-1 bg-[#2E7D32] rounded-full" />
+        <div className="mt-8 w-16 h-1 bg-[#2E7D32] rounded-full mx-auto sm:mx-0" />
       </div>
     </div>
   );

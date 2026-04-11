@@ -40,17 +40,17 @@ export default function EventsSection() {
   return (
     <section className="py-24 bg-[#F8FAF8]">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 xl:grid-cols-[380px_1fr] gap-16 xl:gap-24 items-start">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-[380px_1fr] gap-10 xl:gap-24 items-start">
 
-          {/* Left */}
-          <div className="xl:sticky xl:top-28">
+          {/* Left — 모바일: 중앙정렬 / lg 이상: 좌측정렬 */}
+          <div className="xl:sticky xl:top-28 text-center lg:text-left flex flex-col items-center lg:items-start">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
               THIS YEAR
             </p>
             <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] leading-tight mb-6">
               특별한 예배와<br />행사에 함께하세요
             </h2>
-            <p className="text-gray-500 leading-relaxed mb-8">
+            <p className="text-gray-500 leading-relaxed mb-8 max-w-md">
               일광교회는 다양한 절기 예배와 특별 행사를 통해 성도들이 하나님의 은혜를
               더욱 풍성하게 경험할 수 있도록 준비하고 있습니다.
             </p>
