@@ -53,19 +53,35 @@ function isLive(obj: Record<string, unknown>): boolean {
 /* ─── 연도 추정 ─── */
 function guessYear(publishedAt: string): number {
   const now = new Date();
-  // "2024. 3. 1." 형식
+
+  // "2024. 3. 1." 형식 (절대 날짜 — 가장 정확)
   const full = publishedAt.match(/(\d{4})\.\s*\d+\.\s*\d+/);
   if (full) return parseInt(full[1]);
-  // "N년 전"
+
+  // "2024년 3월 1일" 또는 "2024년 3월 1일에 게시됨" 형식 (한국어 절대 날짜)
+  const korFull = publishedAt.match(/^(\d{4})\s*년\s*\d+\s*월/);
+  if (korFull) return parseInt(korFull[1]);
+
+  // "N년 전" — YouTube 상대 날짜 보정
+  // "N년 전"은 실제로 [N*12 ~ (N+1)*12-1]개월 전 구간을 커버함.
+  // 현재 월이 1~6월이면 해당 구간의 대부분이 (currentYear-N-1)에 속하므로 -1 보정.
+  // 현재 월이 7~12월이면 해당 구간의 대부분이 (currentYear-N)에 속하므로 보정 불필요.
   const yearsAgo = publishedAt.match(/(\d+)\s*년\s*전/);
-  if (yearsAgo) return now.getFullYear() - parseInt(yearsAgo[1]);
-  // "N개월 전" — 실제 날짜 역산 (예: 4개월 전 → 12월 → 작년)
+  if (yearsAgo) {
+    const n = parseInt(yearsAgo[1]);
+    const currentMonth = now.getMonth() + 1; // 1-indexed
+    const adjustment = currentMonth <= 6 ? 1 : 0;
+    return now.getFullYear() - n - adjustment;
+  }
+
+  // "N개월 전" — 실제 날짜 역산
   const monthsAgo = publishedAt.match(/(\d+)\s*개월\s*전/);
   if (monthsAgo) {
     const d = new Date(now);
     d.setMonth(d.getMonth() - parseInt(monthsAgo[1]));
     return d.getFullYear();
   }
+
   // "N주 전" — 실제 날짜 역산
   const weeksAgo = publishedAt.match(/(\d+)\s*주\s*전/);
   if (weeksAgo) {
@@ -73,6 +89,7 @@ function guessYear(publishedAt: string): number {
     d.setDate(d.getDate() - parseInt(weeksAgo[1]) * 7);
     return d.getFullYear();
   }
+
   // "N일 전", "N시간 전", "N분 전" → 올해
   return now.getFullYear();
 }
@@ -95,9 +112,10 @@ function parseVideos(data: Record<string, unknown>): { videos: RawVideo[]; conti
         (obj.title as { runs?: { text: string }[]; simpleText?: string })?.runs?.[0]?.text ??
         (obj.title as { simpleText?: string })?.simpleText ?? "";
 
+      // dateText(절대 날짜)를 먼저 시도, 없으면 publishedTimeText(상대 날짜) 사용
       const publishedAt =
-        (obj.publishedTimeText as { simpleText?: string })?.simpleText ??
-        (obj.dateText as { simpleText?: string })?.simpleText ?? "";
+        (obj.dateText as { simpleText?: string })?.simpleText ??
+        (obj.publishedTimeText as { simpleText?: string })?.simpleText ?? "";
 
       // 재생 시간
       const duration =
@@ -162,7 +180,7 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
   const allSeenIds = new Set<string>(); // 페이지 간 중복 방지
   let cont: string | null = null;
   const MAX_PAGES = 60;
-  const STOP_YEAR = 2024;
+  const STOP_YEAR = 2022; // 2022년 이전 영상은 수집 중단
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const body = cont

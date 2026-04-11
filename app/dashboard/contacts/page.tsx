@@ -46,10 +46,10 @@ export default function ContactsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">문의 접수함</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">문의 접수함</h1>
           <p className="text-gray-500 text-sm mt-0.5">
             홈페이지 문의 내역 · 전체 {contacts.length}건
-            {unreadCount > 0 && <span className="ml-2 text-rose-500 font-semibold">미확인 {unreadCount}건</span>}
+            {unreadCount > 0 && <span className="ml-2 text-gray-700 font-semibold">미확인 {unreadCount}건</span>}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -93,9 +93,9 @@ export default function ContactsPage() {
             <button
               key={c.id}
               onClick={() => openContact(c)}
-              className={`w-full text-left px-5 py-4 hover:bg-gray-50 transition-colors flex items-start gap-3 ${!c.isRead ? "bg-blue-50/40" : ""}`}
+              className={`w-full text-left px-5 py-4 hover:bg-gray-50 transition-colors flex items-start gap-3 ${!c.isRead ? "bg-gray-50/60" : ""}`}
             >
-              <div className="w-9 h-9 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#2E7D32] font-bold text-sm shrink-0">
+              <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm shrink-0">
                 {c.name[0]}
               </div>
               <div className="flex-1 min-w-0">
@@ -110,7 +110,7 @@ export default function ContactsPage() {
                   <span className="text-[11px] text-gray-400">{c.createdAt}</span>
                 </div>
               </div>
-              <Eye className={`w-4 h-4 shrink-0 mt-0.5 ${c.isRead ? "text-gray-300" : "text-blue-400"}`} />
+              <Eye className={`w-4 h-4 shrink-0 mt-0.5 ${c.isRead ? "text-gray-300" : "text-gray-500"}`} />
             </button>
           ))}
         </div>

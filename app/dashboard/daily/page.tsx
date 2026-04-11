@@ -13,41 +13,41 @@ interface Comment {
 
 const INIT_COMMENTS: Record<number, Comment[]> = {
   1: [
-    { id: 101, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "저도 시편 23편이 정말 좋아요. 오늘도 말씀으로 시작하셨군요 🙏", time: "오늘 오전 8:45" },
-    { id: 102, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "아멘! 함께 말씀으로 하루를 시작해요!", time: "오늘 오전 9:10" },
-    { id: 103, author: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", text: "감사합니다. 저도 큰 위로가 됩니다 ❤️", time: "오늘 오전 9:32" },
+    { id: 101, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "저도 시편 23편이 정말 좋아요. 오늘도 말씀으로 시작하셨군요 🙏", time: "오늘 오전 8:45" },
+    { id: 102, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "아멘! 함께 말씀으로 하루를 시작해요!", time: "오늘 오전 9:10" },
+    { id: 103, author: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", text: "감사합니다. 저도 큰 위로가 됩니다 ❤️", time: "오늘 오전 9:32" },
   ],
   2: [
-    { id: 201, author: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", text: "노을 사진 나눠줘서 감사해요! 정말 아름답네요 ☀️", time: "오늘 오전 8:15" },
-    { id: 202, author: "정소망", avatar: "정", color: "bg-green-100 text-green-700", text: "새벽 기도 후 이런 노을을... 정말 하나님의 선물이네요!", time: "오늘 오전 8:30" },
-    { id: 203, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "다음에 저도 새벽기도 나가봐야겠어요 💛", time: "오늘 오전 9:05" },
-    { id: 204, author: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", text: "함께해요! 매주 수요일 새벽 5시입니다 🌅", time: "오늘 오전 9:20" },
-    { id: 205, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "저도 함께하고 싶어요 🙏", time: "오늘 오전 10:00" },
+    { id: 201, author: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", text: "노을 사진 나눠줘서 감사해요! 정말 아름답네요 ☀️", time: "오늘 오전 8:15" },
+    { id: 202, author: "정소망", avatar: "정", color: "bg-gray-100 text-gray-600", text: "새벽 기도 후 이런 노을을... 정말 하나님의 선물이네요!", time: "오늘 오전 8:30" },
+    { id: 203, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "다음에 저도 새벽기도 나가봐야겠어요 💛", time: "오늘 오전 9:05" },
+    { id: 204, author: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", text: "함께해요! 매주 수요일 새벽 5시입니다 🌅", time: "오늘 오전 9:20" },
+    { id: 205, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "저도 함께하고 싶어요 🙏", time: "오늘 오전 10:00" },
   ],
   3: [
-    { id: 301, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "소그룹 모임 정말 은혜롭죠! 저도 늘 힘을 얻어요", time: "어제 오후 9:30" },
-    { id: 302, author: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", text: "함께 기도해 주셔서 감사합니다 🙏", time: "어제 오후 10:00" },
-    { id: 303, author: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", text: "다음 소그룹 모임도 기대돼요!", time: "어제 오후 10:15" },
-    { id: 304, author: "정소망", avatar: "정", color: "bg-green-100 text-green-700", text: "말씀 나누는 시간이 참 귀하지요 💛", time: "어제 오후 11:00" },
-    { id: 305, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "아멘! 함께여서 감사해요", time: "어제 오후 11:30" },
-    { id: 306, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "다음 주도 함께해요!", time: "어제 오후 11:45" },
-    { id: 307, author: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", text: "기대됩니다 🙏", time: "오늘 오전 7:00" },
+    { id: 301, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "소그룹 모임 정말 은혜롭죠! 저도 늘 힘을 얻어요", time: "어제 오후 9:30" },
+    { id: 302, author: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", text: "함께 기도해 주셔서 감사합니다 🙏", time: "어제 오후 10:00" },
+    { id: 303, author: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", text: "다음 소그룹 모임도 기대돼요!", time: "어제 오후 10:15" },
+    { id: 304, author: "정소망", avatar: "정", color: "bg-gray-100 text-gray-600", text: "말씀 나누는 시간이 참 귀하지요 💛", time: "어제 오후 11:00" },
+    { id: 305, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "아멘! 함께여서 감사해요", time: "어제 오후 11:30" },
+    { id: 306, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "다음 주도 함께해요!", time: "어제 오후 11:45" },
+    { id: 307, author: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", text: "기대됩니다 🙏", time: "오늘 오전 7:00" },
   ],
   4: [
-    { id: 401, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "찬양 연습 화이팅! 이번 주 예배도 기대돼요 🎵", time: "어제 오후 4:00" },
-    { id: 402, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "하나님께 드리는 찬양 항상 은혜로워요!", time: "어제 오후 4:30" },
+    { id: 401, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "찬양 연습 화이팅! 이번 주 예배도 기대돼요 🎵", time: "어제 오후 4:00" },
+    { id: 402, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "하나님께 드리는 찬양 항상 은혜로워요!", time: "어제 오후 4:30" },
   ],
   5: [
-    { id: 501, author: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", text: "아이들이 참 예쁘네요! 순수한 믿음이 보기 좋아요 👶", time: "어제 오전 11:45" },
-    { id: 502, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "아이들에게서 배우는 게 참 많죠 🙏", time: "어제 오전 12:00" },
-    { id: 503, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "어린이부 선생님들 수고 많으세요!", time: "어제 오전 12:30" },
-    { id: 504, author: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", text: "아이들 눈빛이 정말 맑네요 ❤️", time: "어제 오후 1:00" },
-    { id: 505, author: "정소망", avatar: "정", color: "bg-green-100 text-green-700", text: "다음 세대가 이렇게 자라니 감사해요!", time: "어제 오후 1:30" },
-    { id: 506, author: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", text: "선생님 정말 수고 많으십니다 💛", time: "어제 오후 2:00" },
-    { id: 507, author: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", text: "우리 교회 미래가 밝네요 🌱", time: "어제 오후 2:30" },
-    { id: 508, author: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", text: "아멘! 함께 기도해요", time: "어제 오후 3:00" },
-    { id: 509, author: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", text: "축복합니다 🙏", time: "어제 오후 3:30" },
-    { id: 510, author: "정소망", avatar: "정", color: "bg-green-100 text-green-700", text: "감사합니다!", time: "어제 오후 4:00" },
+    { id: 501, author: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", text: "아이들이 참 예쁘네요! 순수한 믿음이 보기 좋아요 👶", time: "어제 오전 11:45" },
+    { id: 502, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "아이들에게서 배우는 게 참 많죠 🙏", time: "어제 오전 12:00" },
+    { id: 503, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "어린이부 선생님들 수고 많으세요!", time: "어제 오전 12:30" },
+    { id: 504, author: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", text: "아이들 눈빛이 정말 맑네요 ❤️", time: "어제 오후 1:00" },
+    { id: 505, author: "정소망", avatar: "정", color: "bg-gray-100 text-gray-600", text: "다음 세대가 이렇게 자라니 감사해요!", time: "어제 오후 1:30" },
+    { id: 506, author: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", text: "선생님 정말 수고 많으십니다 💛", time: "어제 오후 2:00" },
+    { id: 507, author: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", text: "우리 교회 미래가 밝네요 🌱", time: "어제 오후 2:30" },
+    { id: 508, author: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", text: "아멘! 함께 기도해요", time: "어제 오후 3:00" },
+    { id: 509, author: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", text: "축복합니다 🙏", time: "어제 오후 3:30" },
+    { id: 510, author: "정소망", avatar: "정", color: "bg-gray-100 text-gray-600", text: "감사합니다!", time: "어제 오후 4:00" },
   ],
 };
 
@@ -55,22 +55,22 @@ const INIT_FEED: {
   id: number; name: string; avatar: string; color: string;
   time: string; text: string; image: string | null; likes: number; comments: number
 }[] = [
-  { id: 1, name: "김성도", avatar: "김", color: "bg-emerald-100 text-emerald-700", time: "오늘 오전 8:24",
+  { id: 1, name: "김성도", avatar: "김", color: "bg-gray-100 text-gray-600", time: "오늘 오전 8:24",
     text: "오늘도 말씀으로 하루를 시작합니다 🙏 아침 묵상 중 시편 23편이 큰 위로가 되었어요. 여호와는 나의 목자시니 내게 부족함이 없으리로다.",
     image: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=600&q=80",
     likes: 12, comments: 3 },
-  { id: 2, name: "이은혜", avatar: "이", color: "bg-blue-100 text-blue-700", time: "오늘 오전 7:58",
+  { id: 2, name: "이은혜", avatar: "이", color: "bg-gray-100 text-gray-600", time: "오늘 오전 7:58",
     text: "새벽 기도 후 아침 노을이 너무 아름다웠어요 ☀️ 하나님의 창조가 이렇게 아름다울 수가 없네요. 오늘 하루도 감사합니다!",
     image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=600&q=80",
     likes: 18, comments: 5 },
-  { id: 3, name: "박믿음", avatar: "박", color: "bg-amber-100 text-amber-700", time: "어제 오후 9:12",
+  { id: 3, name: "박믿음", avatar: "박", color: "bg-gray-100 text-gray-600", time: "어제 오후 9:12",
     text: "소그룹 모임에서 큰 은혜를 받았습니다. 함께 기도해 주신 분들께 감사드려요 💛 말씀을 나누는 시간이 정말 귀하게 느껴집니다.",
     image: null, likes: 24, comments: 7 },
-  { id: 4, name: "최사랑", avatar: "최", color: "bg-rose-100 text-rose-700", time: "어제 오후 3:44",
+  { id: 4, name: "최사랑", avatar: "최", color: "bg-gray-100 text-gray-600", time: "어제 오후 3:44",
     text: "주일 예배 찬양 연습 중입니다 🎵 이번 주도 함께 드리는 예배가 기대돼요! 하나님께 드리는 찬양은 언제나 힘이 납니다.",
     image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=600&q=80",
     likes: 9, comments: 2 },
-  { id: 5, name: "정소망", avatar: "정", color: "bg-green-100 text-green-700", time: "어제 오전 11:20",
+  { id: 5, name: "정소망", avatar: "정", color: "bg-gray-100 text-gray-600", time: "어제 오전 11:20",
     text: "어린이부 아이들과 함께한 성경 이야기 시간이었어요 👶 아이들의 순수한 믿음을 보며 오히려 제가 더 많이 배웁니다.",
     image: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=600&q=80",
     likes: 31, comments: 10 },
@@ -105,7 +105,7 @@ export default function DailyPage() {
     if (!text.trim()) return;
     const newPost = {
       id: Date.now(),
-      name: "나", avatar: "나", color: "bg-purple-100 text-purple-700",
+      name: "나", avatar: "나", color: "bg-gray-100 text-gray-600",
       time: "방금 전",
       text: text.trim(),
       image: imagePreview,
@@ -137,7 +137,7 @@ export default function DailyPage() {
       id: Date.now(),
       author: "나",
       avatar: "나",
-      color: "bg-purple-100 text-purple-700",
+      color: "bg-gray-100 text-gray-600",
       text: commentInput.trim(),
       time: "방금 전",
     };
@@ -156,8 +156,8 @@ export default function DailyPage() {
       {/* 상단 헤더 + 통계 */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Camera className="w-6 h-6 text-[#2E7D32]" /> 성도의 하루
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 성도의 하루
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">사진 한 장과 한 줄로 오늘 하루를 나눠요</p>
         </div>
@@ -166,7 +166,7 @@ export default function DailyPage() {
             const Icon = s.icon;
             return (
               <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-2.5 text-center">
-                <Icon className="w-4 h-4 text-[#2E7D32] mx-auto mb-1" />
+                <Icon className="w-4 h-4 text-gray-500 mx-auto mb-1" />
                 <p className="text-lg font-bold text-gray-900">{s.value}</p>
                 <p className="text-[10px] text-gray-500">{s.label}</p>
               </div>
@@ -176,12 +176,12 @@ export default function DailyPage() {
       </div>
 
       {/* 2-컬럼 레이아웃 */}
-      <div className="grid lg:grid-cols-[360px_1fr] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 sm:gap-6 items-start">
         {/* 왼쪽 — 작성 폼 */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-3 sm:top-6">
             <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
-              <Camera className="w-4 h-4 text-[#2E7D32]" /> 오늘 하루 나누기
+              <Camera className="w-4 h-4 text-gray-500" /> 오늘 하루 나누기
             </p>
             <textarea
               value={text}
@@ -207,7 +207,7 @@ export default function DailyPage() {
             )}
 
             <div className="flex items-center justify-between mt-3">
-              <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-[#2E7D32] transition-colors">
+              <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-gray-700 transition-colors">
                 <ImagePlus className="w-4 h-4" />
                 사진 추가
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -223,12 +223,12 @@ export default function DailyPage() {
           </div>
 
           {/* 오늘의 말씀 */}
-          <div className="bg-[#E8F5E9] rounded-2xl p-5 border border-[#C8E6C9]">
-            <p className="text-xs font-semibold text-[#2E7D32] mb-2">📖 오늘의 말씀</p>
+          <div className="bg-gray-100 rounded-2xl p-5 border border-gray-200">
+            <p className="text-xs font-semibold text-gray-600 mb-2">📖 오늘의 말씀</p>
             <p className="text-base font-bold text-gray-900 leading-snug mb-1">
               "여호와는 나의 목자시니<br />내게 부족함이 없으리로다"
             </p>
-            <p className="text-xs text-[#2E7D32]">시편 23:1</p>
+            <p className="text-xs text-gray-500">시편 23:1</p>
           </div>
         </div>
 
@@ -270,7 +270,7 @@ export default function DailyPage() {
                       {commentCount > 1 && (
                         <button
                           onClick={() => openCommentModal(post.id)}
-                          className="text-[10px] text-gray-400 mt-1.5 hover:text-[#2E7D32] transition-colors"
+                          className="text-[10px] text-gray-400 mt-1.5 hover:text-gray-600 transition-colors"
                         >
                           댓글 {commentCount}개 모두 보기
                         </button>
@@ -281,14 +281,14 @@ export default function DailyPage() {
                   <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-50">
                     <button
                       onClick={() => toggleLike(post.id)}
-                      className={`flex items-center gap-1.5 text-sm transition-colors ${liked.has(post.id) ? "text-rose-500" : "text-gray-400 hover:text-rose-400"}`}
+                      className={`flex items-center gap-1.5 text-sm transition-colors ${liked.has(post.id) ? "text-gray-600" : "text-gray-400 hover:text-gray-600"}`}
                     >
-                      <Heart className={`w-4 h-4 ${liked.has(post.id) ? "fill-rose-500" : ""}`} />
+                      <Heart className={`w-4 h-4 ${liked.has(post.id) ? "fill-gray-600" : ""}`} />
                       {post.likes + (liked.has(post.id) ? 1 : 0)}
                     </button>
                     <button
                       onClick={() => openCommentModal(post.id)}
-                      className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#2E7D32] transition-colors"
+                      className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4" />
                       {commentCount}
@@ -312,7 +312,7 @@ export default function DailyPage() {
             {/* 헤더 */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-4 h-4 text-[#2E7D32]" />
+                <MessageCircle className="w-4 h-4 text-gray-500" />
                 <h3 className="font-bold text-gray-900">댓글</h3>
                 <span className="text-xs text-gray-400">({activeComments.length}개)</span>
               </div>
@@ -367,10 +367,10 @@ export default function DailyPage() {
             {/* 댓글 입력 */}
             <div className="px-5 py-4 border-t border-gray-100 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center text-xs font-bold shrink-0">
                   나
                 </div>
-                <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#2E7D32]/30 transition-all">
+                <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-gray-400/30 transition-all">
                   <input
                     value={commentInput}
                     onChange={e => setCommentInput(e.target.value)}
@@ -382,7 +382,7 @@ export default function DailyPage() {
                   <button
                     onClick={handleAddComment}
                     disabled={!commentInput.trim()}
-                    className="text-[#2E7D32] disabled:text-gray-300 transition-colors hover:text-[#1B5E20]"
+                    className="text-gray-600 disabled:text-gray-300 transition-colors hover:text-gray-800"
                   >
                     <Send className="w-4 h-4" />
                   </button>

@@ -26,16 +26,16 @@ const RESOURCES: Record<TabType, { title: string; type: string; size: string; da
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  "PDF":   "bg-red-50 text-red-600",
-  "이미지": "bg-blue-50 text-blue-600",
-  "ZIP":   "bg-amber-50 text-amber-600",
+  "PDF":   "bg-gray-100 text-gray-600",
+  "이미지": "bg-gray-100 text-gray-600",
+  "ZIP":   "bg-gray-100 text-gray-600",
 };
 
 const STATS = [
-  { label: "전체 자료", value: "12개", icon: FolderOpen, color: "bg-green-50 text-green-600" },
-  { label: "이번 달 다운로드", value: "1,204회", icon: Download, color: "bg-blue-50 text-blue-600" },
-  { label: "최다 다운로드", value: "321회", icon: TrendingDown, color: "bg-purple-50 text-purple-600" },
-  { label: "평균 평점", value: "4.8점", icon: Star, color: "bg-amber-50 text-amber-600" },
+  { label: "전체 자료", value: "12개", icon: FolderOpen, color: "bg-gray-100 text-gray-500" },
+  { label: "이번 달 다운로드", value: "1,204회", icon: Download, color: "bg-gray-100 text-gray-500" },
+  { label: "최다 다운로드", value: "321회", icon: TrendingDown, color: "bg-gray-100 text-gray-500" },
+  { label: "평균 평점", value: "4.8점", icon: Star, color: "bg-gray-100 text-gray-500" },
 ];
 
 export default function ResourcesPage() {
@@ -47,7 +47,7 @@ export default function ResourcesPage() {
   return (
     <div className="space-y-6">
       {/* 히어로 배너 */}
-      <div className="relative rounded-2xl overflow-hidden h-40">
+      <div className="relative rounded-2xl overflow-hidden min-h-[100px] sm:h-40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1400&q=80"
@@ -112,12 +112,12 @@ export default function ResourcesPage() {
           검색 결과가 없습니다.
         </div>
       ) : (
-        <div className="grid lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {list.map((r, i) => (
             <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow group">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#E8F5E9] transition-colors">
-                  <FileText className="w-6 h-6 text-gray-500 group-hover:text-[#2E7D32] transition-colors" />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-gray-200 transition-colors">
+                  <FileText className="w-6 h-6 text-gray-500 group-hover:text-gray-600 transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -133,7 +133,7 @@ export default function ResourcesPage() {
                     <span className="flex items-center gap-1 text-xs text-gray-400">
                       <Clock className="w-3 h-3" /> {r.date}
                     </span>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#E8F5E9] text-[#2E7D32] rounded-lg text-xs font-medium hover:bg-[#C8E6C9] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors">
                       <Download className="w-3 h-3" /> 다운로드
                     </button>
                   </div>
@@ -145,10 +145,10 @@ export default function ResourcesPage() {
       )}
 
       {/* 하단 안내 */}
-      <div className="bg-[#E8F5E9] rounded-2xl border border-[#C8E6C9] p-5 flex items-start gap-4">
+      <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 flex items-start gap-4">
         <span className="text-2xl shrink-0">📋</span>
         <div>
-          <p className="font-semibold text-[#2E7D32] mb-1">자료 등록 요청</p>
+          <p className="font-semibold text-gray-700 mb-1">자료 등록 요청</p>
           <p className="text-sm text-gray-600 leading-relaxed">
             필요한 자료가 없거나 등록을 원하시는 자료가 있으시면 교회 사무실 또는 상담신청을 통해 요청해 주세요.
             검토 후 빠르게 등록해 드리겠습니다.

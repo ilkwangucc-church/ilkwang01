@@ -14,12 +14,12 @@ interface Notice {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  예배: "bg-blue-100 text-blue-700",
-  행사: "bg-amber-100 text-amber-700",
-  청년부: "bg-purple-100 text-purple-700",
-  훈련: "bg-indigo-100 text-indigo-700",
+  예배: "bg-gray-100 text-gray-600",
+  행사: "bg-gray-100 text-gray-600",
+  청년부: "bg-gray-100 text-gray-600",
+  훈련: "bg-gray-100 text-gray-600",
   안내: "bg-gray-100 text-gray-600",
-  기타: "bg-pink-100 text-pink-700",
+  기타: "bg-gray-100 text-gray-600",
 };
 
 export default function AnnouncementsPage() {
@@ -68,7 +68,7 @@ export default function AnnouncementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">공지안내</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">공지안내</h1>
           <p className="text-gray-500 text-sm mt-0.5">
             교회 공지사항을 관리합니다
             {!loading && <span className="ml-1 text-gray-400">· 총 {notices.length}건</span>}
@@ -108,7 +108,7 @@ export default function AnnouncementsPage() {
                 {notices.map((n) => (
                   <tr key={n.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-3">
-                      {n.pinned && <Pin className="w-3.5 h-3.5 text-orange-500" />}
+                      {n.pinned && <Pin className="w-3.5 h-3.5 text-gray-500" />}
                     </td>
                     <td className="px-6 py-3">
                       <span className="font-medium text-gray-900">{n.title}</span>
@@ -127,7 +127,7 @@ export default function AnnouncementsPage() {
                         className="disabled:opacity-40"
                       >
                         {n.published
-                          ? <Eye className="w-4 h-4 text-[#2E7D32]" />
+                          ? <Eye className="w-4 h-4 text-gray-600" />
                           : <EyeOff className="w-4 h-4 text-gray-300" />}
                       </button>
                     </td>
@@ -135,7 +135,7 @@ export default function AnnouncementsPage() {
                       <div className="flex items-center gap-3">
                         <Link
                           href={`/dashboard/notices/announcements/${n.id}/edit`}
-                          className="text-gray-400 hover:text-[#2E7D32] transition-colors"
+                          className="text-gray-400 hover:text-gray-700 transition-colors"
                           title="수정"
                         >
                           <Pencil className="w-4 h-4" />

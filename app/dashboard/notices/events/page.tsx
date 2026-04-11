@@ -10,9 +10,9 @@ const INIT_EVENTS = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  행사:   "bg-amber-100 text-amber-700",
-  청년부: "bg-purple-100 text-purple-700",
-  기타:   "bg-pink-100 text-pink-700",
+  행사:   "bg-gray-100 text-gray-600",
+  청년부: "bg-gray-100 text-gray-600",
+  기타:   "bg-gray-100 text-gray-600",
 };
 
 export default function EventsPage() {
@@ -60,14 +60,14 @@ export default function EventsPage() {
                 {events.map((n) => (
                   <tr key={n.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-3">
-                      {n.pinned && <Pin className="w-3.5 h-3.5 text-orange-500" />}
+                      {n.pinned && <Pin className="w-3.5 h-3.5 text-gray-500" />}
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-2">
-                        <CalendarDays className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <CalendarDays className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                         <span className="font-medium text-gray-900">{n.title}</span>
                         {n.hasImage && (
-                          <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full">이미지</span>
+                          <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded-full">이미지</span>
                         )}
                       </div>
                     </td>
@@ -82,7 +82,7 @@ export default function EventsPage() {
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <button className="text-gray-400 hover:text-[#2E7D32] transition-colors"><Edit className="w-4 h-4" /></button>
+                        <button className="text-gray-400 hover:text-gray-700 transition-colors"><Edit className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(n.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>

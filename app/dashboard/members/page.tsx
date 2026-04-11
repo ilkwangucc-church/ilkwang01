@@ -68,7 +68,7 @@ function Avatar({
     // eslint-disable-next-line @next/next/no-img-element
     <img src={member.profileUrl} alt={member.name} className="w-full h-full object-cover" />
   ) : (
-    <span className={`${font} text-[#2E7D32] font-bold`}>{member.name?.[0]}</span>
+    <span className={`${font} text-gray-600 font-bold`}>{member.name?.[0]}</span>
   );
 
   if (clickable) {
@@ -76,14 +76,14 @@ function Avatar({
       <button
         type="button"
         onClick={onClick}
-        className={`${dim} rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-[#E8F5E9] cursor-pointer border-0 p-0 hover:ring-2 hover:ring-[#2E7D32] hover:ring-offset-1 transition-all`}
+        className={`${dim} rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-gray-100 cursor-pointer border-0 p-0 hover:ring-2 hover:ring-gray-400 hover:ring-offset-1 transition-all`}
       >
         {inner}
       </button>
     );
   }
   return (
-    <div className={`${dim} bg-[#E8F5E9] rounded-full overflow-hidden flex items-center justify-center shrink-0`}>
+    <div className={`${dim} bg-gray-100 rounded-full overflow-hidden flex items-center justify-center shrink-0`}>
       {inner}
     </div>
   );
@@ -385,7 +385,7 @@ export default function MembersPage() {
       {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">회원 관리</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">회원 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 6단계 등급 관리</p>
         </div>
         <button
@@ -469,7 +469,7 @@ export default function MembersPage() {
                     </td>
                     <td className="px-5 py-3 hidden sm:table-cell">
                       {m.matched
-                        ? <span className="flex items-center gap-1 text-emerald-600 text-xs"><UserCheck className="w-3 h-3" />완료</span>
+                        ? <span className="flex items-center gap-1 text-gray-500 text-xs"><UserCheck className="w-3 h-3" />완료</span>
                         : <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>}
                     </td>
                     <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
@@ -477,7 +477,7 @@ export default function MembersPage() {
                     <td className="px-5 py-3">
                       <div className="flex gap-2">
                         <button onClick={() => openEdit(m)}
-                          className="text-xs text-[#2E7D32] hover:underline">편집</button>
+                          className="text-xs text-gray-500 hover:underline">편집</button>
                         <button onClick={() => handleDelete(m.id)}
                           className="text-xs text-red-500 hover:underline">삭제</button>
                       </div>

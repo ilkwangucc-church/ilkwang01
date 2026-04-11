@@ -333,7 +333,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {adminUser && (
           <div className="px-5 py-3 border-b border-gray-800 bg-gray-800/50">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-[#2E7D32]/30 rounded-full flex items-center justify-center text-[#6dbf73] font-bold text-sm shrink-0">
+              <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-gray-300 font-bold text-sm shrink-0">
                 {adminUser.displayName?.[0] || adminUser.username[0]}
               </div>
               <div className="min-w-0">
@@ -413,15 +413,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* 메인 컨텐츠 */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* 상단 헤더 */}
-        <header className="h-14 bg-white border-b flex items-center px-5 gap-4 shrink-0">
+        <header className="h-14 bg-white border-b flex items-center px-4 gap-3 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-gray-500 hover:text-gray-700"
+            className="lg:hidden text-gray-500 hover:text-gray-700 shrink-0"
           >
             <Menu className="w-5 h-5" />
           </button>
+          {/* 모바일 교회명 */}
+          <Link href="/" target="_blank" rel="noopener noreferrer" className="lg:hidden flex items-center gap-1.5">
+            <img src="/logo01.png" alt="일광교회" className="w-4 h-5 object-contain" />
+            <span className="font-noto-black text-gray-800" style={{ fontSize: 15 }}>일광교회</span>
+          </Link>
           <div className="flex-1" />
-          <Link href="/" target="_blank" className="text-sm text-gray-500 hover:text-[#2E7D32] transition-colors">
+          <Link href="/" target="_blank" className="text-xs sm:text-sm text-gray-400 hover:text-[#2E7D32] transition-colors shrink-0">
             사이트 보기 →
           </Link>
           {adminUser && (
@@ -430,7 +435,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={openProfile}
               className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <div className="w-8 h-8 bg-[#2E7D32] rounded-full flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
                 {adminUser.displayName?.[0] || adminUser.username[0]}
               </div>
               <span className="text-sm text-gray-700 hidden sm:block">{adminUser.displayName || adminUser.username}</span>
@@ -438,21 +443,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           )}
         </header>
 
-        {/* 대시보드 폰트 스케일링 — 최소 14px */}
-        <style>{`
-          .dc .text-xs,
-          .dc .text-\\[10px\\],
-          .dc .text-\\[11px\\],
-          .dc .text-\\[10px\\] { font-size:0.875rem !important; line-height:1.375rem !important }
-          .dc .text-sm { font-size:1rem !important; line-height:1.5rem !important }
-          .dc .text-base { font-size:1.0625rem !important; line-height:1.625rem !important }
-          .dc .text-lg { font-size:1.25rem !important; line-height:1.75rem !important }
-          .dc .text-xl { font-size:1.5rem !important; line-height:2rem !important }
-          .dc .text-2xl { font-size:1.875rem !important; line-height:2.375rem !important }
-          .dc table th, .dc table td { font-size:max(0.875rem, inherit) }
-        `}</style>
         {/* 페이지 컨텐츠 */}
-        <main className="dc flex-1 overflow-y-auto p-5 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6">
           {children}
         </main>
       </div>

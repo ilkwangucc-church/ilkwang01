@@ -114,7 +114,7 @@ export default function InstagramPage() {
   return (
     <div className="space-y-6">
       {/* 히어로 배너 */}
-      <div className="relative rounded-2xl overflow-hidden h-48">
+      <div className="relative rounded-2xl overflow-hidden min-h-[120px] sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=1400&q=80"
@@ -129,7 +129,7 @@ export default function InstagramPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">부서별 인스타그램</h1>
-              <p className="text-pink-200 text-sm">각 부서의 생생한 소식을 인스타그램에서 만나세요</p>
+              <p className="text-white/70 text-sm">각 부서의 생생한 소식을 인스타그램에서 만나세요</p>
             </div>
           </div>
           <div className="flex items-center gap-6 text-white/80 text-sm">
@@ -141,14 +141,14 @@ export default function InstagramPage() {
       </div>
 
       {/* 통계 3칸 */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {[
           { label: "부서 계정", value: String(accounts.length), sub: "개 운영 중" },
           { label: "총 팔로워", value: TOTAL_FOLLOWERS, sub: "명" },
           { label: "총 게시물", value: String(TOTAL_POSTS), sub: "개" },
         ].map((s, i) => (
           <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+            <p className="text-2xl font-bold text-gray-900">
               {s.value}
             </p>
             <p className="text-xs text-gray-500 mt-0.5">{s.label} {s.sub}</p>
@@ -171,7 +171,7 @@ export default function InstagramPage() {
 
             {/* API 연동 뱃지 */}
             {account.isActive && (
-              <div className="absolute top-2 right-2 z-20 flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <div className="absolute top-2 right-2 z-20 flex items-center gap-1 bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                 <CheckCircle2 className="w-3 h-3" /> API 연동
               </div>
             )}
@@ -196,14 +196,14 @@ export default function InstagramPage() {
                   <Camera className="w-6 h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-gray-900 group-hover:text-purple-600 transition-colors">{account.dept}</p>
+                  <p className="font-bold text-gray-900 group-hover:text-gray-700 transition-colors">{account.dept}</p>
                   <p className="text-xs text-gray-400">{account.handle}</p>
                 </div>
                 <a
                   href={account.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative z-20 text-gray-300 hover:text-purple-500 transition-colors shrink-0"
+                  className="relative z-20 text-gray-300 hover:text-gray-600 transition-colors shrink-0"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -214,11 +214,11 @@ export default function InstagramPage() {
 
               <div className="flex items-center gap-4 text-xs text-gray-500 border-t border-gray-50 pt-3">
                 <span className="flex items-center gap-1">
-                  <Heart className="w-3 h-3 text-rose-400" />
+                  <Heart className="w-3 h-3 text-gray-400" />
                   <strong className="text-gray-800">{account.followers}</strong> 팔로워
                 </span>
                 <span className="flex items-center gap-1">
-                  <MessageCircle className="w-3 h-3 text-blue-400" />
+                  <MessageCircle className="w-3 h-3 text-gray-400" />
                   <strong className="text-gray-800">{account.posts}</strong> 게시물
                 </span>
               </div>
@@ -241,7 +241,7 @@ export default function InstagramPage() {
           </div>
           <Link
             href="/dashboard/counseling"
-            className="shrink-0 px-5 py-2.5 bg-white text-purple-600 rounded-xl font-bold text-sm hover:bg-purple-50 transition-colors"
+            className="shrink-0 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors"
           >
             관리자에게 문의하기 →
           </Link>

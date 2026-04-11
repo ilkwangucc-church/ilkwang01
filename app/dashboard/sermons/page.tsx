@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Play, Pencil, X, Video, Send, Trash2, ChevronDown, ChevronRight } from "lucide-react";
+import { Play, Pencil, X, Send, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 
 interface SermonVideo {
   id:          string;
@@ -220,13 +220,14 @@ export default function SermonsPage() {
             className="shrink-0 bg-black relative"
             style={{ width: videoRowH * (16 / 9) }}
           >
+            {/* 항시 표시되는 교회 썸네일 */}
             <img
-              src="/ilkwang01.png"
+              src="/ilkwang02.png"
               alt="일광교회"
               className="absolute inset-0 w-full h-full object-cover"
             />
 
-            {activeVideo ? (
+            {activeVideo && (
               <>
                 <img
                   src={activeVideo.thumbnail}
@@ -243,11 +244,6 @@ export default function SermonsPage() {
                   title={activeVideo.title}
                 />
               </>
-            ) : (
-              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2 select-none">
-                <Video className="w-10 h-10 text-white/30" />
-                <p className="text-white/50 text-xs">왼쪽에서 설교를 선택하세요</p>
-              </div>
             )}
           </div>
 

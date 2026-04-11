@@ -149,7 +149,7 @@ export default function GalleryAdminPage() {
               <div className="p-3">
                 <p className="font-medium text-sm text-gray-900 truncate">{img.title}</p>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-[#2E7D32] bg-[#E8F5E9] px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
                     {img.category}
                   </span>
                   <span className="text-xs text-gray-400">{img.date}</span>

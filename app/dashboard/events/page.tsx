@@ -9,7 +9,7 @@ const EVENTS = [
     id: 1,
     title: "부활절 연합예배",
     category: "예배",
-    categoryColor: "bg-blue-100 text-blue-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-04-10",
     dateDisplay: "4월 10일 (목)",
     time: "오전 11:00",
@@ -24,7 +24,7 @@ const EVENTS = [
     id: 2,
     title: "봄 부흥성회",
     category: "특별집회",
-    categoryColor: "bg-amber-100 text-amber-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-04-20",
     dateDisplay: "4월 20일 ~ 23일",
     time: "저녁 7:30",
@@ -39,7 +39,7 @@ const EVENTS = [
     id: 3,
     title: "청년부 수련회",
     category: "청년부",
-    categoryColor: "bg-purple-100 text-purple-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-04-15",
     dateDisplay: "4월 15일 (화) 마감",
     time: "등록 마감",
@@ -54,7 +54,7 @@ const EVENTS = [
     id: 4,
     title: "소그룹 리더 훈련",
     category: "교육",
-    categoryColor: "bg-green-100 text-green-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-04-25",
     dateDisplay: "4월 25일 (토)",
     time: "오전 10:00",
@@ -69,7 +69,7 @@ const EVENTS = [
     id: 5,
     title: "어머니 기도회",
     category: "기도",
-    categoryColor: "bg-rose-100 text-rose-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-05-02",
     dateDisplay: "5월 2일 (토)",
     time: "오전 10:00",
@@ -84,7 +84,7 @@ const EVENTS = [
     id: 6,
     title: "어린이 성경학교",
     category: "교육",
-    categoryColor: "bg-green-100 text-green-700",
+    categoryColor: "bg-gray-100 text-gray-600",
     date: "2026-08-01",
     dateDisplay: "8월 예정",
     time: "오전 10:00 ~ 오후 4:00",
@@ -113,7 +113,7 @@ export default function EventsPage() {
   return (
     <div className="space-y-6">
       {/* 히어로 배너 */}
-      <div className="relative rounded-2xl overflow-hidden h-48">
+      <div className="relative rounded-2xl overflow-hidden min-h-[120px] sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1548407260-da850faa41e3?auto=format&fit=crop&w=1400&q=80"
@@ -126,7 +126,7 @@ export default function EventsPage() {
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
               <CalendarDays className="w-6 h-6" /> 행사안내
             </h1>
-            <p className="text-green-200 text-sm mt-0.5">일광교회 2026년 상반기 행사 일정</p>
+            <p className="text-white/70 text-sm mt-0.5">일광교회 2026년 상반기 행사 일정</p>
             <p className="text-white/80 text-xs mt-2">
               다가오는 교회 행사와 일정을 확인하고 미리 준비하세요
             </p>
@@ -141,7 +141,7 @@ export default function EventsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {STATS.map((s, i) => (
           <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-2xl font-bold text-[#2E7D32]">
+            <p className="text-2xl font-bold text-gray-900">
               {s.value}<span className="text-sm font-normal text-gray-500 ml-0.5">{s.unit}</span>
             </p>
             <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
@@ -152,7 +152,7 @@ export default function EventsPage() {
       {/* 주요 행사 — 2열 큰 카드 */}
       <div>
         <h2 className="text-lg font-bold text-gray-900 mb-3">주요 행사</h2>
-        <div className="grid lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
           {featured.map(event => (
             <div key={event.id} className="relative rounded-2xl overflow-hidden h-60 cursor-pointer group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -233,7 +233,7 @@ export default function EventsPage() {
                   </span>
                   <span className="text-xs text-gray-400 ml-auto">{event.dateDisplay}</span>
                 </div>
-                <h3 className="font-bold text-gray-900 group-hover:text-[#2E7D32] transition-colors mb-1.5 leading-snug">
+                <h3 className="font-bold text-gray-900 group-hover:text-gray-700 transition-colors mb-1.5 leading-snug">
                   {event.title}
                 </h3>
                 <p className="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed">{event.desc}</p>
@@ -243,7 +243,7 @@ export default function EventsPage() {
                   {event.participants > 0 && (
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" />{event.participants}명</span>
                   )}
-                  <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#2E7D32] ml-auto transition-colors" />
+                  <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 ml-auto transition-colors" />
                 </div>
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function EventsPage() {
       </div>
 
       {/* 하단 CTA */}
-      <div className="relative rounded-2xl overflow-hidden h-32">
+      <div className="relative rounded-2xl overflow-hidden min-h-[120px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=80"
@@ -260,13 +260,13 @@ export default function EventsPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-[#1B5E20]/80" />
-        <div className="relative z-10 p-6 flex items-center justify-between h-full">
+        <div className="relative z-10 p-5 sm:p-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-green-200 text-sm font-semibold mb-1">📣 행사 문의</p>
+            <p className="text-white/80 text-sm font-semibold mb-1">📣 행사 문의</p>
             <h3 className="text-white text-lg font-bold">행사 참가 신청이나 문의가 있으신가요?</h3>
-            <p className="text-green-100 text-sm">담당 부서 또는 교회 사무실로 연락해 주세요</p>
+            <p className="text-white/70 text-sm">담당 부서 또는 교회 사무실로 연락해 주세요</p>
           </div>
-          <button className="shrink-0 px-5 py-2.5 bg-white text-[#2E7D32] rounded-xl font-bold text-sm hover:bg-green-50 transition-colors">
+          <button className="shrink-0 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
             상담 신청하기
           </button>
         </div>

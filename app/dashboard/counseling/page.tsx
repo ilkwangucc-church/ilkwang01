@@ -47,13 +47,13 @@ export default function CounselingPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <HeartHandshake className="w-6 h-6 text-[#2E7D32]" /> 상담신청
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 상담신청
           </h1>
         </div>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center max-w-lg mx-auto">
-          <div className="w-20 h-20 bg-[#E8F5E9] rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-10 h-10 text-[#2E7D32]" />
+          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-10 h-10 text-gray-600" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">상담 신청이 접수되었습니다</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-6">
@@ -77,14 +77,14 @@ export default function CounselingPage() {
     <div className="space-y-6">
       {/* 헤더 */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <HeartHandshake className="w-6 h-6 text-[#2E7D32]" /> 상담신청
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 상담신청
         </h1>
         <p className="text-gray-500 text-sm mt-0.5">모든 상담 내용은 담당 교역자만 확인합니다</p>
       </div>
 
       {/* 히어로 배너 */}
-      <div className="relative rounded-2xl overflow-hidden h-40">
+      <div className="relative rounded-2xl overflow-hidden min-h-[100px] sm:h-40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1400&q=80"
@@ -93,20 +93,20 @@ export default function CounselingPage() {
         />
         <div className="absolute inset-0 bg-[#2E7D32]/80" />
         <div className="relative z-10 p-6 h-full flex flex-col justify-center">
-          <p className="text-green-200 text-sm font-semibold mb-1">💚 비밀 보장 상담</p>
+          <p className="text-white/80 text-sm font-semibold mb-1">💚 비밀 보장 상담</p>
           <h2 className="text-xl font-bold text-white mb-1">마음을 터놓고 이야기하세요</h2>
-          <p className="text-green-100 text-sm">혼자 감당하기 어려운 짐을 함께 나눕니다. 어떤 이야기든 환영합니다.</p>
+          <p className="text-white/70 text-sm">혼자 감당하기 어려운 짐을 함께 나눕니다. 어떤 이야기든 환영합니다.</p>
         </div>
       </div>
 
       {/* 2-컬럼 레이아웃 */}
-      <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-5 sm:gap-6 items-start">
         {/* 왼쪽 — 신청 폼 */}
         <div className="space-y-5">
           {/* 안내 배너 */}
-          <div className="bg-[#E8F5E9] rounded-xl p-4 flex items-start gap-3 border border-[#C8E6C9]">
-            <Lock className="w-4 h-4 text-[#2E7D32] mt-0.5 shrink-0" />
-            <p className="text-sm text-[#2E7D32] leading-relaxed">
+          <div className="bg-gray-100 rounded-xl p-4 flex items-start gap-3 border border-gray-200">
+            <Lock className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+            <p className="text-sm text-gray-700 leading-relaxed">
               상담 내용은 철저히 비밀이 보장됩니다. 담당 교역자 외에는 어떤 내용도 공개되지 않습니다.
             </p>
           </div>
@@ -117,7 +117,7 @@ export default function CounselingPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">상담 유형</label>
               <select
                 name="category" value={form.category} onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-400/30"
               >
                 {CATEGORIES.map(c => <option key={c.value}>{c.value}</option>)}
               </select>
@@ -145,7 +145,7 @@ export default function CounselingPage() {
                   <input
                     type="text" name="name" value={form.name} onChange={handleChange} required={!form.anonymous}
                     placeholder="이름"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-400/30"
                   />
                 </div>
                 <div>
@@ -153,7 +153,7 @@ export default function CounselingPage() {
                   <input
                     type="tel" name="phone" value={form.phone} onChange={handleChange}
                     placeholder="010-0000-0000"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-400/30"
                   />
                 </div>
               </div>
@@ -168,7 +168,7 @@ export default function CounselingPage() {
                 name="content" value={form.content} onChange={handleChange} required
                 rows={7}
                 placeholder="상담하고 싶은 내용을 자유롭게 작성해 주세요. 어떤 상황인지, 어떤 도움이 필요한지 구체적으로 적어주시면 더 잘 도울 수 있습니다. 모든 내용은 담당 교역자만 확인합니다."
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 resize-none"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-400/30 resize-none"
               />
             </div>
 
@@ -191,8 +191,8 @@ export default function CounselingPage() {
                 const Icon = info.icon;
                 return (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-9 h-9 bg-[#E8F5E9] rounded-lg flex items-center justify-center shrink-0">
-                      <Icon className="w-4 h-4 text-[#2E7D32]" />
+                    <div className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-gray-500" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-0.5">{info.label}</p>
@@ -219,12 +219,12 @@ export default function CounselingPage() {
           </div>
 
           {/* 성경 말씀 */}
-          <div className="bg-[#E8F5E9] rounded-2xl p-5 border border-[#C8E6C9]">
-            <p className="text-xs font-semibold text-[#2E7D32] mb-2">📖 위로의 말씀</p>
+          <div className="bg-gray-100 rounded-2xl p-5 border border-gray-200">
+            <p className="text-xs font-semibold text-gray-600 mb-2">📖 위로의 말씀</p>
             <p className="text-sm font-medium text-gray-800 leading-relaxed">
               "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라"
             </p>
-            <p className="text-xs text-[#2E7D32] mt-2">마태복음 11:28</p>
+            <p className="text-xs text-gray-500 mt-2">마태복음 11:28</p>
           </div>
         </div>
       </div>
