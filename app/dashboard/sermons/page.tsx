@@ -29,6 +29,7 @@ export default function SermonsPage() {
 
   /* ─ 설교 노트 ─ */
   const [notes, setNotes] = useState("");
+  const [shouldAutoplay, setShouldAutoplay] = useState(false);
 
   /* ─ 나눔 ─ */
   const [sharings,    setSharings]    = useState<SermonSharing[]>([]);
@@ -67,7 +68,7 @@ export default function SermonsPage() {
         if (arr.length > 0) {
           const latestYear = arr[0].year;
           setExpandedYears({ [latestYear]: true });
-          setActiveVideo(arr[0]);
+          // 자동재생 없음 — 사용자가 직접 선택해야 재생
         }
       })
       .catch(() => {})
@@ -165,7 +166,7 @@ export default function SermonsPage() {
                 {expandedYears[year] && yearGroups[year].map((v) => (
                   <button
                     key={v.id}
-                    onClick={() => setActiveVideo(v)}
+                    onClick={() => { setActiveVideo(v); setShouldAutoplay(true); }}
                     className={`w-full flex items-start gap-2 px-3 py-2 text-left transition-colors border-b border-gray-50 ${
                       activeVideo?.id === v.id
                         ? "bg-blue-50 text-blue-700 font-semibold"
@@ -235,7 +236,7 @@ export default function SermonsPage() {
                 />
                 <iframe
                   key={activeVideo.id}
-                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
+                  src={`https://www.youtube.com/embed/${activeVideo.id}?rel=0${shouldAutoplay ? "&autoplay=1" : ""}`}
                   className="absolute inset-0 w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -265,7 +266,7 @@ export default function SermonsPage() {
                   <button
                     key={v.id}
                     data-id={v.id}
-                    onClick={() => setActiveVideo(v)}
+                    onClick={() => { setActiveVideo(v); setShouldAutoplay(true); }}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
                       isActive ? "bg-blue-700" : "hover:bg-white/10"
                     }`}

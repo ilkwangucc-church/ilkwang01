@@ -59,9 +59,22 @@ function guessYear(publishedAt: string): number {
   // "N년 전"
   const yearsAgo = publishedAt.match(/(\d+)\s*년\s*전/);
   if (yearsAgo) return now.getFullYear() - parseInt(yearsAgo[1]);
-  // "N개월 전", "N주 전", "N일 전", "N시간 전" → 올해
-  if (/개월|주|일|시간|분/.test(publishedAt)) return now.getFullYear();
-  return now.getFullYear(); // 기본값
+  // "N개월 전" — 실제 날짜 역산 (예: 4개월 전 → 12월 → 작년)
+  const monthsAgo = publishedAt.match(/(\d+)\s*개월\s*전/);
+  if (monthsAgo) {
+    const d = new Date(now);
+    d.setMonth(d.getMonth() - parseInt(monthsAgo[1]));
+    return d.getFullYear();
+  }
+  // "N주 전" — 실제 날짜 역산
+  const weeksAgo = publishedAt.match(/(\d+)\s*주\s*전/);
+  if (weeksAgo) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - parseInt(weeksAgo[1]) * 7);
+    return d.getFullYear();
+  }
+  // "N일 전", "N시간 전", "N분 전" → 올해
+  return now.getFullYear();
 }
 
 /* ─── 영상 파싱 ─── */
@@ -70,6 +83,7 @@ interface RawVideo {
 }
 function parseVideos(data: Record<string, unknown>): { videos: RawVideo[]; continuation: string | null } {
   const videos: RawVideo[] = [];
+  const seenIds = new Set<string>(); // 페이지 내 중복 방지
   let continuation: string | null = null;
 
   function walk(node: unknown): void {
@@ -90,7 +104,8 @@ function parseVideos(data: Record<string, unknown>): { videos: RawVideo[]; conti
         (obj.lengthText as { simpleText?: string })?.simpleText ??
         (obj.thumbnailOverlayTimeStatusRenderer as Record<string, unknown> | undefined)?.text?.toString() ?? "";
 
-      if (title) {
+      if (title && !seenIds.has(obj.videoId)) {
+        seenIds.add(obj.videoId);
         videos.push({
           id:           obj.videoId,
           title,
@@ -144,6 +159,7 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
   console.log(`[ilkwang-sermons] 채널 ID: ${channelId}`);
 
   const all: RawVideo[] = [];
+  const allSeenIds = new Set<string>(); // 페이지 간 중복 방지
   let cont: string | null = null;
   const MAX_PAGES = 60;
   const STOP_YEAR = 2024;
@@ -160,6 +176,8 @@ async function fetchAllSermons(): Promise<SermonVideo[]> {
     let stop = false;
 
     for (const v of videos) {
+      if (allSeenIds.has(v.id)) continue; // 페이지 간 중복 제거
+      allSeenIds.add(v.id);
       const year = guessYear(v.publishedAt);
       if (year < STOP_YEAR) { stop = true; break; }
       all.push(v);
