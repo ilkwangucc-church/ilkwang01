@@ -366,17 +366,7 @@ export default function BiblePage() {
                   title={activeVideo.title}
                 />
               </>
-            ) : (
-              /* 영상 미선택 — 반투명 오버레이 + 안내 텍스트 */
-              <div className="absolute inset-0 bg-black/45 flex flex-col items-center justify-center gap-2 select-none">
-                <p className="text-white/90 text-lg font-bold drop-shadow">{selectedBook}</p>
-                <p className="text-white/60 text-xs drop-shadow">
-                  {selectedChapter
-                    ? `${selectedChapter}장 영상 없음`
-                    : "오른쪽 목록에서 장을 선택하세요"}
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
 
           {/* 재생목록: 260px 고정 */}
