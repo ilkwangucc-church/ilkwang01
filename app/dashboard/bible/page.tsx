@@ -213,7 +213,7 @@ export default function BiblePage() {
     <div className="flex-1 overflow-y-auto text-sm">
       {BIBLE.map(({ testament, color, bg, books }) => (
         <div key={testament}>
-          <div className={`px-3 py-1.5 sticky top-0 z-10 ${bg} border-b border-gray-100`}>
+          <div className={`px-[10px] py-1.5 sticky top-0 z-10 ${bg} border-b border-gray-100`}>
             <span className={`text-sm font-bold ${color}`}>{testament}</span>
           </div>
           {books.map((book) => {
@@ -224,7 +224,7 @@ export default function BiblePage() {
               <div key={book} className="border-b border-gray-50">
                 <button
                   onClick={() => handleBookClick(book)}
-                  className={`w-full flex items-center justify-between px-3 py-2 transition-colors ${
+                  className={`w-full flex items-center justify-between px-[10px] py-2 transition-colors ${
                     selectedBook === book
                       ? "bg-gray-100 text-gray-700 font-semibold"
                       : "text-gray-700 hover:bg-gray-50"
@@ -239,7 +239,7 @@ export default function BiblePage() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <div className="px-2 py-2 bg-gray-50 grid grid-cols-7 gap-1">
+                  <div className="px-[10px] py-2 bg-gray-50 grid grid-cols-7 gap-1">
                     {Array.from({ length: totalCh }, (_, i) => i + 1).map((ch) => {
                       const hasVideo = !!bvm[ch];
                       const isActive = selectedBook === book && selectedChapter === ch;
@@ -281,7 +281,7 @@ export default function BiblePage() {
             key={ch}
             data-ch={ch}
             onClick={() => handlePlaylistClick(ch)}
-            className={`w-full flex items-center gap-2 px-3 py-2.5 text-left transition-colors border-b ${
+            className={`w-full flex items-center gap-2 px-[10px] py-2.5 text-left transition-colors border-b ${
               dark
                 ? `border-white/[0.05] ${isActive ? "bg-gray-700" : video ? "hover:bg-white/10 cursor-pointer" : loadingVids ? "hover:bg-white/5 cursor-pointer" : "cursor-default opacity-35"}`
                 : `border-gray-100 ${isActive ? "bg-blue-50" : video ? "hover:bg-gray-50 cursor-pointer" : loadingVids ? "cursor-pointer" : "cursor-default opacity-40"}`
@@ -316,7 +316,7 @@ export default function BiblePage() {
   /* 나눔 패널 */
   const SharingPanel = () => (
     <div className="flex flex-col h-full bg-white">
-      <form onSubmit={submitSharing} className="px-4 py-3 border-b border-gray-100 shrink-0">
+      <form onSubmit={submitSharing} className="px-[10px] py-3 border-b border-gray-100 shrink-0">
         <p className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
           💬 말씀 나눔
           <span className="font-normal text-gray-400">
@@ -330,12 +330,12 @@ export default function BiblePage() {
             onChange={(e) => setSharingText(e.target.value)}
             placeholder="오늘 말씀에서 받은 은혜를 나눠주세요..."
             rows={2}
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
+            className="flex-1 text-sm border border-gray-200 rounded-lg px-[10px] py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400/30"
           />
           <button
             type="submit"
             disabled={submitting || !sharingText.trim()}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
+            className="px-[10px] py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
           >
             <Send className="w-3.5 h-3.5" />
             <span className="text-sm">{submitting ? "..." : "등록"}</span>
@@ -352,7 +352,7 @@ export default function BiblePage() {
         ) : (
           <div className="divide-y divide-gray-50">
             {sharings.map((s) => (
-              <div key={s.id} className="px-4 py-3 hover:bg-gray-50 group">
+              <div key={s.id} className="px-[10px] py-3 hover:bg-gray-50 group">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-semibold text-blue-600">{s.memberName}</span>
                   <div className="flex items-center gap-1.5">
@@ -377,7 +377,7 @@ export default function BiblePage() {
   /* 필사 노트 패널 */
   const NotePanel = () => (
     <div className="flex flex-col h-full bg-white">
-      <div className="px-4 py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
+      <div className="px-[10px] py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
         <div>
           <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
             <Pencil className="w-3.5 h-3.5 text-gray-500" /> 필사 노트
@@ -401,10 +401,10 @@ export default function BiblePage() {
           value={transcription}
           onChange={(e) => setTranscription(e.target.value)}
           placeholder={"말씀을 들으며 직접 타이핑해 보세요.\n\n예)\n태초에 하나님이\n천지를 창조하시니라\n(창 1:1)"}
-          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
+          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-[10px] py-3 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
         />
       </div>
-      <div className="px-4 py-2 border-t border-gray-100 shrink-0">
+      <div className="px-[10px] py-2 border-t border-gray-100 shrink-0">
         <p className="text-sm text-gray-400 text-right">{transcription.length.toLocaleString()}자</p>
       </div>
     </div>
@@ -419,7 +419,7 @@ export default function BiblePage() {
       <div className="lg:hidden -mx-[10px] -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
 
         {/* 헤더 */}
-        <div className="px-3 py-2 bg-white border-b border-gray-200 shrink-0 flex items-center justify-between gap-2">
+        <div className="px-[10px] py-2 bg-white border-b border-gray-200 shrink-0 flex items-center justify-between gap-2">
           <div className="min-w-0 flex-1">
             <h1 className="font-bold text-gray-900 text-sm flex items-center gap-1.5 truncate">
               {selectedBook}
@@ -508,7 +508,7 @@ export default function BiblePage() {
           {/* 재생목록 */}
           {mobileTab === "playlist" && (
             <div className="flex flex-col h-full">
-              <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 shrink-0">
+              <div className="px-[10px] py-2 bg-gray-50 border-b border-gray-200 shrink-0">
                 <p className="text-sm font-bold text-gray-700">{selectedBook} 재생목록</p>
                 <p className="text-sm text-gray-400">
                   {loadingVids ? "연결 중..." : `${bookVideoCount}개 영상 · 전체 ${CHAPTER_COUNTS[selectedBook] ?? 1}장`}
@@ -537,7 +537,7 @@ export default function BiblePage() {
 
         {/* LEFT — 성경 목록 + 장절 그리드 */}
         <aside className="w-56 bg-white border-r border-gray-200 flex flex-col overflow-hidden shrink-0">
-          <div className="px-3 py-2 border-b border-gray-100 shrink-0">
+          <div className="px-[10px] py-2 border-b border-gray-100 shrink-0">
             <p className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
               <BookText className="w-3.5 h-3.5" /> 성경 통독 (66권)
             </p>
@@ -548,7 +548,7 @@ export default function BiblePage() {
         {/* CENTER — 영상 + 재생목록 + 댓글 */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
           {/* 헤더 */}
-          <div className="px-4 py-2 bg-white border-b border-gray-200 flex items-center justify-between shrink-0 gap-2">
+          <div className="px-[10px] py-2 bg-white border-b border-gray-200 flex items-center justify-between shrink-0 gap-2">
             <div className="min-w-0">
               <h1 className="font-bold text-gray-900 text-sm flex items-center gap-1.5 truncate">
                 {selectedBook}
@@ -611,7 +611,7 @@ export default function BiblePage() {
 
             {/* 재생목록 260px */}
             <div className="w-[260px] shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
-              <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
+              <div className="px-[10px] py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
                 <p className="text-white text-sm font-bold truncate">{selectedBook} 재생목록</p>
                 <p className="text-gray-500 text-sm mt-0.5">
                   {loadingVids ? "연결 중..." : `${bookVideoCount}개 영상 · 전체 ${CHAPTER_COUNTS[selectedBook] ?? 1}장`}

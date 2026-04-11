@@ -32,7 +32,7 @@ interface SharingPanelProps {
 function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, sharings, loadingCmt, deleteSharing }: SharingPanelProps) {
   return (
     <div className="flex flex-col h-full bg-white">
-      <form onSubmit={submitSharing} className="px-4 py-3 border-b border-gray-100 shrink-0">
+      <form onSubmit={submitSharing} className="px-[10px] py-3 border-b border-gray-100 shrink-0">
         <p className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
           💬 설교 나눔
           <span className="font-normal text-gray-400">· {sharings.length}개</span>
@@ -44,12 +44,12 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
             onChange={(e) => setSharingText(e.target.value)}
             placeholder="설교 말씀에서 받은 은혜를 나눠주세요..."
             rows={2}
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30"
+            className="flex-1 text-sm border border-gray-200 rounded-lg px-[10px] py-2 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30"
           />
           <button
             type="submit"
             disabled={submitting || !sharingText.trim()}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
+            className="px-[10px] py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
           >
             <Send className="w-3.5 h-3.5" />
             <span className="text-sm">{submitting ? "..." : "등록"}</span>
@@ -66,7 +66,7 @@ function SharingPanel({ sharingText, setSharingText, submitting, submitSharing, 
         ) : (
           <div className="divide-y divide-gray-50">
             {sharings.map((s) => (
-              <div key={s.id} className="px-4 py-3 hover:bg-gray-50 group">
+              <div key={s.id} className="px-[10px] py-3 hover:bg-gray-50 group">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-semibold text-blue-600">{s.memberName}</span>
                   <div className="flex items-center gap-1.5">
@@ -96,7 +96,7 @@ interface NotePanelProps {
 function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
   return (
     <div className="flex flex-col h-full bg-white">
-      <div className="px-4 py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
+      <div className="px-[10px] py-2.5 border-b border-gray-100 shrink-0 flex items-center justify-between">
         <div>
           <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
             <Pencil className="w-3.5 h-3.5 text-gray-500" /> 설교 노트
@@ -120,10 +120,10 @@ function NotePanel({ notes, setNotes, activeVideo }: NotePanelProps) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={"설교 말씀을 기록하세요.\n\n예)\n- 본문:\n- 핵심 메시지:\n- 적용:"}
-          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
+          className="flex-1 min-h-0 w-full text-sm text-gray-800 leading-loose border border-gray-200 rounded-xl px-[10px] py-3 resize-none focus:outline-none focus:ring-2 focus:ring-gray-400/30 font-serif placeholder:text-sm placeholder:text-gray-400"
         />
       </div>
-      <div className="px-4 py-2 border-t border-gray-100 shrink-0">
+      <div className="px-[10px] py-2 border-t border-gray-100 shrink-0">
         <p className="text-sm text-gray-400 text-right">{notes.length.toLocaleString()}자</p>
       </div>
     </div>
@@ -295,7 +295,7 @@ export default function SermonsPage() {
       <div className="lg:hidden -mx-[10px] -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
 
         {/* 헤더 */}
-        <div className="px-3 py-2 bg-white border-b border-gray-200 shrink-0">
+        <div className="px-[10px] py-2 bg-white border-b border-gray-200 shrink-0">
           <h1 className="font-bold text-gray-900 text-sm truncate">
             {activeVideo ? activeVideo.title : "설교 보기"}
           </h1>
@@ -348,7 +348,7 @@ export default function SermonsPage() {
                   <div key={year}>
                     <button
                       onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
-                      className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 border-b border-gray-100 sticky top-0 z-10"
+                      className="w-full flex items-center justify-between px-[10px] py-3 bg-gray-100 border-b border-gray-100 sticky top-0 z-10"
                     >
                       <span className="text-sm font-bold text-gray-700">{year}년</span>
                       <div className="flex items-center gap-2">
@@ -362,7 +362,7 @@ export default function SermonsPage() {
                       <button
                         key={v.id}
                         onClick={() => selectVideo(v)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-gray-50 transition-colors active:bg-gray-100 ${
+                        className={`w-full flex items-center gap-3 px-[10px] py-3 text-left border-b border-gray-50 transition-colors active:bg-gray-100 ${
                           activeVideo?.id === v.id ? "bg-gray-100" : "hover:bg-gray-50"
                         }`}
                       >
@@ -420,22 +420,22 @@ export default function SermonsPage() {
 
         {/* LEFT — 연도별 설교 목록 */}
         <aside className="w-56 bg-white border-r border-gray-200 flex flex-col overflow-hidden shrink-0">
-          <div className="px-3 py-2 border-b border-gray-100 shrink-0">
+          <div className="px-[10px] py-2 border-b border-gray-100 shrink-0">
             <p className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
               <Play className="w-3.5 h-3.5" /> 설교 영상
             </p>
           </div>
           <div className="flex-1 overflow-y-auto text-sm">
             {loading ? (
-              <div className="px-3 py-4 text-center text-gray-400 text-sm">영상 불러오는 중...</div>
+              <div className="px-[10px] py-4 text-center text-gray-400 text-sm">영상 불러오는 중...</div>
             ) : years.length === 0 ? (
-              <div className="px-3 py-4 text-center text-gray-400 text-sm">영상이 없습니다</div>
+              <div className="px-[10px] py-4 text-center text-gray-400 text-sm">영상이 없습니다</div>
             ) : (
               years.map((year) => (
                 <div key={year}>
                   <button
                     onClick={() => setExpandedYears((p) => ({ ...p, [year]: !p[year] }))}
-                    className="w-full flex items-center justify-between px-3 py-1.5 bg-gray-100 border-b border-gray-100 hover:bg-gray-200 sticky top-0 z-10"
+                    className="w-full flex items-center justify-between px-[10px] py-1.5 bg-gray-100 border-b border-gray-100 hover:bg-gray-200 sticky top-0 z-10"
                   >
                     <span className="text-sm font-bold text-gray-700">{year}년</span>
                     <div className="flex items-center gap-1">
@@ -449,7 +449,7 @@ export default function SermonsPage() {
                     <button
                       key={v.id}
                       onClick={() => selectVideo(v)}
-                      className={`w-full flex items-start gap-2 px-3 py-2 text-left transition-colors border-b border-gray-50 ${
+                      className={`w-full flex items-start gap-2 px-[10px] py-2 text-left transition-colors border-b border-gray-50 ${
                         activeVideo?.id === v.id
                           ? "bg-gray-100 text-gray-700 font-semibold"
                           : "text-gray-700 hover:bg-gray-50"
@@ -473,7 +473,7 @@ export default function SermonsPage() {
         {/* CENTER — 영상 + 재생목록 + 나눔 */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
           {/* 헤더 */}
-          <div className="px-4 py-2 bg-white border-b border-gray-200 flex items-center gap-2 shrink-0">
+          <div className="px-[10px] py-2 bg-white border-b border-gray-200 flex items-center gap-2 shrink-0">
             <div className="min-w-0 flex-1">
               <h1 className="font-bold text-gray-900 text-sm truncate">
                 {activeVideo ? activeVideo.title : "설교 보기"}
@@ -494,7 +494,7 @@ export default function SermonsPage() {
 
             {/* 재생목록 260px */}
             <div className="w-[260px] shrink-0 bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden">
-              <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
+              <div className="px-[10px] py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
                 <p className="text-white text-sm font-bold">설교 재생목록</p>
                 <p className="text-gray-500 text-sm mt-0.5">
                   {loading ? "연결 중..." : `전체 ${sermons.length}편`}
@@ -508,7 +508,7 @@ export default function SermonsPage() {
                       key={v.id}
                       data-id={v.id}
                       onClick={() => selectVideo(v)}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-white/[0.05] ${
+                      className={`w-full flex items-center gap-2 px-[10px] py-2 text-left transition-colors border-b border-white/[0.05] ${
                         isActive ? "bg-gray-700" : "hover:bg-white/10"
                       }`}
                     >
