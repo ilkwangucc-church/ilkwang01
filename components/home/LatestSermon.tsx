@@ -23,7 +23,7 @@ export default async function LatestSermon() {
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
-          <div className="flex-1 px-5 sm:pl-6 sm:pr-8 py-6 sm:py-8 flex flex-col justify-center">
+          <div className="flex-1 px-5 sm:pl-6 sm:pr-8 py-6 sm:py-8 flex flex-col justify-center items-center sm:items-start text-center sm:text-left">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
               최신 설교 · 소리 없이 재생 중
             </p>
@@ -34,7 +34,7 @@ export default async function LatestSermon() {
               매주 일요일 오전 9:30 · 11:00<br />
               일광교회 유튜브 채널에서 생중계됩니다
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
               <a
                 href={ytWatch(latest.id)}
                 target="_blank"

@@ -9,11 +9,11 @@ export default function AboutSection() {
     >
       <div className="absolute inset-0 bg-[#1a2744]/85" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-[10px] sm:px-6">
         <div className="grid md:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Left: Pastor Photo */}
           <div className="relative">
-            <div className="rounded-2xl overflow-hidden shadow-2xl max-w-xs sm:max-w-md mx-auto">
+            <div className="rounded-2xl overflow-hidden shadow-2xl w-full sm:max-w-md sm:mx-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://images.unsplash.com/photo-1676286853148-ec365527c872?w=800&auto=format&fit=crop&q=80"

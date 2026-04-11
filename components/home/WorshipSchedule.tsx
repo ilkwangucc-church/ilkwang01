@@ -36,10 +36,10 @@ export default function WorshipSchedule() {
             </Link>
           </div>
 
-          {/* Right: Service Grid — 2열 → xl에서 3열 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
+          {/* Right: Service Grid — 2열(모바일 포함) → xl에서 3열 */}
+          <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
             {services.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex flex-col gap-3 bg-white rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div key={title} className="flex flex-col gap-3 bg-white rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 rounded-xl border-2 border-[#1a2744]/10 bg-[#F8FAF8] flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#1a2744]" />
                 </div>
