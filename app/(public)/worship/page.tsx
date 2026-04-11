@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { WORSHIP_NAV } from "@/components/ui/StickySubNav";
 import LatestSermonsSection from "@/components/worship/LatestSermonsSection";
+import { Sun, Leaf, Sunrise, BookOpen, Users } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "예배/말씀",
@@ -10,12 +11,12 @@ export const metadata: Metadata = {
 };
 
 const services = [
-  { name: "주일 1부 예배", time: "주일 오전 9:30", place: "본당", icon: "☀️", desc: "온 가족이 함께 드리는 아침 예배입니다." },
-  { name: "주일 2부 예배", time: "주일 오전 11:00", place: "본당", icon: "🌿", desc: "일광교회의 주 예배입니다. 모든 성도가 함께 합니다." },
-  { name: "주일 3부 예배", time: "주일 오후 1:30", place: "본당", icon: "🌞", desc: "청년 및 오후 성도를 위한 예배입니다." },
-  { name: "새벽기도회", time: "매일 오전 5:00", place: "본당", icon: "🌅", desc: "이른 아침 하나님 앞에 나아가는 기도회입니다." },
-  { name: "수요오전기도회", time: "수요일 오전 10:30", place: "본당", icon: "🙏", desc: "중보기도와 함께하는 오전 기도회입니다." },
-  { name: "수요성경공부", time: "수요일 오후 8:00", place: "본당", icon: "📖", desc: "말씀을 깊이 공부하는 성경공부입니다." },
+  { name: "주일 1부 예배",   time: "주일 오전 9:30",    place: "본당", Icon: Sun,      desc: "온 가족이 함께 드리는 아침 예배입니다." },
+  { name: "주일 2부 예배",   time: "주일 오전 11:00",   place: "본당", Icon: Leaf,     desc: "일광교회의 주 예배입니다. 모든 성도가 함께 합니다." },
+  { name: "주일 3부 예배",   time: "주일 오후 1:30",    place: "본당", Icon: Sun,      desc: "청년 및 오후 성도를 위한 예배입니다." },
+  { name: "새벽기도회",      time: "매일 오전 5:00",    place: "본당", Icon: Sunrise,  desc: "이른 아침 하나님 앞에 나아가는 기도회입니다." },
+  { name: "수요오전기도회",  time: "수요일 오전 10:30", place: "본당", Icon: Users,    desc: "중보기도와 함께하는 오전 기도회입니다." },
+  { name: "수요성경공부",    time: "수요일 오후 8:00",  place: "본당", Icon: BookOpen, desc: "말씀을 깊이 공부하는 성경공부입니다." },
 ];
 
 
@@ -33,10 +34,12 @@ export default function WorshipPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {services.map((s) => (
               <div key={s.name} className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all text-center">
-                <div className="text-3xl sm:text-4xl mb-3">{s.icon}</div>
+                <div className="flex justify-center mb-3">
+                  <s.Icon className="w-9 h-9 sm:w-10 sm:h-10 text-[#2E7D32]" strokeWidth={1.5} />
+                </div>
                 <h3 className="font-nanum-extrabold text-gray-800 text-base sm:text-lg mb-1 break-keep">{s.name}</h3>
                 <p className="text-[#2E7D32] font-nanum-extrabold text-lg sm:text-xl mb-1">{s.time}</p>
-                <p className="text-gray-400 text-xs mb-3">📍 {s.place}</p>
+                <p className="text-gray-400 text-xs mb-3">{s.place}</p>
                 <p className="text-gray-600 text-sm leading-relaxed break-keep">{s.desc}</p>
               </div>
             ))}

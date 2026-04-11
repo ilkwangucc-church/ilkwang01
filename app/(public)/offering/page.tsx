@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import { DollarSign, Heart, Building2, Globe, Users, BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "온라인헌금",
@@ -8,17 +9,17 @@ export const metadata: Metadata = {
 
 const accounts = [
   { bank: "국민은행", number: "000-00-0000-000", name: "일광교회", purpose: "십일조/감사헌금" },
-  { bank: "신한은행", number: "000-000-000000", name: "일광교회", purpose: "건축헌금" },
+  { bank: "신한은행", number: "000-000-000000",  name: "일광교회", purpose: "건축헌금" },
   { bank: "우리은행", number: "000-000000-00-000", name: "일광교회", purpose: "선교헌금" },
 ];
 
 const offeringTypes = [
-  { name: "십일조", desc: "수입의 십분의 일을 하나님께 드리는 헌금입니다.", icon: "🔟" },
-  { name: "감사헌금", desc: "하나님의 은혜에 감사하여 드리는 헌금입니다.", icon: "🙏" },
-  { name: "건축헌금", desc: "성전 건축을 위해 드리는 헌금입니다.", icon: "⛪" },
-  { name: "선교헌금", desc: "국내외 선교 사역을 위한 헌금입니다.", icon: "🌍" },
-  { name: "구제헌금", desc: "어려운 이웃을 돕기 위한 헌금입니다.", icon: "❤️" },
-  { name: "교육헌금", desc: "다음세대 교육을 위한 헌금입니다.", icon: "📚" },
+  { name: "십일조",   desc: "수입의 십분의 일을 하나님께 드리는 헌금입니다.", Icon: DollarSign },
+  { name: "감사헌금", desc: "하나님의 은혜에 감사하여 드리는 헌금입니다.",    Icon: Heart },
+  { name: "건축헌금", desc: "성전 건축을 위해 드리는 헌금입니다.",            Icon: Building2 },
+  { name: "선교헌금", desc: "국내외 선교 사역을 위한 헌금입니다.",            Icon: Globe },
+  { name: "구제헌금", desc: "어려운 이웃을 돕기 위한 헌금입니다.",            Icon: Users },
+  { name: "교육헌금", desc: "다음세대 교육을 위한 헌금입니다.",               Icon: BookOpen },
 ];
 
 export default function OfferingPage() {
@@ -29,7 +30,6 @@ export default function OfferingPage() {
       <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
         {/* 안내 말씀 */}
         <div className="bg-[#E8F5E9] rounded-2xl p-5 sm:p-8 mb-8 sm:mb-12 text-center">
-          <p className="text-4xl mb-4">🙏</p>
           <blockquote className="font-nanum-extrabold text-base sm:text-xl text-gray-800 mb-2 break-keep">
             "각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라"
           </blockquote>
@@ -63,7 +63,9 @@ export default function OfferingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {offeringTypes.map((t) => (
               <div key={t.name} className="bg-white rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-[#A5D6A7] transition-colors text-center">
-                <div className="text-3xl mb-2">{t.icon}</div>
+                <div className="flex justify-center mb-2">
+                  <t.Icon className="w-8 h-8 text-[#2E7D32]" strokeWidth={1.5} />
+                </div>
                 <h3 className="font-nanum-extrabold text-gray-800 mb-1 text-sm sm:text-base">{t.name}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed break-keep">{t.desc}</p>
               </div>
@@ -73,7 +75,7 @@ export default function OfferingPage() {
 
         {/* 안내사항 */}
         <section className="bg-[#FFFDE7] rounded-2xl p-5 sm:p-6">
-          <h3 className="font-nanum-extrabold text-base sm:text-lg text-gray-800 mb-4">📌 헌금 이체 안내</h3>
+          <h3 className="font-nanum-extrabold text-base sm:text-lg text-gray-800 mb-4">헌금 이체 안내</h3>
           <ul className="space-y-2 text-sm text-gray-700">
             <li className="break-keep">• 이체 시 <strong>성함과 헌금 종류</strong>를 메모란에 입력해 주세요. (예: 홍길동 십일조)</li>
             <li>• 헌금 영수증이 필요하신 분은 교회 사무실에 문의해 주세요.</li>

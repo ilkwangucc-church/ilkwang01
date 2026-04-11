@@ -35,18 +35,18 @@ export default function TeensPage() {
             <div className="bg-indigo-50 rounded-2xl p-5 sm:p-7">
               <h3 className="font-bold text-indigo-800 mb-3 sm:mb-4 text-base sm:text-lg">주일 예배</h3>
               <ul className="text-sm text-gray-700 space-y-2">
-                <li>🗓 매 주일 오전 11:00</li>
-                <li>📍 교육관 대강당</li>
-                <li>📖 말씀 중심 강해 설교</li>
-                <li>🎵 청소년 찬양팀 인도</li>
+                <li>매 주일 오전 11:00</li>
+                <li>교육관 대강당</li>
+                <li>말씀 중심 강해 설교</li>
+                <li>청소년 찬양팀 인도</li>
               </ul>
             </div>
             <div className="bg-blue-50 rounded-2xl p-5 sm:p-7">
               <h3 className="font-bold text-blue-800 mb-3 sm:mb-4 text-base sm:text-lg">주중 모임</h3>
               <ul className="text-sm text-gray-700 space-y-2">
-                <li className="break-keep">📅 금요 기도 모임 — 매주 금요일 오후 7:30</li>
-                <li className="break-keep">📅 소그룹 성경공부 — 격주 토요일 오후 2:00</li>
-                <li>📅 임원 모임 — 월 1회</li>
+                <li className="break-keep">금요 기도 모임 — 매주 금요일 오후 7:30</li>
+                <li className="break-keep">소그룹 성경공부 — 격주 토요일 오후 2:00</li>
+                <li>임원 모임 — 월 1회</li>
               </ul>
             </div>
           </div>
@@ -55,11 +55,11 @@ export default function TeensPage() {
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-center">연간 주요 프로그램</h2>
           <div className="space-y-3 max-w-3xl mx-auto">
             {[
-              { period: "3월", event: "신학기 환영 예배 및 신입생 OT" },
-              { period: "5월", event: "청소년 축제 (지역 청소년 초청 전도 행사)" },
+              { period: "3월",   event: "신학기 환영 예배 및 신입생 OT" },
+              { period: "5월",   event: "청소년 축제 (지역 청소년 초청 전도 행사)" },
               { period: "7~8월", event: "여름 수련회 (3박 4일)" },
-              { period: "10월", event: "가을 신앙 에세이 공모 & 시상" },
-              { period: "12월", event: "성탄절 특별 공연 및 후배 환영 예배" },
+              { period: "10월",  event: "가을 신앙 에세이 공모 & 시상" },
+              { period: "12월",  event: "성탄절 특별 공연 및 후배 환영 예배" },
             ].map((p) => (
               <div key={p.period} className="flex items-center gap-4 bg-gray-50 rounded-lg px-4 sm:px-5 py-3 min-h-[44px]">
                 <span className="shrink-0 text-indigo-600 font-bold text-sm w-12">{p.period}</span>

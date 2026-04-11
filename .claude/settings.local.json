@@ -18,7 +18,8 @@
       "Bash(head:*)",
       "Bash(identify:*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npx next build:*)"
     ]
   }
 }

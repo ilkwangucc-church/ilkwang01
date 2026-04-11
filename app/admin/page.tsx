@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import {
   Users, BookOpen, Bell, DollarSign, MessageSquare,
-  Award, Building2, Heart, Eye, ArrowRight
+  Award, Building2, Heart, Eye, ArrowRight,
+  ClipboardList, FileText, Monitor, Video
 } from "lucide-react";
 
 export const metadata: Metadata = { title: "관리자 대시보드 | 일광교회" };
@@ -15,14 +16,14 @@ const stats = [
 ];
 
 const quickMenus = [
-  { label: "회원 관리",       href: "/admin/members",        icon: "👥", desc: "7단계 등급 관리" },
-  { label: "교인 관리",       href: "/admin/church-members", icon: "📋", desc: "교적 명부" },
-  { label: "증명서 발급",     href: "/admin/certificates",   icon: "📜", desc: "등록·세례 증명" },
-  { label: "문의 접수함",     href: "/admin/contacts",       icon: "💬", desc: "홈페이지 문의" },
-  { label: "홈 화면 수정",    href: "/admin/hero",           icon: "🖥️", desc: "메인 배너 편집" },
-  { label: "섬기는 사람들",   href: "/admin/ministers",      icon: "🙏", desc: "교역자·봉사자" },
-  { label: "부서 소개 수정",  href: "/admin/departments",    icon: "🏢", desc: "부서별 소개" },
-  { label: "미디어 관리",     href: "/admin/media",          icon: "🎬", desc: "동영상·이미지" },
+  { label: "회원 관리",       href: "/admin/members",        Icon: Users,         desc: "7단계 등급 관리" },
+  { label: "교인 관리",       href: "/admin/church-members", Icon: ClipboardList, desc: "교적 명부" },
+  { label: "증명서 발급",     href: "/admin/certificates",   Icon: FileText,      desc: "등록·세례 증명" },
+  { label: "문의 접수함",     href: "/admin/contacts",       Icon: MessageSquare, desc: "홈페이지 문의" },
+  { label: "홈 화면 수정",    href: "/admin/hero",           Icon: Monitor,       desc: "메인 배너 편집" },
+  { label: "섬기는 사람들",   href: "/admin/ministers",      Icon: Heart,         desc: "교역자·봉사자" },
+  { label: "부서 소개 수정",  href: "/admin/departments",    Icon: Building2,     desc: "부서별 소개" },
+  { label: "미디어 관리",     href: "/admin/media",          Icon: Video,         desc: "동영상·이미지" },
 ];
 
 const recentNotices = [
@@ -76,7 +77,7 @@ export default function AdminDashboard() {
               href={q.href}
               className="flex flex-col items-center gap-2 bg-gray-50 hover:bg-[#E8F5E9] rounded-xl p-4 text-center transition-colors group"
             >
-              <span className="text-2xl">{q.icon}</span>
+              <q.Icon className="w-6 h-6 text-[#2E7D32] group-hover:text-[#1B5E20]" strokeWidth={1.5} />
               <span className="text-sm font-semibold text-gray-700 group-hover:text-[#2E7D32]">{q.label}</span>
               <span className="text-xs text-gray-400">{q.desc}</span>
             </Link>

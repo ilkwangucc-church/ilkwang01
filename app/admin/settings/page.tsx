@@ -2,6 +2,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = { title: "사이트 설정 | 관리자" };
 
+const SITE_URL = "https://ilkwang.org";
+
 export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-2xl">
@@ -38,7 +40,7 @@ export default function SettingsPage() {
           {[
             { label: "관리자 이메일", value: "admin@ilkwang.or.kr" },
             { label: "사이트 이름", value: "일광교회" },
-            { label: "사이트 URL", value: "https://ilkwang01.vercel.app" },
+            { label: "사이트 URL", value: SITE_URL },
           ].map((f) => (
             <div key={f.label}>
               <label className="block text-xs text-gray-500 mb-1">{f.label}</label>
@@ -60,7 +62,7 @@ export default function SettingsPage() {
 BREVO_API_KEY=xkeysib-xxx...
 BREVO_FROM_EMAIL=noreply@ilkwang.or.kr
 BREVO_FROM_NAME=일광교회
-NEXT_PUBLIC_BASE_URL=https://ilkwang01.vercel.app
+NEXT_PUBLIC_BASE_URL=${SITE_URL}
 
 # ── YouTube API ────────────────────────────────
 YOUTUBE_API_KEY=AIzaSy...

@@ -2,11 +2,18 @@ import { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { YOUTH_NAV } from "@/components/ui/StickySubNav";
+import { Church, BookOpen, Coffee } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "청년부",
   description: "일광교회 청년부 — 대학생 및 청년 사역",
 };
+
+const meetings = [
+  { Icon: Church,   title: "주일 예배",    detail: "매 주일 오후 1:30\n3부 예배 함께 참여\n예배 후 청년 모임" },
+  { Icon: BookOpen, title: "금요 성경공부", detail: "매주 금요일 오후 7:30\n소그룹 말씀 나눔\n찬양 & 기도 포함" },
+  { Icon: Coffee,   title: "소그룹 & 교제", detail: "격주 토요일 오후\n소그룹(5~8명) 운영\n삶 나눔과 기도" },
+];
 
 export default function YoungAdultsPage() {
   return (
@@ -33,13 +40,11 @@ export default function YoungAdultsPage() {
 
           {/* 모임 정보 */}
           <div className="grid sm:grid-cols-3 gap-4 sm:gap-5 mb-8 sm:mb-12 max-w-3xl mx-auto">
-            {[
-              { icon: "🙏", title: "주일 예배", detail: "매 주일 오후 1:30\n3부 예배 함께 참여\n예배 후 청년 모임" },
-              { icon: "📖", title: "금요 성경공부", detail: "매주 금요일 오후 7:30\n소그룹 말씀 나눔\n찬양 & 기도 포함" },
-              { icon: "☕", title: "소그룹 & 교제", detail: "격주 토요일 오후\n소그룹(5~8명) 운영\n삶 나눔과 기도" },
-            ].map((m) => (
+            {meetings.map((m) => (
               <div key={m.title} className="bg-[#E8F5E9] rounded-xl p-5 sm:p-6 text-center">
-                <div className="text-3xl mb-3">{m.icon}</div>
+                <div className="flex justify-center mb-3">
+                  <m.Icon className="w-8 h-8 text-[#2E7D32]" strokeWidth={1.5} />
+                </div>
                 <h3 className="font-bold text-gray-900 mb-2">{m.title}</h3>
                 <p className="text-sm text-gray-600 whitespace-pre-line">{m.detail}</p>
               </div>
