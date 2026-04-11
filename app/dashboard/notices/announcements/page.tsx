@@ -1,13 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Pin, Edit, Trash2, Plus, Eye } from "lucide-react";
+import { Pin, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 
-const INIT_NOTICES = [
-  { id: 1, title: "2026 부활절 연합예배 안내", category: "예배", pinned: true,  date: "2026-03-25", views: 312, hasImage: false },
-  { id: 2, title: "소그룹 리더 모집 안내",      category: "훈련", pinned: false, date: "2026-03-18", views: 189, hasImage: false },
-  { id: 3, title: "교회 주차 안내 변경",          category: "안내", pinned: true,  date: "2026-03-10", views: 423, hasImage: true  },
-];
+interface Notice {
+  id: number;
+  title: string;
+  category: string;
+  content: string;
+  pinned: boolean;
+  published: boolean;
+  date: string;
+}
 
 const CATEGORY_COLORS: Record<string, string> = {
   예배: "bg-blue-100 text-blue-700",
@@ -19,12 +23,45 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function AnnouncementsPage() {
-  const [notices, setNotices] = useState(INIT_NOTICES);
+  const [notices, setNotices]   = useState<Notice[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [deleting, setDeleting] = useState<number | null>(null);
+  const [toggling, setToggling] = useState<number | null>(null);
 
-  function handleDelete(id: number) {
-    if (confirm("이 공지를 삭제하시겠습니까?")) {
-      setNotices(prev => prev.filter(n => n.id !== id));
-    }
+  const loadNotices = useCallback(() => {
+    setLoading(true);
+    fetch("/api/notices")
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) && setNotices(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { loadNotices(); }, [loadNotices]);
+
+  async function handleDelete(id: number) {
+    if (!confirm("이 공지를 삭제하시겠습니까?")) return;
+    setDeleting(id);
+    const res = await fetch("/api/notices", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setDeleting(null);
+    if (res.ok) loadNotices();
+    else alert("삭제 중 오류가 발생했습니다.");
+  }
+
+  async function handleTogglePublished(notice: Notice) {
+    setToggling(notice.id);
+    const res = await fetch("/api/notices", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: notice.id, published: !notice.published }),
+    });
+    setToggling(null);
+    if (res.ok) loadNotices();
+    else alert("상태 변경 중 오류가 발생했습니다.");
   }
 
   return (
@@ -32,7 +69,10 @@ export default function AnnouncementsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">공지안내</h1>
-          <p className="text-gray-500 text-sm mt-0.5">교회 공지사항을 관리합니다 · 총 {notices.length}건</p>
+          <p className="text-gray-500 text-sm mt-0.5">
+            교회 공지사항을 관리합니다
+            {!loading && <span className="ml-1 text-gray-400">· 총 {notices.length}건</span>}
+          </p>
         </div>
         <Link
           href="/dashboard/notices/announcements/new"
@@ -44,8 +84,13 @@ export default function AnnouncementsPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        {notices.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm">등록된 공지가 없습니다.</div>
+        {loading ? (
+          <div className="text-center py-16 text-gray-400 text-sm">불러오는 중...</div>
+        ) : notices.length === 0 ? (
+          <div className="text-center py-16 text-gray-400 text-sm">
+            <p className="text-3xl mb-2">📋</p>
+            등록된 공지가 없습니다.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -55,7 +100,7 @@ export default function AnnouncementsPage() {
                   <th className="text-left px-6 py-3">제목</th>
                   <th className="text-left px-6 py-3 hidden sm:table-cell">분류</th>
                   <th className="text-left px-6 py-3 hidden md:table-cell">날짜</th>
-                  <th className="text-left px-6 py-3 hidden md:table-cell">조회</th>
+                  <th className="text-left px-6 py-3 hidden md:table-cell">공개</th>
                   <th className="text-left px-6 py-3">관리</th>
                 </tr>
               </thead>
@@ -66,12 +111,7 @@ export default function AnnouncementsPage() {
                       {n.pinned && <Pin className="w-3.5 h-3.5 text-orange-500" />}
                     </td>
                     <td className="px-6 py-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">{n.title}</span>
-                        {n.hasImage && (
-                          <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full">이미지</span>
-                        )}
-                      </div>
+                      <span className="font-medium text-gray-900">{n.title}</span>
                     </td>
                     <td className="px-6 py-3 hidden sm:table-cell">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${CATEGORY_COLORS[n.category] || "bg-gray-100 text-gray-600"}`}>
@@ -80,12 +120,24 @@ export default function AnnouncementsPage() {
                     </td>
                     <td className="px-6 py-3 hidden md:table-cell text-gray-500">{n.date}</td>
                     <td className="px-6 py-3 hidden md:table-cell">
-                      <span className="flex items-center gap-1 text-gray-500"><Eye className="w-3 h-3" />{n.views}</span>
+                      <button
+                        onClick={() => handleTogglePublished(n)}
+                        disabled={toggling === n.id}
+                        title={n.published ? "공개 중 (클릭: 비공개)" : "비공개 (클릭: 공개)"}
+                        className="disabled:opacity-40"
+                      >
+                        {n.published
+                          ? <Eye className="w-4 h-4 text-[#2E7D32]" />
+                          : <EyeOff className="w-4 h-4 text-gray-300" />}
+                      </button>
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <button className="text-gray-400 hover:text-[#2E7D32] transition-colors"><Edit className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(n.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                        <button
+                          onClick={() => handleDelete(n.id)}
+                          disabled={deleting === n.id}
+                          className="text-gray-400 hover:text-red-500 disabled:opacity-40 transition-colors"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

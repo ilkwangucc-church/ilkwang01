@@ -1,47 +1,44 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ImagePlus, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function NewAnnouncementPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: "", category: "예배", content: "",
-    pinned: false, published: true, showOnHome: false,
+    pinned: false, published: true,
   });
   const [saving, setSaving] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageName, setImageName] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [error, setError]   = useState("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value });
   }
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageName(file.name);
-    const reader = new FileReader();
-    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
-  }
-
-  function removeImage() {
-    setImagePreview(null);
-    setImageName("");
-    if (fileRef.current) fileRef.current.value = "";
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSaving(false);
-    router.push("/dashboard/notices/announcements");
+    try {
+      const res = await fetch("/api/notices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "저장 중 오류가 발생했습니다.");
+        return;
+      }
+      router.push("/dashboard/notices/announcements");
+    } catch {
+      setError("서버 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -52,6 +49,10 @@ export default function NewAnnouncementPage() {
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">공지안내 작성</h1>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">{error}</div>
+      )}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         <div>
@@ -65,29 +66,9 @@ export default function NewAnnouncementPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1.5">분류</label>
           <select name="category" value={form.category} onChange={handleChange}
             className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30">
-            <option>예배</option><option>훈련</option><option>안내</option><option>기타</option>
+            <option>예배</option><option>행사</option><option>청년부</option>
+            <option>훈련</option><option>안내</option><option>기타</option>
           </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">이미지 첨부 <span className="text-gray-400 text-xs">(선택)</span></label>
-          {imagePreview ? (
-            <div className="relative rounded-lg overflow-hidden border border-gray-200">
-              <Image src={imagePreview} alt="첨부 이미지" width={600} height={300} className="w-full h-48 object-cover" />
-              <button type="button" onClick={removeImage}
-                className="absolute top-2 right-2 w-7 h-7 bg-black/60 rounded-full flex items-center justify-center text-white hover:bg-black/80">
-                <X className="w-4 h-4" />
-              </button>
-              <p className="text-xs text-gray-500 px-3 py-2 bg-gray-50">{imageName}</p>
-            </div>
-          ) : (
-            <label className="flex flex-col items-center justify-center gap-2 w-full h-32 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-[#2E7D32]/40 hover:bg-green-50/30 transition-colors">
-              <ImagePlus className="w-7 h-7 text-gray-300" />
-              <span className="text-sm text-gray-400">클릭하여 이미지 선택</span>
-              <span className="text-xs text-gray-300">JPG, PNG, GIF — 최대 5MB</span>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-            </label>
-          )}
         </div>
 
         <div>
@@ -105,10 +86,6 @@ export default function NewAnnouncementPage() {
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
             <input type="checkbox" name="published" checked={form.published} onChange={handleChange} className="w-4 h-4 text-[#2E7D32] rounded" />
             즉시 공개
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="checkbox" name="showOnHome" checked={form.showOnHome} onChange={handleChange} className="w-4 h-4 text-blue-500 rounded" />
-            홈 화면에 표시
           </label>
         </div>
 
