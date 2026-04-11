@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Calendar, Pin, ImageIcon } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { NEWS_NAV } from "@/components/ui/StickySubNav";
+import BibleSharingsSection from "./BibleSharingsSection";
 
 export const metadata: Metadata = {
   title: "커뮤니티 | 일광교회",
@@ -145,6 +146,9 @@ export default function CommunityPage() {
         {COMMUNITY_POSTS.length === 0 && (
           <div className="text-center py-20 text-gray-400">등록된 게시물이 없습니다.</div>
         )}
+
+        {/* 성도 말씀 나눔 — 성경통독 대시보드에서 실시간 공유 */}
+        <BibleSharingsSection />
       </div>
     </div>
   );

@@ -46,8 +46,8 @@ const BIBLE = [
   },
 ];
 
-interface PRSVideo { id: string; title: string; books: string[]; chapter: number | null; publishedAt: string; }
-interface Comment  { id: number; memberName: string; text: string; date: string; }
+interface PRSVideo    { id: string; title: string; books: string[]; chapter: number | null; publishedAt: string; }
+interface BibleSharing { id: number; memberName: string; text: string; date: string; book: string; chapter: number | null; }
 
 /* ═══════════════════════════════════════
    메인 페이지
@@ -66,9 +66,9 @@ export default function BiblePage() {
   /* ─ 현재 영상 ─ */
   const [activeVideo, setActiveVideo] = useState<PRSVideo | null>(null);
 
-  /* ─ 댓글 ─ */
-  const [comments,    setComments]    = useState<Comment[]>([]);
-  const [commentText, setCommentText] = useState("");
+  /* ─ 말씀 나눔 ─ */
+  const [sharings,    setSharings]    = useState<BibleSharing[]>([]);
+  const [sharingText, setSharingText] = useState("");
   const [submitting,  setSubmitting]  = useState(false);
   const [loadingCmt,  setLoadingCmt]  = useState(false);
 
@@ -146,43 +146,46 @@ export default function BiblePage() {
     el?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [selectedChapter, selectedBook]);
 
-  /* ══ 댓글 로드 ══ */
+  /* ══ 말씀 나눔 로드 — 책·장 변경 시 ══ */
   useEffect(() => {
-    if (!activeVideo) { setComments([]); return; }
     setLoadingCmt(true);
-    fetch(`/api/bible-comments?videoId=${activeVideo.id}`)
+    const params = new URLSearchParams({ book: selectedBook });
+    if (selectedChapter !== null) params.set("chapter", String(selectedChapter));
+    fetch(`/api/bible-sharing?${params}`)
       .then((r) => r.json())
-      .then((d) => setComments(Array.isArray(d) ? d : []))
-      .catch(() => setComments([]))
+      .then((d) => setSharings(Array.isArray(d) ? d : []))
+      .catch(() => setSharings([]))
       .finally(() => setLoadingCmt(false));
-  }, [activeVideo]);
+  }, [selectedBook, selectedChapter]);
 
-  async function submitComment(e: React.FormEvent) {
+  async function submitSharing(e: React.FormEvent) {
     e.preventDefault();
-    if (!commentText.trim() || !activeVideo) return;
+    if (!sharingText.trim()) return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/bible-comments", {
+      const res = await fetch("/api/bible-sharing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoId: activeVideo.id, text: commentText.trim() }),
+        body: JSON.stringify({ text: sharingText.trim(), book: selectedBook, chapter: selectedChapter }),
       });
       if (res.ok) {
-        setCommentText("");
-        const d = await fetch(`/api/bible-comments?videoId=${activeVideo.id}`).then((r) => r.json());
-        setComments(Array.isArray(d) ? d : []);
+        setSharingText("");
+        const params = new URLSearchParams({ book: selectedBook });
+        if (selectedChapter !== null) params.set("chapter", String(selectedChapter));
+        const d = await fetch(`/api/bible-sharing?${params}`).then((r) => r.json());
+        setSharings(Array.isArray(d) ? d : []);
       }
     } finally { setSubmitting(false); }
   }
 
-  async function deleteComment(id: number) {
-    if (!activeVideo || !confirm("댓글을 삭제하시겠습니까?")) return;
-    const res = await fetch("/api/bible-comments", {
+  async function deleteSharing(id: number) {
+    if (!confirm("나눔을 삭제하시겠습니까?")) return;
+    const res = await fetch("/api/bible-sharing", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoId: activeVideo.id, id }),
+      body: JSON.stringify({ id }),
     });
-    if (res.ok) setComments((p) => p.filter((c) => c.id !== id));
+    if (res.ok) setSharings((p) => p.filter((s) => s.id !== id));
   }
 
   /* 이전 / 다음 장 */
@@ -462,26 +465,28 @@ export default function BiblePage() {
           </div>
         </div>
 
-        {/* ── 댓글 (말씀 나눔) ── */}
+        {/* ── 말씀 나눔 (영상 선택 없이도 입력 가능 · 커뮤니티 게시판 공유) ── */}
         <div className="flex-1 overflow-y-auto flex flex-col bg-white">
-          {/* 입력 */}
-          <form onSubmit={submitComment} className="px-4 py-3 border-b border-gray-100 shrink-0">
-            <p className="text-xs font-semibold text-gray-700 mb-2">
+          {/* 입력 폼 */}
+          <form onSubmit={submitSharing} className="px-4 py-3 border-b border-gray-100 shrink-0">
+            <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
               💬 말씀 나눔
-              {activeVideo && <span className="font-normal text-gray-400 ml-1">· {comments.length}개</span>}
+              <span className="font-normal text-gray-400">
+                · {selectedBook}{selectedChapter ? ` ${selectedChapter}장` : ""} · {sharings.length}개
+              </span>
             </p>
+            <p className="text-[10px] text-[#2E7D32] mb-2">커뮤니티 게시판에 자동 공유됩니다</p>
             <div className="flex gap-2">
               <textarea
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                disabled={!activeVideo}
-                placeholder={activeVideo ? "이 말씀에서 받은 은혜를 나눠주세요..." : "영상을 먼저 선택하세요"}
+                value={sharingText}
+                onChange={(e) => setSharingText(e.target.value)}
+                placeholder="오늘 말씀에서 받은 은혜를 나눠주세요..."
                 rows={2}
-                className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 disabled:bg-gray-50 disabled:text-gray-400"
+                className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
               />
               <button
                 type="submit"
-                disabled={submitting || !commentText.trim() || !activeVideo}
+                disabled={submitting || !sharingText.trim()}
                 className="px-3 py-2 bg-[#2E7D32] text-white rounded-lg text-xs font-semibold hover:bg-[#1B5E20] disabled:opacity-40 flex flex-col items-center justify-center gap-0.5 self-end transition-colors"
               >
                 <Send className="w-3.5 h-3.5" />
@@ -494,31 +499,27 @@ export default function BiblePage() {
           <div className="flex-1 overflow-y-auto">
             {loadingCmt ? (
               <div className="text-center py-6 text-xs text-gray-400">불러오는 중...</div>
-            ) : !activeVideo ? (
-              <div className="text-center py-8 text-xs text-gray-400 flex flex-col items-center gap-2">
-                <span className="text-2xl">📖</span>장 번호를 클릭하면 댓글을 볼 수 있습니다
-              </div>
-            ) : comments.length === 0 ? (
+            ) : sharings.length === 0 ? (
               <div className="text-center py-8 text-xs text-gray-400 flex flex-col items-center gap-2">
                 <span className="text-2xl">🕊️</span>첫 번째 나눔을 남겨주세요
               </div>
             ) : (
               <div className="divide-y divide-gray-50">
-                {comments.map((c) => (
-                  <div key={c.id} className="px-4 py-3 hover:bg-gray-50 group">
+                {sharings.map((s) => (
+                  <div key={s.id} className="px-4 py-3 hover:bg-gray-50 group">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-[#2E7D32]">{c.memberName}</span>
+                      <span className="text-[11px] font-semibold text-[#2E7D32]">{s.memberName}</span>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-gray-400">{c.date}</span>
+                        <span className="text-[10px] text-gray-400">{s.date}</span>
                         <button
-                          onClick={() => deleteComment(c.id)}
+                          onClick={() => deleteSharing(s.id)}
                           className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{c.text}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{s.text}</p>
                   </div>
                 ))}
               </div>
