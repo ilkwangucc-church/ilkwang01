@@ -77,6 +77,15 @@ export default function BiblePage() {
   /* ─ 모바일 탭 ─ */
   const [mobileTab, setMobileTab] = useState<"bible" | "playlist" | "share" | "note">("bible");
 
+  /* ─ 레이아웃 감지 (iframe 이중 마운트 방지) ─ */
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   /* ─ 재생목록 자동 스크롤 ─ */
   const playlistRef = useRef<HTMLDivElement>(null);
 
@@ -450,13 +459,15 @@ export default function BiblePage() {
                 src={`https://i.ytimg.com/vi/${activeVideo.id}/hqdefault.jpg`}
                 alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden
               />
-              <iframe
-                key={activeVideo.id}
-                src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen title={activeVideo.title}
-              />
+              {!isDesktop && (
+                <iframe
+                  key={activeVideo.id}
+                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen title={activeVideo.title}
+                />
+              )}
             </>
           )}
         </div>
@@ -585,13 +596,15 @@ export default function BiblePage() {
                     src={`https://i.ytimg.com/vi/${activeVideo.id}/hqdefault.jpg`}
                     alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden
                   />
-                  <iframe
-                    key={activeVideo.id}
-                    src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
-                    className="absolute inset-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen title={activeVideo.title}
-                  />
+                  {isDesktop && (
+                    <iframe
+                      key={activeVideo.id}
+                      src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen title={activeVideo.title}
+                    />
+                  )}
                 </>
               ) : null}
             </div>

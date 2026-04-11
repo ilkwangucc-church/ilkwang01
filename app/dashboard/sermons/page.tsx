@@ -150,6 +150,15 @@ export default function SermonsPage() {
   /* ─ 모바일 탭 ─ */
   const [mobileTab, setMobileTab] = useState<"list" | "share" | "note">("list");
 
+  /* ─ 레이아웃 감지 (iframe 이중 마운트 방지) ─ */
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   /* ─ 데스크톱 영상 높이 계산 ─ */
   const videoRowRef = useRef<HTMLDivElement>(null);
   const [videoRowH, setVideoRowH] = useState(360);
@@ -245,30 +254,37 @@ export default function SermonsPage() {
   }
 
   /* ══ 공통: 영상 영역 JSX ══ */
-  const VideoArea = ({ mobile }: { mobile: boolean }) => (
-    <div
-      className={mobile ? "relative w-full shrink-0 bg-black" : "shrink-0 bg-black relative"}
-      style={mobile
-        ? { paddingTop: "56.25%" }
-        : { width: videoRowH * (16 / 9) }
-      }
-    >
-      <img src="/ilkwang02.png" alt="일광교회" className="absolute inset-0 w-full h-full object-cover" />
-      {activeVideo && (
-        <>
-          <img src={activeVideo.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden />
-          <iframe
-            key={activeVideo.id}
-            src={`https://www.youtube.com/embed/${activeVideo.id}?rel=0${shouldAutoplay ? "&autoplay=1" : ""}`}
-            className="absolute inset-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            title={activeVideo.title}
-          />
-        </>
-      )}
-    </div>
-  );
+  /* mobile=true → 모바일 레이아웃, isDesktop이 false일 때만 iframe 마운트 */
+  /* mobile=false → 데스크탑 레이아웃, isDesktop이 true일 때만 iframe 마운트 */
+  const VideoArea = ({ mobile }: { mobile: boolean }) => {
+    const showIframe = mobile ? !isDesktop : isDesktop;
+    return (
+      <div
+        className={mobile ? "relative w-full shrink-0 bg-black" : "shrink-0 bg-black relative"}
+        style={mobile
+          ? { paddingTop: "56.25%" }
+          : { width: videoRowH * (16 / 9) }
+        }
+      >
+        <img src="/ilkwang02.png" alt="일광교회" className="absolute inset-0 w-full h-full object-cover" />
+        {activeVideo && (
+          <>
+            <img src={activeVideo.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden />
+            {showIframe && (
+              <iframe
+                key={activeVideo.id}
+                src={`https://www.youtube.com/embed/${activeVideo.id}?rel=0${shouldAutoplay ? "&autoplay=1" : ""}`}
+                className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={activeVideo.title}
+              />
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
 
   /* ═══ 렌더 ═══ */
   return (

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 import StickySubNav, { WORSHIP_NAV } from "@/components/ui/StickySubNav";
+import LatestSermonsSection from "@/components/worship/LatestSermonsSection";
 
 export const metadata: Metadata = {
   title: "예배/말씀",
@@ -17,12 +18,6 @@ const services = [
   { name: "수요성경공부", time: "수요일 오후 8:00", place: "본당", icon: "📖", desc: "말씀을 깊이 공부하는 성경공부입니다." },
 ];
 
-const sermons = [
-  { date: "2025.12.7",  title: "바닥에서도 시작되는 하나님의 스토리", scripture: "창세기 39:1-6",    preacher: "신점일 목사", videoId: "HDT6y_97ZZY" },
-  { date: "2025.11.30", title: "광야에서 만난 연합의 능력",           scripture: "출애굽기 17:8-13", preacher: "신점일 목사", videoId: "GNSONodOirY" },
-  { date: "2025.11.16", title: "감사는 선택이 아닌 체질이다",         scripture: "골로새서 3:15-17", preacher: "신점일 목사", videoId: "-GpyxONySN0" },
-  { date: "2025.11.9",  title: "내게로 오라",                         scripture: "마태복음 11:28",   preacher: "신점일 목사", videoId: "vettJ40x1xE" },
-];
 
 export default function WorshipPage() {
   return (
@@ -56,29 +51,7 @@ export default function WorshipPage() {
               전체 보기 →
             </Link>
           </div>
-          <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
-            {sermons.map((s) => (
-              <div key={s.title} className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-md transition-all group">
-                <div className="aspect-video bg-gray-900 relative">
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${s.videoId}?rel=0&modestbranding=1`}
-                    title={s.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-4 sm:p-5">
-                  <p className="text-[#2E7D32] text-xs font-nanum-bold mb-1">{s.scripture}</p>
-                  <h3 className="font-nanum-bold text-gray-800 leading-snug mb-2 break-keep">{s.title}</h3>
-                  <div className="flex gap-3 text-xs text-gray-400">
-                    <span>{s.date}</span>
-                    <span>{s.preacher}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LatestSermonsSection />
         </section>
       </div>
     </div>
