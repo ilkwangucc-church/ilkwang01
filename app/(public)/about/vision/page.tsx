@@ -29,7 +29,7 @@ export default function VisionPage() {
           <div className="bg-[#E8F5E9] rounded-2xl p-8 leading-relaxed text-gray-700 space-y-4">
             <p>
               일광교회는 <strong className="text-[#2E7D32]">대한예수교장로회(합동측, 총신대학교)</strong>에 소속된 건강한 교회로
-              <strong className="text-[#2E7D32]"> 1971년</strong>에 설립되어 50여 년 동안 도암동 지역 복음화의 사명을 감당해 왔으며,
+              <strong className="text-[#2E7D32]"> 1971년</strong>에 설립되어 50여 년 동안 돈암동 지역 복음화의 사명을 감당해 왔으며,
               하나님 중심 · 성경 중심 · 교회 중심의 신앙을 추구하는 교회입니다.
             </p>
             <p>

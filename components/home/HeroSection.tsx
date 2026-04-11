@@ -51,7 +51,7 @@ export default function HeroSection() {
           </div>
 
           {/* Info bar */}
-          <div className="flex flex-wrap gap-x-8 gap-y-[1.35rem] justify-center lg:justify-start">
+          <div className="flex flex-col items-start gap-y-[0.45rem] w-fit mx-auto lg:mx-0 lg:flex-row lg:flex-wrap lg:gap-x-8 lg:gap-y-[1.35rem] lg:w-auto">
             <div className="flex items-center gap-3 text-gray-300 text-base">
               <span className="w-5 h-5 rounded-full bg-[#2E7D32]/30 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-[#6dbf73]" />

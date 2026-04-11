@@ -18,7 +18,7 @@ const sections = [
     label: "교회소개 섹션",
     fields: [
       { name: "about_title", label: "소개 제목", value: "일광교회를 소개합니다" },
-      { name: "about_desc", label: "소개 본문", value: "1971년 설립된 일광교회는 성북구 도암동에 위치한..." },
+      { name: "about_desc", label: "소개 본문", value: "1971년 설립된 일광교회는 성북구 돈암동에 위치한..." },
       { name: "about_quote", label: "강조 인용구", value: "하나님 중심 · 성경 중심 · 교회 중심" },
     ],
   },
