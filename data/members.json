@@ -99,5 +99,16 @@
     "dept": "-",
     "matched": false,
     "joined": "2026-04-04"
+  },
+  {
+    "id": 11,
+    "name": "서원석",
+    "email": "loganwseo@gmail.com",
+    "phone": "01046365258",
+    "role": 1,
+    "dept": "-",
+    "matched": false,
+    "joined": "2026-04-11",
+    "passwordHash": "ac52c751c1b201412197b17813ba5e46989eb19cb754807c476b0a744fc75110"
   }
 ]
