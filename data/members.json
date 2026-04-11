@@ -111,5 +111,16 @@
     "matched": false,
     "joined": "2026-04-11",
     "passwordHash": "ac52c751c1b201412197b17813ba5e46989eb19cb754807c476b0a744fc75110"
+  },
+  {
+    "id": 13,
+    "name": "신유진",
+    "email": "sat17393360@gmail.com",
+    "phone": "01087227130",
+    "role": 1,
+    "dept": "-",
+    "matched": false,
+    "joined": "2026-04-11",
+    "passwordHash": "a2cd9c83bb20f21109b59d4b59549523db8ee18e3efa62137b9d0ac2fdb879f8"
   }
 ]
