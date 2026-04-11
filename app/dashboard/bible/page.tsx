@@ -78,6 +78,25 @@ export default function BiblePage() {
   /* ─ 재생목록 자동 스크롤 ─ */
   const playlistRef = useRef<HTMLDivElement>(null);
 
+  /* ─ 영상 영역 높이: JS로 정확한 16:9 계산 ─ */
+  const videoRowRef  = useRef<HTMLDivElement>(null);
+  const [videoRowH, setVideoRowH] = useState(360);
+
+  useEffect(() => {
+    const el = videoRowRef.current;
+    if (!el) return;
+    const update = () => {
+      const containerW = el.offsetWidth;
+      const playlistW  = 240;
+      const videoW     = Math.min(Math.max(containerW - playlistW, 200), 720);
+      setVideoRowH(Math.round(videoW * 9 / 16));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   /* ══ @PRS 전체 영상 로드 ══ */
   useEffect(() => {
     fetch("/api/prs-videos")
@@ -320,48 +339,43 @@ export default function BiblePage() {
           )}
         </div>
 
-        {/* ── 영상 + 재생목록 (나란히, 16:9 자동 높이) ── */}
-        <div className="flex shrink-0 bg-[#0f0f0f]">
-
-          {/* 영상: 최대 720px 폭으로 제한 + 16:9 정비율 */}
+        {/* ── 영상 + 재생목록 ──
+             videoRowH = JS로 계산한 정확한 16:9 높이
+             → 영상 width = videoRowH * 16/9
+             → iframe 이 딱 맞아서 검은 여백 없음 ── */}
+        <div
+          ref={videoRowRef}
+          className="flex shrink-0 bg-[#0f0f0f]"
+          style={{ height: videoRowH }}
+        >
+          {/* 영상: 폭 = 높이 × 16/9 → 정확한 비율 */}
           <div
-            className="shrink-0 bg-[#0f0f0f] relative"
-            style={{ flex: "1 1 0", maxWidth: "720px", aspectRatio: "16/9" }}
+            className="shrink-0 bg-black relative"
+            style={{ width: videoRowH * (16 / 9) }}
           >
             {activeVideo ? (
-              /* 장 클릭 시 바로 재생 */
               <iframe
                 key={activeVideo.id}
                 src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
-                className="absolute inset-0 w-full h-full block"
+                className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title={activeVideo.title}
               />
             ) : (
-              /* 썸네일 플레이스홀더 — 스피너 없음 */
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none bg-[#0f0f0f]">
-                {/* 배경 장식 */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-                  <BookText className="w-40 h-40 text-white" />
-                </div>
-                {/* 텍스트 */}
-                <div className="relative text-center px-6">
-                  <p className="text-white/60 text-2xl font-bold tracking-wide">
-                    {selectedBook}
-                  </p>
-                  <p className="text-white/30 text-sm mt-2">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none">
+                <BookText className="w-16 h-16 text-white/10" />
+                <div className="text-center px-6">
+                  <p className="text-white/50 text-xl font-bold">{selectedBook}</p>
+                  <p className="text-white/25 text-xs mt-1.5">
                     {selectedChapter
-                      ? loadingVids
-                        ? `${selectedChapter}장 영상 연결 중...`
-                        : `${selectedChapter}장 영상 없음`
+                      ? loadingVids ? `${selectedChapter}장 연결 중...` : `${selectedChapter}장 영상 없음`
                       : "오른쪽 목록에서 장을 선택하세요"}
                   </p>
-                  {/* 로딩 중일 때만 작은 스피너 */}
                   {loadingVids && (
                     <div className="mt-3 flex items-center justify-center gap-1.5">
-                      <div className="w-3.5 h-3.5 border border-white/20 border-t-white/50 rounded-full animate-spin" />
-                      <span className="text-white/25 text-[10px]">영상 목록 불러오는 중...</span>
+                      <div className="w-3 h-3 border border-white/20 border-t-white/50 rounded-full animate-spin" />
+                      <span className="text-white/20 text-[10px]">영상 불러오는 중...</span>
                     </div>
                   )}
                 </div>
@@ -369,8 +383,8 @@ export default function BiblePage() {
             )}
           </div>
 
-          {/* 재생목록: 즉시 렌더링, 넓게 */}
-          <div className="flex-1 min-w-[200px] max-w-[280px] bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
+          {/* 재생목록: 나머지 폭, 영상과 같은 높이(self-stretch) */}
+          <div className="flex-1 min-w-[180px] bg-[#0f0f0f] flex flex-col border-l border-white/10 overflow-hidden self-stretch">
             {/* 헤더 */}
             <div className="px-3 py-2 bg-[#1a1a1a] border-b border-white/10 shrink-0">
               <p className="text-white text-xs font-bold truncate">
