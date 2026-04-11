@@ -25,13 +25,12 @@ export default function HeroSection() {
 
           {/* Main Heading */}
           <h1 className="text-[42px] font-black text-white leading-[1.15] mb-4">
-            일광교회에 오신 것을 환영합니다
+            일광교회에<br />오신 것을 환영합니다
           </h1>
 
           {/* Body */}
           <p className="text-gray-300 text-[20px] leading-snug mb-8 max-w-xl mx-auto lg:mx-0">
-            우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고, 모든 사람이 하나님의 사랑 안에서 새로운 삶을<br />
-            시작하도록 돕는 것입니다.
+            우리의 목표는 지역 사회에서 소외된<br />이웃들에게 복음의 빛을 전하고, 모든 사람이<br />하나님의 사랑 안에서 새로운 삶을<br />시작하도록 돕는 것입니다.
           </p>
 
           {/* CTA Buttons + Info bar */}
@@ -52,7 +51,7 @@ export default function HeroSection() {
           </div>
 
           {/* Info bar */}
-          <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
+          <div className="flex flex-wrap gap-x-8 gap-y-[1.35rem] justify-center lg:justify-start">
             <div className="flex items-center gap-3 text-gray-300 text-base">
               <span className="w-5 h-5 rounded-full bg-[#2E7D32]/30 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-[#6dbf73]" />

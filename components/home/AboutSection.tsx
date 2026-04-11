@@ -27,11 +27,11 @@ export default function AboutSection() {
           <div>
             {/* Quote marks */}
             <div className="text-[#2E7D32] text-6xl font-black leading-none mb-4 opacity-80">"</div>
-            <blockquote className="text-white text-2xl lg:text-3xl font-bold leading-snug mb-8">
+            <blockquote className="text-white text-2xl lg:text-3xl font-bold leading-snug mb-8 text-center">
               우리의 목표는 지역 사회에서 소외된 이웃들에게 복음의 빛을 전하고,
               모든 사람이 하나님의 사랑 안에서 새로운 삶을 시작하도록 돕는 것입니다.
             </blockquote>
-            <p className="text-gray-300 leading-relaxed mb-8">
+            <p className="text-gray-300 leading-relaxed mb-8 text-center">
               1971년 설립된 일광교회는 대한예수교장로회(합동) 소속으로, 반세기가 넘는 역사 속에서
               하나님의 말씀을 붙잡고 성장해온 교회입니다. 말씀과 기도, 사랑으로 지역 사회와 함께합니다.
             </p>

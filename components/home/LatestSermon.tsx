@@ -15,7 +15,7 @@ export default async function LatestSermon() {
 
   return (
     <section className="relative z-10 -mt-16">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-[10px] sm:px-0">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
           {/* ── 영상: 처음부터 자동재생(음소거) ── */}
           <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[326px]">
