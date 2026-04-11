@@ -13,7 +13,7 @@ const SERVICES = [
     icon: Mail,
     color: "bg-blue-50 text-blue-600",
     connected: true,
-    note: "✅ 연동 완료 — noreply@ilkwang.or.kr",
+    note: "연동 완료 — noreply@ilkwang.or.kr",
   },
   {
     name: "YouTube API",
