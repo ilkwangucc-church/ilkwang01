@@ -18,7 +18,7 @@ export default async function LatestSermon() {
       <div className="max-w-6xl mx-auto px-[10px] sm:px-0">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
           {/* ── 영상: 처음부터 자동재생(음소거) ── */}
-          <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[200px] sm:min-h-[326px]">
+          <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch w-full aspect-video sm:aspect-auto sm:min-h-[326px]">
             <SermonStreamPlayer videoId={latest.id} startSec={0} endSec={5400} />
           </div>
 

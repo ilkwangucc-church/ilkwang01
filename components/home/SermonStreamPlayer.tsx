@@ -113,17 +113,8 @@ export default function SermonStreamPlayer({
 
   return (
     <>
-      {/* 16:9 크롭 유지 — iframe 외부로 나가지 않게 overflow:hidden 부모가 처리 */}
-      <div
-        className="absolute"
-        style={{
-          width: "177.78%",
-          height: "100%",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
+      {/* 컨테이너 100% 채우기 — 부모가 aspect-video(모바일) / self-stretch(데스크탑) 처리 */}
+      <div className="absolute inset-0">
         <div ref={innerRef} style={{ width: "100%", height: "100%" }} />
       </div>
 

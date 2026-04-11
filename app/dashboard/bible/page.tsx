@@ -416,7 +416,7 @@ export default function BiblePage() {
       {/* ══════════════════════════════════
           MOBILE  (< lg)
       ══════════════════════════════════ */}
-      <div className="lg:hidden -mx-3 -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
+      <div className="lg:hidden -mx-[10px] -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
 
         {/* 헤더 */}
         <div className="px-3 py-2 bg-white border-b border-gray-200 shrink-0 flex items-center justify-between gap-2">

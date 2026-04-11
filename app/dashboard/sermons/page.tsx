@@ -187,7 +187,7 @@ export default function SermonsPage() {
         const arr = Array.isArray(d) ? d : [];
         setSermons(arr);
         if (arr.length > 0) {
-          const latestYear = arr[0].year;
+          const latestYear = Math.max(...arr.map((v) => v.year));
           setExpandedYears({ [latestYear]: true });
         }
       })
@@ -292,7 +292,7 @@ export default function SermonsPage() {
       {/* ══════════════════════════════════
           MOBILE  (< lg)
       ══════════════════════════════════ */}
-      <div className="lg:hidden -mx-3 -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
+      <div className="lg:hidden -mx-[10px] -my-3 sm:-mx-5 sm:-my-5 flex flex-col h-[calc(100vh-56px)] overflow-hidden bg-gray-50">
 
         {/* 헤더 */}
         <div className="px-3 py-2 bg-white border-b border-gray-200 shrink-0">
