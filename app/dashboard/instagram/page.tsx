@@ -112,7 +112,7 @@ export default function InstagramPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 히어로 배너 */}
       <div className="relative rounded-2xl overflow-hidden min-h-[120px] sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -122,20 +122,20 @@ export default function InstagramPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/90 via-pink-800/70 to-orange-600/60" />
-        <div className="absolute inset-0 z-10 p-6 flex flex-col justify-center gap-3">
+        <div className="absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-center gap-2 sm:gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
               <Camera className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">부서별 인스타그램</h1>
+              <h1 className="text-lg sm:text-2xl font-bold text-white">부서별 인스타그램</h1>
               <p className="text-white/70 text-sm">각 부서의 생생한 소식을 인스타그램에서 만나세요</p>
             </div>
           </div>
-          <div className="flex items-center gap-6 text-white/80 text-sm">
-            <span className="flex items-center gap-2"><Users className="w-4 h-4" /> 총 팔로워 {TOTAL_FOLLOWERS}</span>
-            <span className="flex items-center gap-2"><Camera className="w-4 h-4" /> 총 게시물 {TOTAL_POSTS}개</span>
-            <span className="flex items-center gap-2">부서 계정 {accounts.length}개</span>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-white/80 text-xs sm:text-sm">
+            <span className="flex items-center gap-1 sm:gap-2"><Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> 총 팔로워 {TOTAL_FOLLOWERS}</span>
+            <span className="flex items-center gap-1 sm:gap-2"><Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> 총 게시물 {TOTAL_POSTS}개</span>
+            <span className="flex items-center gap-1 sm:gap-2">부서 계정 {accounts.length}개</span>
           </div>
         </div>
       </div>
@@ -147,8 +147,8 @@ export default function InstagramPage() {
           { label: "총 팔로워", value: TOTAL_FOLLOWERS, sub: "명" },
           { label: "총 게시물", value: String(TOTAL_POSTS), sub: "개" },
         ].map((s, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-2xl font-bold text-gray-900">
+          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 text-center">
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">
               {s.value}
             </p>
             <p className="text-xs text-gray-500 mt-0.5">{s.label} {s.sub}</p>
@@ -229,19 +229,19 @@ export default function InstagramPage() {
 
       {/* 하단 계정 추가 요청 배너 */}
       <div className="relative rounded-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 p-6 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-              <Camera className="w-6 h-6 text-white" />
+        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
+              <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
-              <p className="text-white font-bold text-lg">부서 계정 추가 요청</p>
+              <p className="text-white font-bold text-base sm:text-lg">부서 계정 추가 요청</p>
               <p className="text-white/80 text-sm">담당 관리자에게 인스타그램 계정 등록을 요청하세요</p>
             </div>
           </div>
           <Link
             href="/dashboard/counseling"
-            className="shrink-0 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors"
+            className="w-full sm:w-auto text-center px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors"
           >
             관리자에게 문의하기 →
           </Link>

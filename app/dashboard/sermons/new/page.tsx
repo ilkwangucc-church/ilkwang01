@@ -35,7 +35,7 @@ export default function NewSermonPage() {
         <h1 className="text-2xl font-bold text-gray-900">설교 등록</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
         {[
           { label: "설교 제목", name: "title", type: "text", placeholder: "예: 부활의 증인으로 살라" },
           { label: "설교자", name: "preacher", type: "text", placeholder: "담임목사" },

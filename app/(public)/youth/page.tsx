@@ -42,10 +42,10 @@ export default function YouthPage() {
       <StickySubNav items={YOUTH_NAV} />
 
       {/* 비전 메시지 */}
-      <section className="py-14 bg-white">
+      <section className="py-10 sm:py-14 bg-white">
         <div className="max-w-[1400px] mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">다음세대를 위한 사명</h2>
-          <p className="text-gray-600 leading-relaxed">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">다음세대를 위한 사명</h2>
+          <p className="text-gray-600 leading-relaxed text-sm sm:text-base break-keep">
             일광교회는 어린이와 청소년, 청년들이 <strong>하나님을 인격적으로 만나고</strong>,
             말씀 위에 굳건히 세워지기를 소망합니다.<br />
             각 세대에 맞는 예배와 교육, 공동체 활동을 통해
@@ -55,17 +55,17 @@ export default function YouthPage() {
       </section>
 
       {/* 부서 카드 */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-[1400px] mx-auto px-4 grid md:grid-cols-3 gap-6">
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="max-w-[1400px] mx-auto px-4 grid sm:grid-cols-3 gap-5 sm:gap-6">
           {departments.map((dept) => (
             <Link key={dept.href} href={dept.href} className="group block">
-              <div className={`rounded-2xl bg-gradient-to-br ${dept.color} p-8 text-white mb-4 text-center group-hover:scale-105 transition-transform`}>
-                <div className="text-5xl mb-3">{dept.icon}</div>
-                <h3 className="text-2xl font-bold mb-1">{dept.name}</h3>
+              <div className={`rounded-2xl bg-gradient-to-br ${dept.color} p-6 sm:p-8 text-white mb-4 text-center group-hover:scale-105 transition-transform`}>
+                <div className="text-4xl sm:text-5xl mb-3">{dept.icon}</div>
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">{dept.name}</h3>
                 <p className="text-white/80 text-sm">{dept.sub}</p>
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed px-1">{dept.desc}</p>
-              <span className="inline-block mt-3 text-[#2E7D32] font-medium text-sm group-hover:underline">
+              <p className="text-gray-600 text-sm leading-relaxed px-1 break-keep">{dept.desc}</p>
+              <span className="inline-block mt-3 text-[#2E7D32] font-medium text-sm group-hover:underline py-2.5">
                 자세히 보기 →
               </span>
             </Link>
@@ -74,10 +74,29 @@ export default function YouthPage() {
       </section>
 
       {/* 예배 시간 */}
-      <section className="py-16 bg-white">
+      <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-10">부서별 예배 시간</h2>
-          <div className="overflow-x-auto">
+          <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-10">부서별 예배 시간</h2>
+          {/* 모바일: 카드형 */}
+          <div className="sm:hidden space-y-3">
+            {[
+              { dept: "유치부", target: "5~7세", time: "주일 오전 11:00", place: "유치부실" },
+              { dept: "아동부 (초등부)", target: "초등학교 1~6학년", time: "주일 오전 11:00", place: "교육관 101호" },
+              { dept: "중고등부", target: "중학교 1학년 ~ 고등학교 3학년", time: "주일 오전 11:00", place: "교육관 대강당" },
+              { dept: "청년부", target: "대학생 ~ 30대 미혼", time: "주일 오후 1:30 (3부)", place: "본당" },
+            ].map((row, i) => (
+              <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="font-bold text-gray-900 text-sm mb-2">{row.dept}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                  <span>대상: {row.target}</span>
+                  <span>시간: {row.time}</span>
+                  <span>장소: {row.place}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* 데스크탑: 테이블 */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#E8F5E9] text-[#2E7D32]">

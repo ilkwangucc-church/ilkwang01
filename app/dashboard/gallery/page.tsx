@@ -96,16 +96,16 @@ export default function GalleryAdminPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">갤러리 관리</h1>
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900">갤러리 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">사진 및 이미지를 업로드하고 관리합니다</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
         >
           <Plus className="w-4 h-4" />
           이미지 업로드

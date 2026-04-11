@@ -36,10 +36,10 @@ export default function NewsPage() {
 
       <StickySubNav items={NEWS_NAV} />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12">
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-          {/* 헤더 */}
-          <div className="grid grid-cols-12 bg-gray-50 border-b px-6 py-3 text-xs font-nanum-bold text-gray-500">
+          {/* 헤더 — 모바일 숨김 */}
+          <div className="hidden sm:grid grid-cols-12 bg-gray-50 border-b px-4 sm:px-6 py-3 text-xs font-nanum-bold text-gray-500">
             <div className="col-span-1 text-center">번호</div>
             <div className="col-span-2 text-center">분류</div>
             <div className="col-span-6">제목</div>
@@ -47,32 +47,50 @@ export default function NewsPage() {
           </div>
 
           {notices.map((n) => (
-            <div key={n.id} className="grid grid-cols-12 items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
-              <div className="col-span-1 text-center text-sm text-gray-400">
-                {n.pinned ? <Pin className="w-4 h-4 text-[#FFC107] mx-auto" /> : n.id}
-              </div>
-              <div className="col-span-2 text-center">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-nanum-bold ${categoryColors[n.category] || "bg-gray-100 text-gray-600"}`}>
-                  {n.category}
-                </span>
-              </div>
-              <div className="col-span-6">
-                <Link href={`/news/${n.id}`} className={`font-nanum-bold hover:text-[#2E7D32] transition-colors ${n.pinned ? "text-gray-800" : "text-gray-700"}`}>
+            <div key={n.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+              {/* 모바일 레이아웃 */}
+              <div className="sm:hidden px-4 py-4">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-nanum-bold ${categoryColors[n.category] || "bg-gray-100 text-gray-600"}`}>
+                    {n.category}
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
+                    <Calendar className="w-3 h-3" />{n.date}
+                  </span>
+                </div>
+                <Link href={`/news/${n.id}`} className={`font-nanum-bold hover:text-[#2E7D32] transition-colors text-sm leading-snug break-keep ${n.pinned ? "text-gray-800" : "text-gray-700"}`}>
                   {n.pinned && <span className="text-[#FFC107] mr-1">[필독]</span>}
                   {n.title}
                 </Link>
               </div>
-              <div className="col-span-3 flex items-center justify-center gap-1 text-xs text-gray-400">
-                <Calendar className="w-3 h-3" />{n.date}
+              {/* 데스크탑 레이아웃 */}
+              <div className="hidden sm:grid grid-cols-12 items-center px-6 py-4">
+                <div className="col-span-1 text-center text-sm text-gray-400">
+                  {n.pinned ? <Pin className="w-4 h-4 text-[#FFC107] mx-auto" /> : n.id}
+                </div>
+                <div className="col-span-2 text-center">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-nanum-bold ${categoryColors[n.category] || "bg-gray-100 text-gray-600"}`}>
+                    {n.category}
+                  </span>
+                </div>
+                <div className="col-span-6">
+                  <Link href={`/news/${n.id}`} className={`font-nanum-bold hover:text-[#2E7D32] transition-colors ${n.pinned ? "text-gray-800" : "text-gray-700"}`}>
+                    {n.pinned && <span className="text-[#FFC107] mr-1">[필독]</span>}
+                    {n.title}
+                  </Link>
+                </div>
+                <div className="col-span-3 flex items-center justify-center gap-1 text-xs text-gray-400">
+                  <Calendar className="w-3 h-3" />{n.date}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
         {/* 페이지네이션 */}
-        <div className="flex justify-center gap-1 mt-8">
+        <div className="flex justify-center gap-1 mt-6 sm:mt-8">
           {[1, 2, 3, 4, 5].map((p) => (
-            <button key={p} className={`w-9 h-9 rounded-lg text-sm font-nanum-bold transition-colors ${p === 1 ? "bg-[#2E7D32] text-white" : "text-gray-500 hover:bg-gray-100"}`}>
+            <button key={p} className={`w-10 h-10 sm:w-9 sm:h-9 rounded-lg text-sm font-nanum-bold transition-colors ${p === 1 ? "bg-[#2E7D32] text-white" : "text-gray-500 hover:bg-gray-100"}`}>
               {p}
             </button>
           ))}

@@ -40,16 +40,16 @@ export default function BlogPage() {
   const rest = filtered.filter(p => p.id !== featured?.id);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
             <PenLine className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 부서별 블로그
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">각 부서의 이야기와 묵상을 나눕니다</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
           <Plus className="w-4 h-4" /> 글쓰기
         </button>
       </div>
@@ -79,7 +79,7 @@ export default function BlogPage() {
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6">
+          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-2">
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${featured.color}`}>{featured.dept}</span>
               <span className="text-white/70 text-xs">{featured.date}</span>
@@ -87,9 +87,9 @@ export default function BlogPage() {
                 <Clock className="w-3 h-3" /> {featured.readTime}
               </span>
             </div>
-            <h2 className="text-xl font-bold text-white mb-1">{featured.title}</h2>
-            <p className="text-white/80 text-sm line-clamp-2">{featured.preview}</p>
-            <div className="flex items-center justify-between mt-3">
+            <h2 className="text-base sm:text-xl font-bold text-white mb-1">{featured.title}</h2>
+            <p className="text-white/80 text-sm line-clamp-2 hidden sm:block">{featured.preview}</p>
+            <div className="flex items-center justify-between mt-2 sm:mt-3">
               <span className="text-white/70 text-sm">{featured.author}</span>
               <span className="flex items-center gap-1 text-white/60 text-xs">
                 <Eye className="w-3.5 h-3.5" /> {featured.views}

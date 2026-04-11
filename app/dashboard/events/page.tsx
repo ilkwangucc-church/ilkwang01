@@ -111,7 +111,7 @@ export default function EventsPage() {
   const featured = EVENTS.filter(e => e.featured);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 히어로 배너 */}
       <div className="relative rounded-2xl overflow-hidden min-h-[120px] sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -121,27 +121,27 @@ export default function EventsPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1B5E20]/90 to-[#2E7D32]/60" />
-        <div className="absolute inset-0 z-10 p-6 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-              <CalendarDays className="w-6 h-6" /> 행사안내
+        <div className="absolute inset-0 z-10 p-4 sm:p-6 flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
+              <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6" /> 행사안내
             </h1>
             <p className="text-white/70 text-sm mt-0.5">일광교회 2026년 상반기 행사 일정</p>
-            <p className="text-white/80 text-xs mt-2">
+            <p className="text-white/80 text-xs mt-2 hidden sm:block">
               다가오는 교회 행사와 일정을 확인하고 미리 준비하세요
             </p>
           </div>
-          <button className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-colors border border-white/30">
-            <Plus className="w-4 h-4" /> 행사 등록
+          <button className="shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-colors border border-white/30">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">행사 등록</span><span className="sm:hidden">등록</span>
           </button>
         </div>
       </div>
 
       {/* 통계 4칸 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {STATS.map((s, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-2xl font-bold text-gray-900">
+          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 text-center">
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">
               {s.value}<span className="text-sm font-normal text-gray-500 ml-0.5">{s.unit}</span>
             </p>
             <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
@@ -151,7 +151,7 @@ export default function EventsPage() {
 
       {/* 주요 행사 — 2열 큰 카드 */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-3">주요 행사</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3">주요 행사</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
           {featured.map(event => (
             <div key={event.id} className="relative rounded-2xl overflow-hidden h-60 cursor-pointer group">
@@ -196,7 +196,7 @@ export default function EventsPage() {
       {/* 카테고리 필터 + 전체 일정 카드 그리드 */}
       <div>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
-          <h2 className="text-lg font-bold text-gray-900">전체 일정</h2>
+          <h2 className="text-base sm:text-lg font-bold text-gray-900">전체 일정</h2>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {CATEGORIES.map(c => (
               <button

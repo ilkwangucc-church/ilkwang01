@@ -33,10 +33,10 @@ export default function OfferingsPage() {
   const thisMonth = monthly[0];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">헌금 현황</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">헌금 현황</h1>
           <p className="text-gray-500 text-sm mt-0.5">온라인 헌금 입금 내역을 관리합니다</p>
         </div>
         <Link
@@ -49,7 +49,7 @@ export default function OfferingsPage() {
       </div>
 
       {/* 월별 요약 */}
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {monthly.map((m) => (
           <div key={m.month} className={`bg-white rounded-xl p-5 shadow-sm border ${m.month === "2024-03" ? "border-[#2E7D32]" : "border-gray-100"}`}>
             <div className="flex items-center justify-between mb-2">
@@ -81,11 +81,29 @@ export default function OfferingsPage() {
 
       {/* 최근 입금 내역 */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-50 flex items-center justify-between flex-wrap gap-2">
           <h2 className="font-semibold text-gray-900">최근 입금 내역</h2>
           <span className="text-sm text-gray-400">이번달 합계: <strong className="text-gray-900">{formatKRW(thisMonth.total)}</strong></span>
         </div>
-        <div className="overflow-x-auto">
+
+        {/* 모바일 카드 뷰 */}
+        <div className="sm:hidden divide-y divide-gray-50">
+          {offerings.map((o) => (
+            <div key={o.id} className="px-4 py-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-medium text-gray-900 text-sm">{o.name}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${typeColors[o.type] ?? "bg-gray-100 text-gray-600"}`}>{o.type}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-400">{o.date}{o.memo ? ` · ${o.memo}` : ""}</span>
+                <span className="font-semibold text-gray-900 text-sm">{formatKRW(o.amount)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 데스크탑 테이블 뷰 */}
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">

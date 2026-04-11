@@ -45,24 +45,24 @@ export default function CounselingPage() {
 
   if (submitted) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
             <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 상담신청
           </h1>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center max-w-lg mx-auto">
-          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-10 h-10 text-gray-600" />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10 text-center max-w-lg mx-auto">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-600" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">상담 신청이 접수되었습니다</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">상담 신청이 접수되었습니다</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-6">
             담당 교역자가 확인 후 연락드리겠습니다.<br />
             보통 1~3일 이내에 답변이 이루어집니다.
           </p>
           <button
             onClick={() => { setSubmitted(false); setForm({ category: "일반상담", name: "", phone: "", content: "", anonymous: false }); }}
-            className="px-6 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors"
           >
             새 상담 신청
           </button>
@@ -74,10 +74,10 @@ export default function CounselingPage() {
   const selectedCategory = CATEGORIES.find(c => c.value === form.category);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 헤더 */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
           <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 상담신청
         </h1>
         <p className="text-gray-500 text-sm mt-0.5">모든 상담 내용은 담당 교역자만 확인합니다</p>
@@ -92,9 +92,9 @@ export default function CounselingPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-[#2E7D32]/80" />
-        <div className="relative z-10 p-6 h-full flex flex-col justify-center">
+        <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col justify-center">
           <p className="text-white/80 text-sm font-semibold mb-1">💚 비밀 보장 상담</p>
-          <h2 className="text-xl font-bold text-white mb-1">마음을 터놓고 이야기하세요</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-white mb-1">마음을 터놓고 이야기하세요</h2>
           <p className="text-white/70 text-sm">혼자 감당하기 어려운 짐을 함께 나눕니다. 어떤 이야기든 환영합니다.</p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function CounselingPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
             {/* 상담 유형 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">상담 유형</label>

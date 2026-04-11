@@ -103,9 +103,9 @@ export default function PagesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">페이지 관리</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">페이지 관리</h1>
         <p className="text-gray-500 text-sm mt-0.5">각 페이지의 제목·내용·안내 정보를 수정합니다</p>
       </div>
 
@@ -115,8 +115,8 @@ export default function PagesPage() {
           return (
             <div key={page.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               {/* 헤더 */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-gray-50 flex-wrap gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-500">{page.section}</span>
                   <h2 className="font-semibold text-gray-900 text-sm">{page.title}</h2>
                   <Link href={page.path} target="_blank" className="text-gray-300 hover:text-[#2E7D32] transition-colors">
@@ -145,7 +145,7 @@ export default function PagesPage() {
               </div>
 
               {/* 필드 목록 */}
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 {isEditing ? (
                   <div className="grid sm:grid-cols-2 gap-4">
                     {page.fields.map((f) => (

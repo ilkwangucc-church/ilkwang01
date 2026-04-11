@@ -152,22 +152,22 @@ export default function DailyPage() {
   const activeComments = commentModalId !== null ? (postComments[commentModalId] || []) : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 상단 헤더 + 통계 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 성도의 하루
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">사진 한 장과 한 줄로 오늘 하루를 나눠요</p>
         </div>
-        <div className="flex gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {TODAY_STATS.map((s, i) => {
             const Icon = s.icon;
             return (
-              <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-2.5 text-center">
+              <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm px-3 py-2.5 text-center">
                 <Icon className="w-4 h-4 text-gray-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">{s.value}</p>
+                <p className="text-base sm:text-lg font-bold text-gray-900">{s.value}</p>
                 <p className="text-[10px] text-gray-500">{s.label}</p>
               </div>
             );
@@ -179,7 +179,7 @@ export default function DailyPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 sm:gap-6 items-start">
         {/* 왼쪽 — 작성 폼 */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-3 sm:top-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 sticky top-3 sm:top-6">
             <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
               <Camera className="w-4 h-4 text-gray-500" /> 오늘 하루 나누기
             </p>
@@ -207,7 +207,7 @@ export default function DailyPage() {
             )}
 
             <div className="flex items-center justify-between mt-3">
-              <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-gray-700 transition-colors">
+              <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-gray-700 transition-colors min-h-[44px]">
                 <ImagePlus className="w-4 h-4" />
                 사진 추가
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -215,7 +215,7 @@ export default function DailyPage() {
               <button
                 onClick={handlePost}
                 disabled={!text.trim()}
-                className="px-5 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-40"
+                className="px-5 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors disabled:opacity-40"
               >
                 나누기
               </button>

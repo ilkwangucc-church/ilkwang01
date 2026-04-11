@@ -92,10 +92,10 @@ export default function HeroPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">홈 화면 수정</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">홈 화면 수정</h1>
           <p className="text-gray-500 text-sm mt-0.5">메인 배너(히어로) 제목·이미지·버튼 내용을 수정합니다</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <a href="/" target="_blank" className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">
             <Eye className="w-4 h-4" /> 사이트 확인
           </a>
@@ -108,15 +108,15 @@ export default function HeroPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* 메인 배너 설정 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-4">
           <h2 className="font-semibold text-gray-900">메인 배너 문구</h2>
           {HERO_FIELDS.map(renderField)}
         </div>
 
         {/* 슬라이더 설정 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-4">
           <h2 className="font-semibold text-gray-900">이미지 슬라이더</h2>
           {SLIDER_FIELDS.map(field => (
             <div key={field.key}>

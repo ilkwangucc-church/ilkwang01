@@ -12,19 +12,19 @@ const services = [
 
 export default function WorshipSchedule() {
   return (
-    <section className="py-24 bg-[#F8FAF8]">
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 xl:grid-cols-[420px_1fr] gap-10 xl:gap-24 items-start">
+    <section className="py-14 sm:py-20 lg:py-24 bg-[#F8FAF8]">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-[420px_1fr] gap-8 sm:gap-10 xl:gap-24 items-start">
 
           {/* Left — 모바일: 중앙정렬 / lg 이상: 좌측정렬 */}
           <div className="xl:sticky xl:top-28 text-center lg:text-left flex flex-col items-center lg:items-start">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
               OUR MINISTRY
             </p>
-            <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] leading-tight mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#1a2744] leading-tight mb-4 sm:mb-6">
               지역 사회와 함께<br />성장하는 교회
             </h2>
-            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-md">
+            <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 max-w-md">
               일광교회는 예배와 교육, 교제와 봉사를 통해 성도들이 하나님의 사람으로
               세워지도록 돕고 있습니다. 다양한 부서와 사역을 통해 모든 세대가 함께 합니다.
             </p>
@@ -37,9 +37,9 @@ export default function WorshipSchedule() {
           </div>
 
           {/* Right: Service Grid — 2열 → xl에서 3열 */}
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
             {services.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex flex-col gap-3 bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div key={title} className="flex flex-col gap-3 bg-white rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 rounded-xl border-2 border-[#1a2744]/10 bg-[#F8FAF8] flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#1a2744]" />
                 </div>

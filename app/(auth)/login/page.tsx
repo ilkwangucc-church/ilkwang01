@@ -49,7 +49,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 0 }}>
+          <div className="bg-white px-5 sm:px-8 pt-8 sm:pt-10" style={{ paddingBottom: 0 }}>
             <div className="text-center mb-8">
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -119,7 +119,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
+                className="w-full py-3 min-h-[44px] bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
               >
                 {loading ? "로그인 중..." : "로그인"}
               </button>
@@ -127,7 +127,7 @@ export default function LoginPage() {
           </div>
 
           {/* 하단 영역 — 연한 회색 배경 (투톤) */}
-          <div className="bg-gray-50 px-8 py-5 text-center space-y-2">
+          <div className="bg-gray-50 px-5 sm:px-8 py-5 text-center space-y-2">
             <p className="text-sm text-gray-500">
               아직 계정이 없으신가요?{" "}
               <Link href="/register" className="text-[#2E7D32] font-medium hover:underline">회원가입</Link>

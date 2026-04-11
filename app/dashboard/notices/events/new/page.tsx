@@ -53,7 +53,7 @@ export default function NewEventPage() {
         <h1 className="text-2xl font-bold text-gray-900">행사안내 작성</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">제목</label>
           <input type="text" name="title" value={form.title} onChange={handleChange} required
@@ -61,7 +61,7 @@ export default function NewEventPage() {
             className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">분류</label>
             <select name="category" value={form.category} onChange={handleChange}

@@ -53,27 +53,27 @@ export default function WorshipInfoPage() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 py-16">
-        <h2 className="font-nanum-extrabold text-3xl text-gray-800 mb-8">예배 시간 안내</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
+        <h2 className="font-nanum-extrabold text-2xl sm:text-3xl text-gray-800 mb-6 sm:mb-8">예배 시간 안내</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-10 sm:mb-16">
           {services.map((s) => (
-            <div key={s.name} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all text-center">
-              <div className="text-4xl mb-3">{s.icon}</div>
-              <h3 className="font-nanum-extrabold text-gray-800 text-lg mb-1">{s.name}</h3>
-              <p className="text-[#2E7D32] font-nanum-extrabold text-xl mb-1">{s.time}</p>
+            <div key={s.name} className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all text-center">
+              <div className="text-3xl sm:text-4xl mb-3">{s.icon}</div>
+              <h3 className="font-nanum-extrabold text-gray-800 text-base sm:text-lg mb-1 break-keep">{s.name}</h3>
+              <p className="text-[#2E7D32] font-nanum-extrabold text-lg sm:text-xl mb-1">{s.time}</p>
               <p className="text-gray-400 text-xs mb-3">📍 {s.place}</p>
-              <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
+              <p className="text-gray-600 text-sm leading-relaxed break-keep">{s.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="bg-[#E8F5E9] rounded-2xl p-8 text-center">
-          <p className="text-gray-700 text-base mb-4">
+        <div className="bg-[#E8F5E9] rounded-2xl p-6 sm:p-8 text-center">
+          <p className="text-gray-700 text-sm sm:text-base mb-4 break-keep">
             예배 장소: 서울특별시 성북구 동소문로 212-68
           </p>
           <Link
             href="/about/location"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] text-white font-bold rounded-[26px] hover:bg-[#1B5E20] transition-colors min-h-[44px]"
           >
             오시는 길 보기
           </Link>

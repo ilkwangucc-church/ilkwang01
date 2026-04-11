@@ -28,7 +28,7 @@ export default function NewOfferingPage() {
         <h1 className="text-2xl font-bold text-gray-900">헌금 입금 등록</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
         {[
           { label: "헌금자 이름", name: "name", type: "text", placeholder: "홍길동 (익명 가능)" },
           { label: "입금 날짜", name: "date", type: "date" },

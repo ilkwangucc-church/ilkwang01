@@ -15,11 +15,11 @@ export default function AboutPage() {
       <StickySubNav items={ABOUT_NAV} />
 
       {/* ── 인사말 본문 ── */}
-      <div className="max-w-[1400px] mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 xl:grid-cols-[2fr_3fr] gap-12 xl:gap-20 items-center">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
+        <div className="grid md:grid-cols-2 xl:grid-cols-[2fr_3fr] gap-8 sm:gap-12 xl:gap-20 items-center">
 
           {/* 목사님 사진 */}
-          <div className="relative">
+          <div className="relative max-w-xs mx-auto w-full md:max-w-none">
             <div className="rounded-2xl overflow-hidden shadow-xl aspect-[3/4] bg-gray-100 relative">
               <Image
                 src="/pastor.jpg"
@@ -33,7 +33,7 @@ export default function AboutPage() {
 
           {/* 인사말 텍스트 — 우측 정렬 */}
           <div className="space-y-5 text-gray-700 leading-loose text-right">
-            <h3 className="font-nanum-extrabold text-2xl text-gray-800">
+            <h3 className="font-nanum-extrabold text-xl sm:text-2xl text-gray-800 break-keep">
               "행복과 영원으로 초대하는 교회"
             </h3>
 
@@ -81,12 +81,12 @@ export default function AboutPage() {
       </div>
 
       {/* ── 학력 및 경력 ── */}
-      <div className="bg-[#F8FAF8] py-16">
+      <div className="bg-[#F8FAF8] py-8 sm:py-12 lg:py-16">
         <div className="max-w-[1400px] mx-auto px-4">
-          <h2 className="font-nanum-extrabold text-2xl text-center text-gray-800 mb-10">
+          <h2 className="font-nanum-extrabold text-xl sm:text-2xl text-center text-gray-800 mb-6 sm:mb-10">
             학력 및 경력
           </h2>
-          <div className="grid md:grid-cols-2 gap-8 xl:gap-16">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 xl:gap-16">
             {/* 학력 */}
             <div className="bg-white rounded-xl p-6 shadow-sm">
               <h3 className="font-nanum-extrabold text-[#2E7D32] mb-4 flex items-center gap-2">

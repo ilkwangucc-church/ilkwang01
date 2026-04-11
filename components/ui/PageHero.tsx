@@ -18,7 +18,7 @@ interface PageHeroProps {
 
 export default function PageHero({ label, title, subtitle, image }: PageHeroProps) {
   return (
-    <div className="relative flex items-end overflow-hidden" style={{ minHeight: 600 }}>
+    <div className="relative flex items-end overflow-hidden min-h-[280px] sm:min-h-[400px] lg:min-h-[500px]">
       {/* 배경 이미지 */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -31,21 +31,20 @@ export default function PageHero({ label, title, subtitle, image }: PageHeroProp
       <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320]/85 via-[#0b1320]/45 to-[#0b1320]/25" />
 
       {/* 콘텐츠 — 모바일: 중앙정렬 / sm 이상: 좌측정렬 */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pb-14 text-center sm:text-left">
-        <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.3em] mb-4">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 pb-8 sm:pb-12 lg:pb-14 text-center sm:text-left">
+        <p className="text-[#6dbf73] text-[11px] font-bold uppercase tracking-[0.3em] mb-3 sm:mb-4">
           {label}
         </p>
-        <h1 className="font-nanum-extrabold text-white leading-tight mb-4"
-          style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
+        <h1 className="font-nanum-extrabold text-white leading-tight mb-3 sm:mb-4 text-3xl sm:text-4xl lg:text-5xl break-keep">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0">
+          <p className="text-gray-300 text-base sm:text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0 break-keep">
             {subtitle}
           </p>
         )}
         {/* 하단 구분선 */}
-        <div className="mt-8 w-16 h-1 bg-[#2E7D32] rounded-full mx-auto sm:mx-0" />
+        <div className="mt-6 sm:mt-8 w-16 h-1 bg-[#2E7D32] rounded-full mx-auto sm:mx-0" />
       </div>
     </div>
   );

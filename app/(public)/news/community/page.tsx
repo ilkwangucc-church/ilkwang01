@@ -76,14 +76,14 @@ export default function CommunityPage() {
 
       <StickySubNav items={NEWS_NAV} />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12">
         {/* 고정 게시물 */}
         {COMMUNITY_POSTS.filter(p => p.pinned).length > 0 && (
-          <div className="mb-10">
+          <div className="mb-8 sm:mb-10">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <Pin className="w-4 h-4 text-orange-500" /> 주요 공지
             </h2>
-            <div className="grid sm:grid-cols-2 gap-5">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
               {COMMUNITY_POSTS.filter(p => p.pinned).map((post) => (
                 <div key={post.id} className="bg-white rounded-2xl border border-orange-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   {post.image ? (
@@ -103,8 +103,8 @@ export default function CommunityPage() {
                     <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${CATEGORY_COLORS[post.category] || "bg-gray-100 text-gray-600"}`}>
                       {post.category}
                     </span>
-                    <h3 className="font-bold text-gray-900 mt-2 mb-1 leading-snug">{post.title}</h3>
-                    <p className="text-sm text-gray-500 line-clamp-2">{post.excerpt}</p>
+                    <h3 className="font-bold text-gray-900 mt-2 mb-1 leading-snug break-keep">{post.title}</h3>
+                    <p className="text-sm text-gray-500 line-clamp-2 break-keep">{post.excerpt}</p>
                     <div className="flex items-center gap-1 text-xs text-gray-400 mt-3">
                       <Calendar className="w-3 h-3" /> {post.date}
                     </div>
@@ -117,7 +117,7 @@ export default function CommunityPage() {
 
         {/* 전체 목록 */}
         <h2 className="text-lg font-bold text-gray-800 mb-4">전체 게시물</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {COMMUNITY_POSTS.filter(p => !p.pinned).map((post) => (
             <div key={post.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
               {post.image ? (
@@ -133,8 +133,8 @@ export default function CommunityPage() {
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${CATEGORY_COLORS[post.category] || "bg-gray-100 text-gray-600"}`}>
                   {post.category}
                 </span>
-                <h3 className="font-bold text-gray-900 mt-2 mb-1 text-sm leading-snug line-clamp-2">{post.title}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2">{post.excerpt}</p>
+                <h3 className="font-bold text-gray-900 mt-2 mb-1 text-sm leading-snug line-clamp-2 break-keep">{post.title}</h3>
+                <p className="text-xs text-gray-500 line-clamp-2 break-keep">{post.excerpt}</p>
                 <div className="flex items-center gap-1 text-xs text-gray-400 mt-3">
                   <Calendar className="w-3 h-3" /> {post.date}
                 </div>

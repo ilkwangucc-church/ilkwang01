@@ -30,7 +30,7 @@ export default function BlogVideoCard({ v }: { v: YTVideo }) {
             </div>
           </div>
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <p className="text-[#2E7D32] text-[11px] font-bold uppercase tracking-widest mb-2">
             주일 설교 · {v.publishedAt.slice(0, 10).replace(/-/g, ".")}
           </p>

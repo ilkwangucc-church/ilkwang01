@@ -29,18 +29,18 @@ const beliefs = [
 
 export default function ValuesSection() {
   return (
-    <section className="py-24 bg-[#F8FAF8]">
-      <div className="max-w-[1400px] mx-auto px-6">
+    <section className="py-14 sm:py-20 lg:py-24 bg-[#F8FAF8]">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6">
 
         {/* 헤더 — 중앙 정렬 */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-8 sm:mb-14">
           <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
             ALL ABOUT JESUS
           </p>
-          <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] mb-4">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#1a2744] mb-4">
             우리가 믿는 것
           </h2>
-          <p className="text-gray-500 leading-relaxed max-w-xl mx-auto mb-8">
+          <p className="text-gray-500 leading-relaxed max-w-xl mx-auto mb-6 sm:mb-8">
             일광교회는 성경 말씀에 기초한 개혁주의 신앙을 고백하며,
             삼위일체 하나님을 예배합니다.
           </p>
@@ -64,7 +64,7 @@ export default function ValuesSection() {
                   className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <span className="text-[10px] font-black text-[#2E7D32] tracking-widest uppercase mb-2 block">{b.tag}</span>
                 <h3 className="text-lg font-black text-[#1a2744] mb-2">{b.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{b.desc}</p>

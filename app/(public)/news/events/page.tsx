@@ -89,8 +89,8 @@ export default function EventsPage() {
       <StickySubNav items={NEWS_NAV} />
 
       {/* 행사 목록 */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-[1400px] mx-auto px-4 grid xl:grid-cols-2 xl:gap-6 gap-y-6">
+      <section className="py-8 sm:py-16 bg-gray-50">
+        <div className="max-w-[1400px] mx-auto px-4 grid xl:grid-cols-2 gap-4 sm:gap-5 xl:gap-6">
           {events.map((event) => (
             <div
               key={event.id}
@@ -104,25 +104,25 @@ export default function EventsPage() {
                   주요 행사
                 </div>
               )}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex-1">
                     <span className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3 ${categoryColors[event.category] ?? "bg-gray-100 text-gray-600"}`}>
                       {event.category}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{event.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4">{event.desc}</p>
-                    <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-gray-500">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 break-keep">{event.title}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-3 sm:mb-4 break-keep">{event.desc}</p>
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-y-2 gap-x-5 text-sm text-gray-500">
                       <span className="flex items-center gap-1.5">
-                        <Calendar className="w-4 h-4 text-[#2E7D32]" />
+                        <Calendar className="w-4 h-4 text-[#2E7D32] shrink-0" />
                         {event.date}
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <Clock className="w-4 h-4 text-[#2E7D32]" />
+                        <Clock className="w-4 h-4 text-[#2E7D32] shrink-0" />
                         {event.time}
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-[#2E7D32]" />
+                        <MapPin className="w-4 h-4 text-[#2E7D32] shrink-0" />
                         {event.location}
                       </span>
                     </div>

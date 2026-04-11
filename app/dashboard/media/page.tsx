@@ -46,9 +46,9 @@ export default function MediaPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">미디어 관리</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">미디어 관리</h1>
         <p className="text-gray-500 text-sm mt-0.5">사이트 내 동영상 주소 및 이미지 주소를 관리합니다</p>
       </div>
 
@@ -90,7 +90,7 @@ export default function MediaPage() {
                 </div>
 
                 {editId === item.id ? (
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex flex-col sm:flex-row gap-2 mt-2">
                     <input
                       type="url"
                       value={editValue}
@@ -99,12 +99,14 @@ export default function MediaPage() {
                       placeholder="새 주소를 입력하세요"
                       autoFocus
                     />
-                    <button onClick={() => saveEdit(item.id)} className="flex items-center gap-1 px-3 py-2 bg-[#2E7D32] text-white rounded-lg text-sm hover:bg-[#1B5E20] transition-colors">
-                      <Save className="w-3.5 h-3.5" /> 저장
-                    </button>
-                    <button onClick={cancelEdit} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={() => saveEdit(item.id)} className="flex items-center gap-1 px-3 py-2 bg-[#2E7D32] text-white rounded-lg text-sm hover:bg-[#1B5E20] transition-colors">
+                        <Save className="w-3.5 h-3.5" /> 저장
+                      </button>
+                      <button onClick={cancelEdit} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 mt-1">

@@ -28,7 +28,7 @@ export default function ContactForm() {
 
   return (
     <div>
-      <h2 className="font-nanum-extrabold text-2xl text-gray-800 mb-6">문의 보내기</h2>
+      <h2 className="font-nanum-extrabold text-xl sm:text-2xl text-gray-800 mb-5 sm:mb-6">문의 보내기</h2>
       {status === "done" ? (
         <div className="bg-[#E8F5E9] rounded-2xl p-8 text-center">
           <p className="text-4xl mb-3">✅</p>
@@ -38,7 +38,7 @@ export default function ContactForm() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-nanum-bold text-gray-600 mb-1">이름 *</label>
               <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})}

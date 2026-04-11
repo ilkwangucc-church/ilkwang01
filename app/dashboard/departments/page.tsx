@@ -64,7 +64,7 @@ export default function DepartmentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">부서 소개 수정</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">부서 소개 수정</h1>
           <p className="text-gray-500 text-sm mt-0.5">각 부서별 소개 내용 및 이미지 관리</p>
         </div>
         <button onClick={openNew} className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
@@ -123,8 +123,8 @@ export default function DepartmentsPage() {
               <h3 className="font-bold text-gray-900">{editItem ? "부서 수정" : "새 부서 추가"}</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 sm:p-6 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">부서명 *</label>
                   <input value={formData.name} onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}

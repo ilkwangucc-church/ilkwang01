@@ -62,7 +62,7 @@ export default function CertificatesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">증명서 발급</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">증명서 발급</h1>
           <p className="text-gray-500 text-sm mt-0.5">등록·세례·봉사·출석 증명서 신청 및 발급 확인</p>
         </div>
         <button
@@ -107,7 +107,38 @@ export default function CertificatesPage() {
         <div className="px-5 py-4 border-b border-gray-50">
           <h2 className="font-semibold text-gray-900">내 증명서 내역</h2>
         </div>
-        <div className="overflow-x-auto">
+
+        {/* 모바일 카드 뷰 */}
+        <div className="sm:hidden divide-y divide-gray-50">
+          {filtered.map((r) => (
+            <div key={r.id} className="px-4 py-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">{r.type}</span>
+                {r.status === "approved" ? (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">발급완료</span>
+                ) : (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">승인대기</span>
+                )}
+              </div>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-xs text-gray-400">{r.requestedAt}</span>
+                {r.status === "approved" ? (
+                  <button
+                    onClick={() => setPrintTarget(r)}
+                    className="flex items-center gap-1 text-xs text-[#2E7D32] hover:underline transition-colors"
+                  >
+                    <Printer className="w-3.5 h-3.5" /> 출력
+                  </button>
+                ) : (
+                  <span className="text-xs text-gray-300">-</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 데스크탑 테이블 뷰 */}
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
@@ -150,6 +181,7 @@ export default function CertificatesPage() {
             </tbody>
           </table>
         </div>
+
         {filtered.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">신청 내역이 없습니다.</div>
         )}

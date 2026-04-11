@@ -9,14 +9,14 @@ export default async function BlogPreview() {
   const latest3 = videos.slice(1, 5);
 
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-[1400px] mx-auto px-6">
+    <section className="py-14 sm:py-20 lg:py-24 bg-white">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-8 sm:mb-14">
           <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.2em] mb-3">
             RECENT SERMONS
           </p>
-          <h2 className="text-4xl lg:text-5xl font-black text-[#1a2744] mb-4">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#1a2744] mb-4">
             최근 설교 말씀
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
@@ -25,7 +25,7 @@ export default async function BlogPreview() {
         </div>
 
         {/* Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-8">
           {latest3.map((v) => (
             <BlogVideoCard key={v.id} v={v} />
           ))}

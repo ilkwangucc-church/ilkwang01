@@ -30,7 +30,7 @@ const youthLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#1a2744] text-gray-300">
-      <div className="max-w-[1400px] mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 py-12 sm:py-16 flex flex-col md:flex-row gap-8 sm:gap-10">
 
         {/* Col 1: Logo + About + Contact */}
         <div className="md:w-64 shrink-0 flex flex-col items-center md:items-start">

@@ -22,11 +22,11 @@ export default function VisionPage() {
       <PageHero label="Vision" title="소개 & 비전" subtitle="하나님 중심·성경 중심·교회 중심의 개혁주의 신앙 위에 세워진 교회" image="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=1800&auto=format&fit=crop&q=80" />
       <StickySubNav items={ABOUT_NAV} />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
         {/* 교회 소개 */}
-        <section className="mb-16">
-          <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-6">일광교회 소개</h2>
-          <div className="bg-[#E8F5E9] rounded-2xl p-8 leading-relaxed text-gray-700 space-y-4">
+        <section className="mb-10 sm:mb-16">
+          <h2 className="font-nanum-extrabold text-2xl sm:text-3xl text-[#2E7D32] mb-4 sm:mb-6">일광교회 소개</h2>
+          <div className="bg-[#E8F5E9] rounded-2xl p-5 sm:p-8 leading-relaxed text-gray-700 space-y-4 text-sm sm:text-base break-keep">
             <p>
               일광교회는 <strong className="text-[#2E7D32]">대한예수교장로회(합동측, 총신대학교)</strong>에 소속된 건강한 교회로
               <strong className="text-[#2E7D32]"> 1971년</strong>에 설립되어 50여 년 동안 돈암동 지역 복음화의 사명을 감당해 왔으며,
@@ -42,31 +42,31 @@ export default function VisionPage() {
         </section>
 
         {/* 교회 사명 */}
-        <section className="mb-16">
-          <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-6">일광교회 사명</h2>
-          <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] rounded-2xl p-8 text-white">
-            <div className="text-center space-y-3 text-lg">
+        <section className="mb-10 sm:mb-16">
+          <h2 className="font-nanum-extrabold text-2xl sm:text-3xl text-[#2E7D32] mb-4 sm:mb-6">일광교회 사명</h2>
+          <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] rounded-2xl p-5 sm:p-8 text-white">
+            <div className="text-center space-y-3 text-base sm:text-lg break-keep">
               <p>살아계신 하나님을 <strong className="text-[#FFC107]">예배하고</strong></p>
               <p>예수 그리스도의 제자로 <strong className="text-[#FFC107]">훈련되어</strong></p>
               <p>성령의 능력으로 사랑하고 전도하고 <strong className="text-[#FFC107]">섬김으로</strong></p>
-              <p className="font-nanum-extrabold text-2xl text-[#FFC107] pt-2">하나님의 나라를 확장한다.</p>
+              <p className="font-nanum-extrabold text-xl sm:text-2xl text-[#FFC107] pt-2">하나님의 나라를 확장한다.</p>
             </div>
           </div>
         </section>
 
         {/* 추구하는 공동체 */}
         <section>
-          <h2 className="font-nanum-extrabold text-3xl text-[#2E7D32] mb-8">일광교회가 추구하는 공동체</h2>
-          <div className="grid md:grid-cols-1 xl:grid-cols-2 gap-4">
+          <h2 className="font-nanum-extrabold text-2xl sm:text-3xl text-[#2E7D32] mb-6 sm:mb-8">일광교회가 추구하는 공동체</h2>
+          <div className="grid xl:grid-cols-2 gap-4">
             {communities.map((c, i) => (
-              <div key={c.name} className="flex gap-4 p-6 rounded-2xl bg-white border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all">
-                <div className="text-4xl shrink-0">{c.icon}</div>
+              <div key={c.name} className="flex gap-3 sm:gap-4 p-4 sm:p-6 rounded-2xl bg-white border border-gray-100 hover:border-[#A5D6A7] hover:shadow-md transition-all">
+                <div className="text-3xl sm:text-4xl shrink-0">{c.icon}</div>
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-nanum-extrabold text-xl text-gray-800">{c.name}</h3>
-                    <span className="text-sm text-[#2E7D32] font-nanum-bold">/ {c.desc}</span>
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                    <h3 className="font-nanum-extrabold text-lg sm:text-xl text-gray-800">{c.name}</h3>
+                    <span className="text-sm text-[#2E7D32] font-nanum-bold break-keep">/ {c.desc}</span>
                   </div>
-                  <p className="text-gray-600 leading-relaxed text-sm">{c.detail}</p>
+                  <p className="text-gray-600 leading-relaxed text-sm break-keep">{c.detail}</p>
                 </div>
               </div>
             ))}

@@ -43,7 +43,7 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">문의 접수함</h1>
@@ -53,22 +53,22 @@ export default function ContactsPage() {
           </p>
         </div>
         {unreadCount > 0 && (
-          <button onClick={markAllRead} className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">
+          <button onClick={markAllRead} className="flex items-center gap-2 px-4 py-2.5 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">
             <CheckCheck className="w-4 h-4" /> 전체 읽음 처리
           </button>
         )}
       </div>
 
       {/* 검색 · 필터 */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48">
+      <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="이름·제목·내용 검색..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
           />
         </div>
         <div className="flex gap-2">
@@ -76,7 +76,7 @@ export default function ContactsPage() {
             <button
               key={f}
               onClick={() => setFilterRead(f)}
-              className={`px-3 py-2 text-xs rounded-lg border transition-colors ${
+              className={`flex-1 sm:flex-none px-3 py-2.5 text-xs rounded-lg border transition-colors ${
                 filterRead === f ? "bg-[#2E7D32] text-white border-[#2E7D32]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -121,14 +121,14 @@ export default function ContactsPage() {
 
       {/* 문의 상세 모달 */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h3 className="font-bold text-gray-900 truncate pr-4">{selected.subject}</h3>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none shrink-0">&times;</button>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b shrink-0">
+              <h3 className="font-bold text-gray-900 truncate pr-4 text-sm sm:text-base">{selected.subject}</h3>
+              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none shrink-0 w-8 h-8 flex items-center justify-center">&times;</button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="flex flex-wrap gap-4 text-sm">
+            <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+              <div className="flex flex-wrap gap-3 text-sm">
                 <div className="flex items-center gap-2 text-gray-600">
                   <span className="font-medium text-gray-700">이름:</span> {selected.name}
                 </div>
@@ -147,12 +147,12 @@ export default function ContactsPage() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">답변 메모 (내부용)</label>
-                <textarea rows={3} placeholder="처리 내용, 답변 여부 등을 기록하세요..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 resize-none" />
+                <textarea rows={3} placeholder="처리 내용, 답변 여부 등을 기록하세요..." className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30 resize-none" />
               </div>
             </div>
-            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
-              <button onClick={() => setSelected(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">닫기</button>
-              <button onClick={() => setSelected(null)} className="px-4 py-2 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors">메모 저장</button>
+            <div className="flex gap-3 px-4 sm:px-6 py-4 border-t bg-gray-50 rounded-b-2xl shrink-0">
+              <button onClick={() => setSelected(null)} className="flex-1 px-4 py-2.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">닫기</button>
+              <button onClick={() => setSelected(null)} className="flex-1 px-4 py-2.5 text-sm bg-[#2E7D32] text-white rounded-lg hover:bg-[#1B5E20] transition-colors">메모 저장</button>
             </div>
           </div>
         </div>

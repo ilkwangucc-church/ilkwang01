@@ -58,7 +58,7 @@ const HIGHLIGHTS = [
 
 export default function EducationPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 히어로 배너 */}
       <div className="relative rounded-2xl overflow-hidden min-h-[120px] sm:h-44">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -80,10 +80,10 @@ export default function EducationPage() {
       </div>
 
       {/* 하이라이트 4칸 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {HIGHLIGHTS.map((h, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <span className="text-3xl block mb-2">{h.emoji}</span>
+          <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 text-center">
+            <span className="text-2xl sm:text-3xl block mb-2">{h.emoji}</span>
             <p className="font-bold text-gray-900 text-sm">{h.title}</p>
             <p className="text-xs text-gray-500 mt-0.5">{h.desc}</p>
           </div>
@@ -138,7 +138,7 @@ export default function EducationPage() {
       </div>
 
       {/* 하단 CTA 배너 */}
-      <div className="relative rounded-2xl overflow-hidden min-h-[100px] sm:h-36">
+      <div className="relative rounded-2xl overflow-hidden min-h-[120px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1400&q=80"
@@ -146,15 +146,15 @@ export default function EducationPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-[#2E7D32]/80" />
-        <div className="relative z-10 p-6 flex items-center justify-between h-full">
+        <div className="relative z-10 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <p className="text-white/80 text-sm font-semibold mb-1 flex items-center gap-1">
               <BookOpen className="w-3.5 h-3.5" /> 교육 문의
             </p>
-            <h3 className="text-white text-lg font-bold">교육에 대해 더 궁금하신가요?</h3>
+            <h3 className="text-white text-base sm:text-lg font-bold">교육에 대해 더 궁금하신가요?</h3>
             <p className="text-white/70 text-sm">교육부 담당자에게 직접 문의해 보세요</p>
           </div>
-          <button className="shrink-0 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
+          <button className="w-full sm:w-auto sm:shrink-0 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
             교육 신청하기
           </button>
         </div>

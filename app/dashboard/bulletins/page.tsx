@@ -99,11 +99,11 @@ export default function AdminBulletinsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <h1 className="text-xl font-bold text-gray-900">주보 관리</h1>
 
       {/* ── 업로드 폼 ── */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className="bg-white rounded-xl border p-4 sm:p-6">
         <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
           <Upload className="w-4 h-4 text-[#2E7D32]" />
           새 주보 등록
@@ -239,7 +239,7 @@ export default function AdminBulletinsPage() {
 
       {/* ── 주보 목록 ── */}
       <div className="bg-white rounded-xl border overflow-hidden">
-        <div className="px-6 py-4 border-b flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b flex items-center justify-between">
           <h2 className="text-base font-bold text-gray-800">등록된 주보 목록</h2>
           <span className="text-xs text-gray-400">{bulletins.length}건</span>
         </div>
@@ -251,14 +251,14 @@ export default function AdminBulletinsPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {bulletins.map((b) => (
-              <div key={b.id} className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50">
+              <div key={b.id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 hover:bg-gray-50">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800 text-sm">{fmt(b.date)}</p>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">
                     {b.highlights[0]}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 text-xs text-gray-400">
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0 text-xs text-gray-400 flex-wrap">
                   {b.front && <span className="bg-blue-50 text-blue-500 px-2 py-0.5 rounded font-medium">앞면</span>}
                   {b.back  && <span className="bg-blue-50 text-blue-500 px-2 py-0.5 rounded font-medium">뒷면</span>}
                   {b.file  && <span className="bg-green-50 text-green-600 px-2 py-0.5 rounded font-medium uppercase">{b.fileType}</span>}

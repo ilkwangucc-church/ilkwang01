@@ -23,7 +23,7 @@ export default async function SermonsPage() {
 
       {/* 최신 영상 하이라이트 */}
       {latest && (
-        <section className="py-12 bg-white border-b">
+        <section className="py-8 sm:py-12 bg-white border-b">
           <div className="max-w-[1400px] mx-auto px-4">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-4 text-center">
               최신 설교 · 소리 없이 자동 재생
@@ -37,7 +37,7 @@ export default async function SermonsPage() {
                 allowFullScreen
               />
             </div>
-            <h2 className="mt-4 text-xl font-black text-[#1a2744] text-center">
+            <h2 className="mt-4 text-base sm:text-xl font-black text-[#1a2744] text-center break-keep">
               {latest.title}
             </h2>
           </div>
@@ -45,26 +45,26 @@ export default async function SermonsPage() {
       )}
 
       {/* 전체 영상 목록 */}
-      <section className="py-12">
+      <section className="py-8 sm:py-12">
         <div className="max-w-[1400px] mx-auto px-4">
-          <h2 className="text-2xl font-black text-[#1a2744] mb-8">
+          <h2 className="text-xl sm:text-2xl font-black text-[#1a2744] mb-6 sm:mb-8">
             전체 설교 목록
             <span className="ml-2 text-sm font-normal text-gray-400">({videos.length}편)</span>
           </h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {videos.map((v) => (
               <SermonCard key={v.id} video={v} />
             ))}
           </div>
 
           {/* 유튜브 더보기 */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-8 sm:mt-12">
             <a
               href={YT_CHANNEL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3.5 border-2 border-[#2E7D32] text-[#2E7D32] rounded-[26px] font-bold hover:bg-[#2E7D32] hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-[#2E7D32] text-[#2E7D32] rounded-[26px] font-bold hover:bg-[#2E7D32] hover:text-white transition-colors min-h-[44px]"
             >
               유튜브에서 더보기 →
             </a>

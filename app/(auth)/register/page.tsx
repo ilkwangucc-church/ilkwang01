@@ -70,7 +70,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-6" style={{ paddingBottom: 10 }}>
+          <div className="bg-white px-5 sm:px-8 pt-6" style={{ paddingBottom: 10 }}>
             <div className="text-center mb-5">
               <div className="flex flex-col items-center mb-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -141,7 +141,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
+                className="w-full py-3 min-h-[44px] bg-[#2E7D32] text-white rounded-xl font-semibold hover:bg-[#1B5E20] transition-colors disabled:opacity-50"
                 style={{ marginTop: 25 }}
               >
                 {loading ? "처리 중..." : "회원가입"}
@@ -150,7 +150,7 @@ export default function RegisterPage() {
           </div>
 
           {/* 하단 영역 — 연한 회색 배경 (투톤) */}
-          <div className="bg-gray-50 px-8 py-5 text-center">
+          <div className="bg-gray-50 px-5 sm:px-8 py-5 text-center">
             <p className="text-sm text-gray-500">
               이미 계정이 있으신가요?{" "}
               <Link href="/login" className="text-[#2E7D32] font-medium hover:underline">로그인</Link>

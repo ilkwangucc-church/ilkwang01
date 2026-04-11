@@ -171,13 +171,13 @@ export default function InstagramSettingsPage() {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Link href="/dashboard/settings" className="text-gray-400 hover:text-gray-600 transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
               <Camera className="w-6 h-6 text-pink-500" /> 인스타그램 API 설정
             </h1>
           </div>
@@ -204,7 +204,7 @@ export default function InstagramSettingsPage() {
 
       {/* 새 계정 추가 폼 */}
       {showAddForm && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
           <h2 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Plus className="w-4 h-4 text-[#2E7D32]" /> 새 계정 추가
           </h2>
@@ -308,8 +308,8 @@ export default function InstagramSettingsPage() {
           const expiringSoon = days >= 0 && days <= 7 && account.accessToken;
 
           return (
-            <div key={account.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div key={account.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${account.gradient} flex items-center justify-center text-white shrink-0`}>
                     <Camera className="w-5 h-5" />

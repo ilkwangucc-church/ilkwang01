@@ -24,18 +24,18 @@ export default function BlogPage() {
     <div>
       <PageHero label="Community" title="교회 커뮤니티" subtitle="각 부서의 소식과 나눔을 함께해 주세요" image="https://images.unsplash.com/photo-1536126750180-3c7d59643f99?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12">
         {/* 부서 필터 */}
-        <div className="flex gap-2 flex-wrap mb-8">
+        <div className="flex gap-2 flex-wrap mb-6 sm:mb-8">
           {departments.map((d, i) => (
-            <button key={d} className={`px-4 py-1.5 rounded-full text-sm font-nanum-bold transition-colors ${i === 0 ? "bg-[#2E7D32] text-white" : "bg-gray-100 text-gray-600 hover:bg-[#E8F5E9] hover:text-[#2E7D32]"}`}>
+            <button key={d} className={`px-4 py-2 sm:py-1.5 rounded-full text-sm font-nanum-bold transition-colors min-h-[44px] sm:min-h-0 ${i === 0 ? "bg-[#2E7D32] text-white" : "bg-gray-100 text-gray-600 hover:bg-[#E8F5E9] hover:text-[#2E7D32]"}`}>
               {d}
             </button>
           ))}
         </div>
 
         {/* 포스트 그리드 */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {posts.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`}
               className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all">
@@ -43,14 +43,14 @@ export default function BlogPage() {
                 <img src={post.image} alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-nanum-bold mb-3 ${post.deptColor}`}>
                   {post.dept}
                 </span>
-                <h3 className="font-nanum-bold text-gray-800 leading-snug mb-2 group-hover:text-[#2E7D32] transition-colors line-clamp-2">
+                <h3 className="font-nanum-bold text-gray-800 leading-snug mb-2 group-hover:text-[#2E7D32] transition-colors line-clamp-2 break-keep">
                   {post.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">{post.excerpt}</p>
+                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4 break-keep">{post.excerpt}</p>
                 <div className="flex items-center gap-3 text-xs text-gray-400">
                   <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{post.date}</span>
                   <span className="flex items-center gap-1"><User className="w-3 h-3" />{post.author}</span>

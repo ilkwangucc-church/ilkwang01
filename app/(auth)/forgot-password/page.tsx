@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="rounded-2xl shadow-lg overflow-hidden">
           {/* 상단 영역 — 흰색 배경 */}
-          <div className="bg-white px-8 pt-10" style={{ paddingBottom: 0 }}>
+          <div className="bg-white px-5 sm:px-8 pt-8 sm:pt-10" style={{ paddingBottom: 0 }}>
             <div className="text-center mb-8">
               <div className="flex flex-col items-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -110,7 +110,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           {/* 하단 영역 — 연한 회색 배경 (투톤) */}
-          <div className="bg-gray-50 px-8 py-5 text-center space-y-2">
+          <div className="bg-gray-50 px-5 sm:px-8 py-5 text-center space-y-2">
             <p className="text-sm text-gray-500">
               <Link href="/login" className="text-[#2E7D32] font-medium hover:underline">← 로그인으로 돌아가기</Link>
             </p>

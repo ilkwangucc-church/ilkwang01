@@ -381,40 +381,42 @@ export default function MembersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">회원 관리</h1>
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900">회원 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">총 {members.length}명 · 6단계 등급 관리</p>
         </div>
         <button
           onClick={() => { setShowAddModal(true); setAddError(""); setAddForm(EMPTY_FORM); }}
-          className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
           + 회원 추가
         </button>
       </div>
 
       {/* 검색 · 필터 */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48">
+      <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100 flex flex-col sm:flex-row flex-wrap gap-3">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)}
             placeholder="이름·이메일·전화번호 검색..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30" />
         </div>
-        <select value={roleFilter} onChange={e => setRoleFilter(Number(e.target.value))}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none">
-          <option value={0}>전체 등급</option>
-          {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
-            <option key={v} value={v}>{v}단계 · {label}</option>
-          ))}
-        </select>
-        <button onClick={() => setSortBy(s => s === "name" ? "role" : "name")}
-          className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-          <ArrowUpDown className="w-3.5 h-3.5" />
-          {sortBy === "name" ? "가나다순" : "단계순"}
-        </button>
+        <div className="flex gap-2">
+          <select value={roleFilter} onChange={e => setRoleFilter(Number(e.target.value))}
+            className="flex-1 sm:flex-none px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none">
+            <option value={0}>전체 등급</option>
+            {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
+              <option key={v} value={v}>{v}단계 · {label}</option>
+            ))}
+          </select>
+          <button onClick={() => setSortBy(s => s === "name" ? "role" : "name")}
+            className="flex items-center gap-1.5 px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap">
+            <ArrowUpDown className="w-3.5 h-3.5" />
+            {sortBy === "name" ? "가나다순" : "단계순"}
+          </button>
+        </div>
       </div>
 
       {/* 회원 테이블 */}
@@ -422,74 +424,114 @@ export default function MembersPage() {
         {loading ? (
           <div className="text-center py-12 text-gray-400 text-sm">불러오는 중...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                  <th className="text-left px-5 py-3">이름</th>
-                  <th className="text-left px-5 py-3 hidden md:table-cell">연락처</th>
-                  <th className="text-left px-5 py-3">등급</th>
-                  <th className="text-left px-5 py-3 hidden sm:table-cell">교적</th>
-                  <th className="text-left px-5 py-3 hidden lg:table-cell">부서</th>
-                  <th className="text-left px-5 py-3 hidden lg:table-cell">가입일</th>
-                  <th className="text-left px-5 py-3">관리</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filtered.map((m) => (
-                  <tr key={m.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        {/* 프로필 이미지 클릭 → 편집 모달 */}
-                        <Avatar member={m} size="sm" clickable onClick={() => openEdit(m)} />
-                        <div>
-                          <p className="font-medium text-gray-900">{m.name}</p>
-                          <p className="text-xs text-gray-400">{m.email}</p>
-                        </div>
+          <>
+            {/* 모바일 카드 뷰 */}
+            <div className="sm:hidden divide-y divide-gray-50">
+              {filtered.map((m) => (
+                <div key={m.id} className="px-4 py-3 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <Avatar member={m} size="sm" clickable onClick={() => openEdit(m)} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-medium text-gray-900 text-sm">{m.name}</p>
+                        {inlineEditId === m.id ? (
+                          <select defaultValue={m.role}
+                            onChange={e => handleRoleChange(m.id, Number(e.target.value))}
+                            onBlur={() => setInlineEditId(null)} autoFocus
+                            className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none">
+                            {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
+                              <option key={v} value={v}>{v}. {label}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <button onClick={() => setInlineEditId(m.id)}
+                            className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}>
+                            {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
+                          </button>
+                        )}
                       </div>
-                    </td>
-                    <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
-                    <td className="px-5 py-3">
-                      {inlineEditId === m.id ? (
-                        <select defaultValue={m.role}
-                          onChange={e => handleRoleChange(m.id, Number(e.target.value))}
-                          onBlur={() => setInlineEditId(null)} autoFocus
-                          className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none">
-                          {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
-                            <option key={v} value={v}>{v}. {label}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <button onClick={() => setInlineEditId(m.id)}
-                          className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}
-                          title="클릭하여 등급 변경">
-                          {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
-                        </button>
-                      )}
-                    </td>
-                    <td className="px-5 py-3 hidden sm:table-cell">
-                      {m.matched
-                        ? <span className="flex items-center gap-1 text-gray-500 text-xs"><UserCheck className="w-3 h-3" />완료</span>
-                        : <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>}
-                    </td>
-                    <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
-                    <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.joined}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex gap-2">
-                        <button onClick={() => openEdit(m)}
-                          className="text-xs text-gray-500 hover:underline">편집</button>
-                        <button onClick={() => handleDelete(m.id)}
-                          className="text-xs text-red-500 hover:underline">삭제</button>
-                      </div>
-                    </td>
+                      <p className="text-xs text-gray-400 truncate">{m.email || m.phone}</p>
+                    </div>
+                    <div className="flex gap-3 shrink-0">
+                      <button onClick={() => openEdit(m)} className="text-xs text-gray-500 hover:underline py-1">편집</button>
+                      <button onClick={() => handleDelete(m.id)} className="text-xs text-red-500 hover:underline py-1">삭제</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filtered.length === 0 && (
+                <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
+              )}
+            </div>
+            {/* 데스크톱 테이블 뷰 */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <th className="text-left px-5 py-3">이름</th>
+                    <th className="text-left px-5 py-3 hidden md:table-cell">연락처</th>
+                    <th className="text-left px-5 py-3">등급</th>
+                    <th className="text-left px-5 py-3">교적</th>
+                    <th className="text-left px-5 py-3 hidden lg:table-cell">부서</th>
+                    <th className="text-left px-5 py-3 hidden lg:table-cell">가입일</th>
+                    <th className="text-left px-5 py-3">관리</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            {filtered.length === 0 && (
-              <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
-            )}
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map((m) => (
+                    <tr key={m.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar member={m} size="sm" clickable onClick={() => openEdit(m)} />
+                          <div>
+                            <p className="font-medium text-gray-900">{m.name}</p>
+                            <p className="text-xs text-gray-400">{m.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3 hidden md:table-cell text-gray-600">{m.phone}</td>
+                      <td className="px-5 py-3">
+                        {inlineEditId === m.id ? (
+                          <select defaultValue={m.role}
+                            onChange={e => handleRoleChange(m.id, Number(e.target.value))}
+                            onBlur={() => setInlineEditId(null)} autoFocus
+                            className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none">
+                            {Object.entries(ROLE_LABELS_SELECT).map(([v, label]) => (
+                              <option key={v} value={v}>{v}. {label}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <button onClick={() => setInlineEditId(m.id)}
+                            className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_COLORS[m.role] || "bg-gray-100 text-gray-600"} hover:opacity-80`}
+                            title="클릭하여 등급 변경">
+                            {ROLE_LABELS[m.role]} <ChevronDown className="w-2.5 h-2.5" />
+                          </button>
+                        )}
+                      </td>
+                      <td className="px-5 py-3">
+                        {m.matched
+                          ? <span className="flex items-center gap-1 text-gray-500 text-xs"><UserCheck className="w-3 h-3" />완료</span>
+                          : <span className="flex items-center gap-1 text-gray-400 text-xs"><UserX className="w-3 h-3" />미연결</span>}
+                      </td>
+                      <td className="px-5 py-3 hidden lg:table-cell text-gray-600">{m.dept}</td>
+                      <td className="px-5 py-3 hidden lg:table-cell text-gray-400">{m.joined}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex gap-2">
+                          <button onClick={() => openEdit(m)}
+                            className="text-xs text-gray-500 hover:underline">편집</button>
+                          <button onClick={() => handleDelete(m.id)}
+                            className="text-xs text-red-500 hover:underline">삭제</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {filtered.length === 0 && (
+                <div className="text-center py-12 text-gray-400 text-sm">검색 결과가 없습니다.</div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

@@ -26,29 +26,29 @@ export default function OfferingPage() {
     <div>
       <PageHero label="Online Offering" title="온라인 헌금" subtitle="하나님께 드리는 예물을 온라인으로 드릴 수 있습니다" image="https://images.unsplash.com/photo-1564419320461-6870880221ad?w=1800&auto=format&fit=crop&q=80" />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-16">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
         {/* 안내 말씀 */}
-        <div className="bg-[#E8F5E9] rounded-2xl p-8 mb-12 text-center">
+        <div className="bg-[#E8F5E9] rounded-2xl p-5 sm:p-8 mb-8 sm:mb-12 text-center">
           <p className="text-4xl mb-4">🙏</p>
-          <blockquote className="font-nanum-extrabold text-xl text-gray-800 mb-2">
+          <blockquote className="font-nanum-extrabold text-base sm:text-xl text-gray-800 mb-2 break-keep">
             "각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라"
           </blockquote>
           <p className="text-[#2E7D32] font-nanum-bold">고린도후서 9:7</p>
         </div>
 
         {/* 계좌 안내 */}
-        <section className="mb-12">
-          <h2 className="font-nanum-extrabold text-2xl text-gray-800 mb-6">계좌 안내</h2>
-          <div className="space-y-4">
+        <section className="mb-8 sm:mb-12">
+          <h2 className="font-nanum-extrabold text-xl sm:text-2xl text-gray-800 mb-4 sm:mb-6">계좌 안내</h2>
+          <div className="space-y-3 sm:space-y-4">
             {accounts.map((a) => (
-              <div key={a.bank} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="font-nanum-extrabold text-lg text-gray-800">{a.bank}</p>
-                  <p className="text-[#2E7D32] font-nanum-bold text-xl">{a.number}</p>
+              <div key={a.bank} className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-nanum-extrabold text-base sm:text-lg text-gray-800">{a.bank}</p>
+                  <p className="text-[#2E7D32] font-nanum-bold text-lg sm:text-xl">{a.number}</p>
                   <p className="text-gray-500 text-sm mt-1">예금주: {a.name}</p>
                 </div>
-                <div className="text-right">
-                  <span className="inline-block px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] text-sm font-nanum-bold rounded-full">
+                <div className="text-right shrink-0">
+                  <span className="inline-block px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] text-xs sm:text-sm font-nanum-bold rounded-full">
                     {a.purpose}
                   </span>
                 </div>
@@ -58,26 +58,26 @@ export default function OfferingPage() {
         </section>
 
         {/* 헌금 종류 */}
-        <section className="mb-12">
-          <h2 className="font-nanum-extrabold text-2xl text-gray-800 mb-6">헌금 종류</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <section className="mb-8 sm:mb-12">
+          <h2 className="font-nanum-extrabold text-xl sm:text-2xl text-gray-800 mb-4 sm:mb-6">헌금 종류</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {offeringTypes.map((t) => (
-              <div key={t.name} className="bg-white rounded-xl p-5 border border-gray-100 hover:border-[#A5D6A7] transition-colors text-center">
+              <div key={t.name} className="bg-white rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-[#A5D6A7] transition-colors text-center">
                 <div className="text-3xl mb-2">{t.icon}</div>
-                <h3 className="font-nanum-extrabold text-gray-800 mb-1">{t.name}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{t.desc}</p>
+                <h3 className="font-nanum-extrabold text-gray-800 mb-1 text-sm sm:text-base">{t.name}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed break-keep">{t.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* 안내사항 */}
-        <section className="bg-[#FFFDE7] rounded-2xl p-6">
-          <h3 className="font-nanum-extrabold text-lg text-gray-800 mb-4">📌 헌금 이체 안내</h3>
+        <section className="bg-[#FFFDE7] rounded-2xl p-5 sm:p-6">
+          <h3 className="font-nanum-extrabold text-base sm:text-lg text-gray-800 mb-4">📌 헌금 이체 안내</h3>
           <ul className="space-y-2 text-sm text-gray-700">
-            <li>• 이체 시 <strong>성함과 헌금 종류</strong>를 메모란에 입력해 주세요. (예: 홍길동 십일조)</li>
+            <li className="break-keep">• 이체 시 <strong>성함과 헌금 종류</strong>를 메모란에 입력해 주세요. (예: 홍길동 십일조)</li>
             <li>• 헌금 영수증이 필요하신 분은 교회 사무실에 문의해 주세요.</li>
-            <li>• 문의: <a href="tel:02-927-0691" className="text-[#2E7D32] font-nanum-bold">02-927-0691</a></li>
+            <li>• 문의: <a href="tel:02-927-0691" className="text-[#2E7D32] font-nanum-bold py-2.5 inline-block">02-927-0691</a></li>
           </ul>
         </section>
       </div>

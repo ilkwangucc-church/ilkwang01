@@ -3,7 +3,7 @@ import HeroCube from "./HeroCube";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[800px] flex items-center overflow-hidden">
+    <section className="relative min-h-[560px] sm:min-h-[700px] lg:min-h-[800px] flex items-center overflow-hidden">
       {/* Background Image */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -16,26 +16,26 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-[#1a2744]/85" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 w-full flex flex-col lg:flex-row items-center justify-center lg:gap-12 min-h-[800px]">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-6 py-20 sm:py-24 lg:py-16 w-full flex flex-col lg:flex-row items-center justify-center lg:gap-12 min-h-[560px] sm:min-h-[700px] lg:min-h-[800px]">
         <div className="max-w-2xl w-full text-center lg:text-left">
           {/* Label */}
-          <p className="text-[#a3c9a8] text-[22px] font-bold mb-2">
+          <p className="text-[#a3c9a8] text-base sm:text-lg lg:text-[22px] font-bold mb-2">
             행복과 영원으로 초대하는
           </p>
 
           {/* Main Heading */}
-          <h1 className="text-[42px] font-black text-white leading-[1.15] mb-4">
+          <h1 className="text-[28px] sm:text-[36px] lg:text-[42px] font-black text-white leading-[1.15] mb-3 sm:mb-4">
             일광교회에<br />오신 것을 환영합니다
           </h1>
 
           {/* Body */}
-          <p className="text-gray-300 text-[20px] leading-snug mb-8 max-w-xl mx-auto lg:mx-0">
-            우리의 목표는 지역 사회에서 소외된<br />이웃들에게 복음의 빛을 전하고, 모든 사람이<br />하나님의 사랑 안에서 새로운 삶을<br />시작하도록 돕는 것입니다.
+          <p className="text-gray-300 text-sm sm:text-base lg:text-[20px] leading-relaxed mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
+            우리의 목표는 지역 사회에서 소외된<br className="hidden sm:block" />이웃들에게 복음의 빛을 전하고, 모든 사람이<br className="hidden sm:block" />하나님의 사랑 안에서 새로운 삶을<br className="hidden sm:block" />시작하도록 돕는 것입니다.
           </p>
 
           {/* CTA Buttons + Info bar */}
           <div className="relative -top-[10px]">
-          <div className="flex flex-wrap gap-4 mb-5 justify-center lg:justify-start">
+          <div className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-5 justify-center lg:justify-start">
             <Link
               href="/about"
               className="inline-flex items-center justify-center px-6 py-[10px] bg-[#2E7D32] text-white font-bold text-base rounded-[26px] hover:bg-[#1B5E20] transition-colors tracking-wide"

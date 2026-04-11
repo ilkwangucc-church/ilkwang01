@@ -54,7 +54,7 @@ export default function NewAnnouncementPage() {
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">{error}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">제목</label>
           <input type="text" name="title" value={form.title} onChange={handleChange} required

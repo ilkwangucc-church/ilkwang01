@@ -35,18 +35,18 @@ export default function GalleryPage() {
 
       <StickySubNav items={NEWS_NAV} />
 
-      <div className="max-w-[1400px] mx-auto px-4 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12">
         {/* 카테고리 필터 */}
-        <div className="flex gap-2 flex-wrap mb-8">
+        <div className="flex gap-2 flex-wrap mb-6 sm:mb-8">
           {categories.map((c, i) => (
-            <button key={c} className={`px-4 py-1.5 rounded-full text-sm font-nanum-bold transition-colors ${i === 0 ? "bg-[#2E7D32] text-white" : "bg-gray-100 text-gray-600 hover:bg-[#E8F5E9] hover:text-[#2E7D32]"}`}>
+            <button key={c} className={`px-4 py-2 sm:py-1.5 rounded-full text-sm font-nanum-bold transition-colors min-h-[44px] sm:min-h-0 ${i === 0 ? "bg-[#2E7D32] text-white" : "bg-gray-100 text-gray-600 hover:bg-[#E8F5E9] hover:text-[#2E7D32]"}`}>
               {c}
             </button>
           ))}
         </div>
 
         {/* 갤러리 그리드 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           {galleryImages.map((img) => (
             <div key={img.id} className="group relative rounded-xl overflow-hidden aspect-square shadow-sm hover:shadow-lg transition-all cursor-pointer">
               <img

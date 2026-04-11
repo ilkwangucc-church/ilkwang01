@@ -44,16 +44,16 @@ export default function DeptSharePage() {
   const filtered = dept === "전체" ? POSTS : POSTS.filter(p => p.dept === dept);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Users2 className="w-6 h-6 text-gray-600" /> 부서나눔
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Users2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" /> 부서나눔
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">부서별 소식과 이야기를 나눕니다</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2.5 bg-[#2E7D32] text-white rounded-lg text-sm font-medium hover:bg-[#1B5E20] transition-colors">
           <Plus className="w-4 h-4" /> 글쓰기
         </button>
       </div>

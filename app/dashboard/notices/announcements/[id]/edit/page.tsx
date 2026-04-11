@@ -81,7 +81,7 @@ export default function EditAnnouncementPage() {
       {loading ? (
         <div className="text-center py-16 text-gray-400 text-sm">불러오는 중...</div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">제목</label>
             <input type="text" name="title" value={form.title} onChange={handleChange} required

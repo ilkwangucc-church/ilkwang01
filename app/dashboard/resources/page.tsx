@@ -45,7 +45,7 @@ export default function ResourcesPage() {
   const list = RESOURCES[tab].filter(r => r.title.includes(query));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 히어로 배너 */}
       <div className="relative rounded-2xl overflow-hidden min-h-[100px] sm:h-40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -55,25 +55,25 @@ export default function ResourcesPage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-700/60" />
-        <div className="relative z-10 p-6 h-full flex flex-col justify-center">
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2 mb-1">
-            <FolderOpen className="w-6 h-6" /> 자료실
+        <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col justify-center">
+          <h1 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2 mb-1">
+            <FolderOpen className="w-5 h-5 sm:w-6 sm:h-6" /> 자료실
           </h1>
           <p className="text-gray-300 text-sm">교육·나눔·설교 자료를 자유롭게 다운로드하세요</p>
         </div>
       </div>
 
       {/* 통계 4칸 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {STATS.map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3">
+            <div key={s.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${s.color}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">{s.label}</p>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-500 truncate">{s.label}</p>
                 <p className="font-bold text-gray-900 text-sm">{s.value}</p>
               </div>
             </div>
@@ -82,8 +82,8 @@ export default function ResourcesPage() {
       </div>
 
       {/* 검색 + 탭 */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      <div className="flex flex-col gap-3">
+        <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             value={query} onChange={e => setQuery(e.target.value)}
@@ -91,12 +91,12 @@ export default function ResourcesPage() {
             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/30"
           />
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2">
           {(["교육", "나눔", "설교자료"] as TabType[]).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                 tab === t ? "bg-[#2E7D32] text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >

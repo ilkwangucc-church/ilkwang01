@@ -18,12 +18,12 @@ export default function PastorPage() {
       <StickySubNav items={ABOUT_NAV} />
 
       {/* 직원 소개 그리드 */}
-      <div className="max-w-[1400px] mx-auto px-4 py-16">
-        <p className="text-center text-gray-500 mb-12">
+      <div className="max-w-[1400px] mx-auto px-4 py-8 sm:py-12 lg:py-16">
+        <p className="text-center text-gray-500 mb-8 sm:mb-12 text-sm sm:text-base break-keep">
           일광교회를 함께 섬기는 교역자 및 직원을 소개합니다.
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
           {staffSlots.map(({ id }) => (
             <div
               key={id}

@@ -30,25 +30,25 @@ export default function HistoryPage() {
       <StickySubNav items={ABOUT_NAV} />
 
       {/* 타임라인 */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-10 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="relative">
             {/* 중앙선 */}
             <div className="absolute left-[80px] top-0 bottom-0 w-0.5 bg-[#2E7D32]/20 hidden md:block" />
 
-            <div className="grid xl:grid-cols-2 xl:gap-x-16 gap-y-8">
+            <div className="grid xl:grid-cols-2 xl:gap-x-16 gap-y-5 sm:gap-y-8">
               {timeline.map((item, i) => (
-                <div key={i} className="flex gap-6 items-start">
+                <div key={i} className="flex gap-3 sm:gap-6 items-start">
                   {/* 연도 */}
-                  <div className="shrink-0 w-20 text-right">
-                    <span className="text-[#2E7D32] font-bold text-lg">{item.year}</span>
+                  <div className="shrink-0 w-14 sm:w-20 text-right">
+                    <span className="text-[#2E7D32] font-bold text-base sm:text-lg">{item.year}</span>
                   </div>
                   {/* 점 */}
                   <div className="shrink-0 hidden md:flex w-4 h-4 rounded-full bg-[#2E7D32] mt-1.5 relative z-10" />
                   {/* 내용 */}
-                  <div className="flex-1 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                    <h3 className="font-bold text-gray-900 mb-1">{item.event}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{item.detail}</p>
+                  <div className="flex-1 bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100">
+                    <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base break-keep">{item.event}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed break-keep">{item.detail}</p>
                   </div>
                 </div>
               ))}
@@ -58,10 +58,10 @@ export default function HistoryPage() {
       </section>
 
       {/* 마무리 */}
-      <section className="py-16 bg-white text-center">
+      <section className="py-10 sm:py-16 bg-white text-center">
         <div className="max-w-2xl mx-auto px-4">
           <div className="w-12 h-0.5 bg-[#2E7D32] mx-auto mb-6" />
-          <p className="text-gray-700 leading-relaxed text-lg">
+          <p className="text-gray-700 leading-relaxed text-base sm:text-lg break-keep">
             일광교회는 반세기가 넘는 역사 속에서 <strong>오직 하나님의 은혜</strong>로
             성장해 왔습니다.<br />
             앞으로도 말씀과 기도, 전도와 선교의 사명을 붙잡고<br />

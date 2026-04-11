@@ -808,7 +808,7 @@ export default function ChurchMembersPage() {
       {/* ── 헤더 ──────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">교인 관리</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">교인 관리</h1>
           <p className="text-gray-500 text-sm mt-0.5">
             교적 명부 · 총 {members.length}명 등록
           </p>

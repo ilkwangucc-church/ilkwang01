@@ -3,6 +3,8 @@ import { Settings, CheckCircle2, XCircle, Mail, MessageSquare, Video, Key } from
 
 export const metadata: Metadata = { title: "사이트 설정 | 관리자" };
 
+const SITE_URL = "https://ilkwang.org";
+
 const SERVICES = [
   {
     name: "Brevo (이메일)",
@@ -39,7 +41,7 @@ const ENV_GUIDE = `# 일광교회 환경변수 설정 가이드
 BREVO_API_KEY=xkeysib-xxx...
 BREVO_FROM_EMAIL=noreply@ilkwang.or.kr
 BREVO_FROM_NAME=일광교회
-NEXT_PUBLIC_BASE_URL=https://ilkwang01.vercel.app
+NEXT_PUBLIC_BASE_URL=${SITE_URL}
 
 # ── YouTube API ────────────────────────────────
 YOUTUBE_API_KEY=AIzaSy...
@@ -55,11 +57,11 @@ REVALIDATION_SECRET=ilkwang-cache-2026
 
 # ── Next Auth ──────────────────────────────────
 NEXTAUTH_SECRET=your-random-secret-here
-NEXTAUTH_URL=https://ilkwang01.vercel.app`;
+NEXTAUTH_URL=${SITE_URL}`;
 
 const SITE_INFO = [
   { label: "사이트 이름",  value: "일광교회" },
-  { label: "사이트 URL",   value: "https://ilkwang01.vercel.app" },
+  { label: "사이트 URL",   value: SITE_URL },
   { label: "관리자 이메일", value: "admin@ilkwang.or.kr" },
   { label: "발신 이메일",   value: "noreply@ilkwang.or.kr" },
   { label: "교회 연락처",   value: "02-927-0691" },
@@ -70,15 +72,15 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* 헤더 */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
           <Settings className="w-6 h-6 text-gray-600" /> 사이트 설정
         </h1>
         <p className="text-gray-500 text-sm mt-0.5">일반 설정 및 외부 서비스 연동 관리</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* 외부 서비스 연동 현황 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
           <h2 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Key className="w-4 h-4 text-gray-500" /> 외부 서비스 연동 현황
           </h2>
@@ -108,7 +110,7 @@ export default function SettingsPage() {
         </div>
 
         {/* 사이트 기본 정보 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
           <h2 className="font-bold text-gray-900 mb-4">사이트 기본 정보</h2>
           <div className="space-y-3">
             {SITE_INFO.map((f) => (
@@ -129,7 +131,7 @@ export default function SettingsPage() {
       </div>
 
       {/* 환경변수 가이드 */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
         <h2 className="font-bold text-gray-900 mb-2">.env.local / Vercel 환경변수 설정 가이드</h2>
         <p className="text-xs text-gray-500 mb-4">
           아래 키들을 Vercel 프로젝트의 Environment Variables에 등록하거나

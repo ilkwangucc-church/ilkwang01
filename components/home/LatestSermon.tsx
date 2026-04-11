@@ -18,12 +18,12 @@ export default async function LatestSermon() {
       <div className="max-w-6xl mx-auto px-[10px] sm:px-0">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row">
           {/* ── 영상: 처음부터 자동재생(음소거) ── */}
-          <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[326px]">
+          <div className="sm:w-[580px] shrink-0 relative overflow-hidden self-stretch min-h-[200px] sm:min-h-[326px]">
             <SermonStreamPlayer videoId={latest.id} startSec={0} endSec={5400} />
           </div>
 
           {/* ── 정보 (오른쪽) ── */}
-          <div className="flex-1 pl-6 pr-8 py-8 flex flex-col justify-center">
+          <div className="flex-1 px-5 sm:pl-6 sm:pr-8 py-6 sm:py-8 flex flex-col justify-center">
             <p className="text-[#2E7D32] text-xs font-bold uppercase tracking-[0.18em] mb-2">
               최신 설교 · 소리 없이 재생 중
             </p>

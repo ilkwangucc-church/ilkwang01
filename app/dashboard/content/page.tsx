@@ -45,9 +45,9 @@ const sections = [
 
 export default function ContentAdminPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">콘텐츠 관리 (CMS)</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">콘텐츠 관리 (CMS)</h1>
         <p className="text-gray-500 text-sm mt-0.5">사이트 텍스트와 정보를 직접 수정합니다</p>
       </div>
 
@@ -55,17 +55,17 @@ export default function ContentAdminPage() {
         Supabase 연동 후 실시간 저장 기능이 활성화됩니다. 현재는 미리보기 모드입니다.
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {sections.map((section) => (
           <div key={section.key} className="bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-50">
               <h2 className="font-semibold text-gray-900">{section.label}</h2>
               <button className="flex items-center gap-1.5 text-sm text-[#2E7D32] hover:underline font-medium">
                 <Save className="w-4 h-4" />
                 저장
               </button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-6 space-y-4">
               {section.fields.map((field) => (
                 <div key={field.name}>
                   <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">{field.label}</label>
