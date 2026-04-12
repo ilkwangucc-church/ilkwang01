@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     description: "행복과 영원으로 초대하는 일광교회",
     locale: "ko_KR",
     type: "website",
+    images: [{ url: "/ilkwang03.png" }],
   },
 };
 
