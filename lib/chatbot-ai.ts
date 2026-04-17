@@ -77,9 +77,14 @@ export interface ChatMessage {
 
 /* ── 시스템 프롬프트 ────────────────────────────────────────── */
 function buildSystemPrompt(customKb: string, userLang: string): string {
-  const langRule = userLang !== "English"
-    ? `*** MANDATORY: The user is writing in ${userLang}. You MUST respond ENTIRELY in ${userLang}. Do NOT use English. ***`
-    : `ALWAYS respond in the SAME language the user writes in. If Korean, respond in Korean.`;
+  // 일광교회 규칙:
+  //  - 영어 질문 → 영어로만 응답
+  //  - 그 외 모든 언어(한국어 포함) → 해당 언어로 응답 (기본은 한국어)
+  const langRule = userLang === "English"
+    ? `*** MANDATORY: The user is writing in English. Respond ONLY in English. Do NOT use Korean or any other language. ***`
+    : userLang === "Korean"
+      ? `*** MANDATORY: 사용자는 한국어로 질문하고 있습니다. 반드시 한국어로만 응답하세요. 영어를 쓰지 마세요. ***`
+      : `*** MANDATORY: The user is writing in ${userLang}. You MUST respond ENTIRELY in ${userLang}. Do NOT use English or any other language. ***`;
 
   return `You are the Ilkwang Church (일광교회) friendly AI assistant. You help visitors with questions about the church, worship services, ministries, and how to get involved.
 

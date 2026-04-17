@@ -133,35 +133,35 @@ export function SettingsTab({ settings, setSettings, settingsSaving, saveSetting
           <div>
             <Label>기본 색상</Label>
             <ColorInput
-              value={settings.primary_color || "#2E7D32"}
+              value={settings.primary_color || "#1A2744"}
               onChange={(v) => setSettings((s) => ({ ...s, primary_color: v }))}
             />
           </div>
           <div>
             <Label>보조 색상</Label>
             <ColorInput
-              value={settings.secondary_color || "#6DBF73"}
+              value={settings.secondary_color || "#2E3F6B"}
               onChange={(v) => setSettings((s) => ({ ...s, secondary_color: v }))}
             />
           </div>
           <div>
             <Label>헤더 배경색</Label>
             <ColorInput
-              value={settings.header_bg_color || "#2E7D32"}
+              value={settings.header_bg_color || "#1A2744"}
               onChange={(v) => setSettings((s) => ({ ...s, header_bg_color: v }))}
             />
           </div>
           <div>
             <Label>사용자 버블색</Label>
             <ColorInput
-              value={settings.user_bubble_color || "#2E7D32"}
+              value={settings.user_bubble_color || "#1A2744"}
               onChange={(v) => setSettings((s) => ({ ...s, user_bubble_color: v }))}
             />
           </div>
           <div>
             <Label>봇 버블색</Label>
             <ColorInput
-              value={settings.bot_bubble_color || "#F1F5F2"}
+              value={settings.bot_bubble_color || "#F1F4F9"}
               onChange={(v) => setSettings((s) => ({ ...s, bot_bubble_color: v }))}
             />
           </div>
