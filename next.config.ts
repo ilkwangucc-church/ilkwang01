@@ -44,13 +44,6 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
-      /* Next.js 빌드 정적 자산 — 1년 Immutable */
-      {
-        source: "/_next/static/(.*)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
       /* 이미지 / 폰트 — 30일 */
       {
         source: "/images/(.*)",

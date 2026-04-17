@@ -5,6 +5,14 @@
  */
 import { readFile } from "fs/promises";
 import path from "path";
+import { FALLBACK_VIDEOS } from "@/lib/youtube";
+
+export interface KnowledgeDoc {
+  title: string;
+  content: string;
+  source: "static" | "dynamic";
+  keywords?: string[];
+}
 
 /* ──────────────────────────────────────────────────────────────
  * 1. 정적 지식베이스 — 홈페이지/관리자 대시보드 모든 콘텐츠 집약
@@ -165,6 +173,71 @@ Q. 교회는 언제 설립됐나요?
 A. 1971년에 서울 성북구 돈암동 지역에서 설립되어 50년이 넘는 역사를 이어오고 있습니다.
 `;
 
+const EXTRA_SYSTEM_KB = `
+[기본 안내 원칙]
+챗봇의 기본 안내는 헤더 메뉴인 교회소개, 예배/말씀, 다음세대, 나눔과 소식 구조를 기준으로 설명합니다.
+예배 시간, 오시는 길, 담임목사 소개, 교회 비전, 교회 역사 같은 1차 기본 정보는 교회소개와 예배/말씀 메뉴 기준으로 먼저 안내합니다.
+공지, 광고, 주보, 행사, 갤러리, 최근 업데이트 같은 내용은 2차 정보입니다. 사용자가 공지, 광고사항, 주보, 행사, 최근 소식 등을 직접 물을 때만 별도로 안내합니다.
+기본 안내 질문에 답할 때는 공지나 주보 내용을 섞어서 답하지 않습니다.
+
+[교회소개 메뉴 안내]
+교회소개 메뉴는 /about 아래 정보로 구성됩니다.
+/about 는 담임목사 인사말, /about/history 는 교회역사, /about/pastor 는 섬기는 사람들, /about/vision 은 교회비전, /about/location 은 오시는길, /about/worship-info 는 예배안내입니다.
+교회의 기본 소개, 담임목사 소개, 위치 안내, 비전, 역사 질문은 교회소개 메뉴 기준으로 답합니다.
+
+[예배/말씀 메뉴 안내]
+예배/말씀 메뉴는 /worship 와 /worship/sermons 로 구성됩니다.
+기본 예배 안내 질문은 /worship 의 공식 예배 시간 정보를 우선 사용합니다.
+설교 영상, 최근 설교, 유튜브 채널 안내는 /worship/sermons 및 설교 데이터 기준으로 별도로 설명합니다.
+
+[다음세대 메뉴 안내]
+다음세대 메뉴는 /youth 아래 유초등부(/youth/sunday), 중고등부(/youth/teens), 청년부(/youth/young-adults)로 구성됩니다.
+다음세대 질문은 부서별 예배 시간, 대상 연령, 주요 프로그램을 중심으로 답합니다.
+
+[나눔과 소식 메뉴 안내]
+나눔과 소식 메뉴는 /news 를 기준으로 주보(/news/bulletin), 행사안내(/news/events), 갤러리(/news/gallery), 자료실(/resources), 게시판(/resources/board), 커뮤니티(/news/community, /blog)를 포함합니다.
+이 메뉴는 공지, 광고사항, 주보, 행사, 갤러리, 자료 공유 등 2차 소식성 정보를 다루는 영역입니다.
+
+[예배 시간 기본 안내 형식]
+예배 안내를 요청하면 기본 형식은 다음 순서를 따릅니다.
+제목: 예배 안내
+섹션 1: 주일예배
+1부 오전 9:30
+2부 오전 11:00
+3부 오후 1:30
+섹션 2: 기도회와 성경공부
+새벽기도회 매일 오전 5:00
+수요오전기도회 수요일 오전 10:30
+수요성경공부 수요일 오후 8:00
+마무리: 처음 방문이시면 어떤 예배가 편한지도 이어서 안내합니다.
+
+[공개 사이트 기능]
+메인 홈(/)은 히어로, 최신 설교, 예배 안내, 블로그 미리보기, 행사, 교회 소개, 핵심 가치, 문의 CTA로 구성됩니다.
+상단 공개 메뉴는 교회소개(/about), 예배/말씀(/worship), 다음세대(/youth), 나눔과 소식(/news), 온라인 헌금(/offering), 문의하기(/contact)입니다.
+자료실은 /resources, 게시판은 /resources/board, 블로그는 /blog, 주보는 /news/bulletin, 행사안내는 /news/events, 갤러리는 /news/gallery 입니다.
+
+[회원 대시보드 기능]
+회원 로그인 경로는 /dashboard/login 입니다.
+모든 회원 공통 메뉴는 성경통독(/dashboard/bible), 설교 보기(/dashboard/sermons), 교회교육(/dashboard/education), 자료실(/dashboard/resources), 성도의 하루(/dashboard/daily), 부서나눔(/dashboard/dept-share), 부서별 블로그(/dashboard/blog), 상담신청(/dashboard/counseling), 행사안내(/dashboard/events), 부서별 인스타(/dashboard/instagram) 입니다.
+운영자 권한(역할 5 이상)에는 회원 관리, 교인 관리, 증명서, 홈 화면 수정, 섬기는 사람들, 부서 소개, 미디어, 페이지 관리, 문의, 공지, 행사, 주보, 갤러리, 뉴스레터, 캐시, 인스타 설정, 사이트 설정 메뉴가 추가됩니다.
+
+[백엔드 API 구조]
+공개 API는 /api/chatbot-ext/config, /api/chatbot-ext/chat, /api/chatbot-ext/history/[id], /api/chatbot-ext/collect-email, /api/chatbot-ext/escalate, /api/chatbot-ext/csat, /api/contact, /api/notices, /api/sermons, /api/bulletins, /api/gallery, /api/ilkwang-sermons 등으로 구성됩니다.
+관리자 인증 API는 /api/admin/auth, /api/admin/auth/me, /api/admin/profile 입니다.
+관리자 운영 API는 /api/admin/chatbot/*, /api/cache/*, /api/church-members/*, /api/members/*, /api/certificates, /api/instagram/*, /api/sms/send 등으로 구성됩니다.
+
+[콘텐츠 저장 구조]
+공지, 설교, 주보, 갤러리, 성경 나눔 등 공개 콘텐츠는 data/*.json 파일을 기본 데이터 원본으로 사용합니다.
+GITHUB_DB_TOKEN 과 GITHUB_DB_REPO 가 설정되면 공지, 설교, 주보, 갤러리 등은 GitHub 저장소와 동기화되어 운영됩니다.
+챗봇 대화, 설정, 분석은 UPSTASH_REDIS_REST_URL 과 UPSTASH_REDIS_REST_TOKEN 이 있을 때 Redis에 저장됩니다.
+
+[챗봇 시스템]
+챗봇 위젯 스크립트는 /chatbot-embed.js 이고, self-hosted 모드에서는 현재 사이트 origin 을 API base 로 사용합니다.
+챗봇 설정 API는 /api/chatbot-ext/config 이며 기본 봇 이름은 일광안내, 기본 인사말은 "반갑습니다. 일광교회입니다." 입니다.
+AI 응답은 Cloudflare Workers AI 를 우선 사용하며 필요한 환경변수는 CF_ACCOUNT_ID 와 CF_AI_TOKEN 입니다. 모델 기본값은 @cf/qwen/qwen3-30b-a3b-fp8 입니다.
+외부 AI가 없어도 공개 지식베이스를 기반으로 예배 시간, 연락처, 위치, 헌금 안내, 사이트 메뉴, 관리자 기능, API 구조 같은 질문에는 답하도록 설계되어 있습니다.
+`;
+
 /* ──────────────────────────────────────────────────────────────
  * 2. 동적 KB 로더 — /data/*.json 에서 최신 주보·공지 등 읽기
  * ──────────────────────────────────────────────────────────── */
@@ -185,6 +258,40 @@ async function readJsonSafe<T>(file: string): Promise<T | null> {
     }
   }
 }
+
+function createDoc(
+  title: string,
+  content: string,
+  source: KnowledgeDoc["source"],
+  keywords: string[] = [],
+): KnowledgeDoc {
+  return {
+    title,
+    content: content.trim(),
+    source,
+    keywords,
+  };
+}
+
+function parseSectionDocs(text: string, source: KnowledgeDoc["source"]): KnowledgeDoc[] {
+  return text
+    .split(/\n(?=\[[^\]]+\])/g)
+    .map((chunk) => chunk.trim())
+    .filter(Boolean)
+    .map((chunk) => {
+      const match = chunk.match(/^\[([^\]]+)\]\n?([\s\S]*)$/);
+      if (!match) {
+        return createDoc("일광교회 안내", chunk, source);
+      }
+      const [, title, body] = match;
+      return createDoc(title, body.trim(), source, [title]);
+    });
+}
+
+const STATIC_KNOWLEDGE_DOCS: KnowledgeDoc[] = [
+  ...parseSectionDocs(CHURCH_KB, "static"),
+  ...parseSectionDocs(EXTRA_SYSTEM_KB, "static"),
+];
 
 interface BulletinRow {
   id: number;
@@ -227,7 +334,11 @@ interface DepartmentInfo {
   [key: string]: unknown;
 }
 
-export async function loadDynamicKB(): Promise<string> {
+export function getStaticKnowledgeDocs(): KnowledgeDoc[] {
+  return STATIC_KNOWLEDGE_DOCS;
+}
+
+export async function loadDynamicKnowledgeDocs(): Promise<KnowledgeDoc[]> {
   const [bulletins, notices, sermons, gallery] = await Promise.all([
     readJsonSafe<BulletinRow[]>("bulletins.json"),
     readJsonSafe<NoticeRow[]>("notices.json"),
@@ -235,23 +346,43 @@ export async function loadDynamicKB(): Promise<string> {
     readJsonSafe<GalleryRow[]>("gallery.json"),
   ]);
 
-  let kb = "";
+  const docs: KnowledgeDoc[] = [];
 
-  // 최신 주보 5개
   if (bulletins && bulletins.length > 0) {
     const latest = bulletins.slice(0, 5);
-    kb += "\n[최근 주보]\n";
+    docs.push(
+      createDoc(
+        "최근 주보 요약",
+        latest
+          .map((b) => {
+            const highlights = b.highlights?.length ? `주요 내용: ${b.highlights.join(" / ")}` : "";
+            return `${b.date} 주보. ${highlights}`.trim();
+          })
+          .join("\n"),
+        "dynamic",
+        ["주보", "bulletin"],
+      ),
+    );
+
     for (const b of latest) {
-      kb += `- ${b.date}`;
-      if (b.highlights && b.highlights.length > 0) {
-        kb += `: ${b.highlights.join(" / ")}`;
-      }
-      if (b.front) kb += ` (주보 이미지: ${b.front})`;
-      kb += "\n";
+      docs.push(
+        createDoc(
+          `주보 ${b.date}`,
+          [
+            `날짜: ${b.date}`,
+            b.highlights?.length ? `주요 내용: ${b.highlights.join(" / ")}` : "",
+            b.front ? `앞면 이미지: ${b.front}` : "",
+            b.back ? `뒷면 이미지: ${b.back}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+          "dynamic",
+          ["주보", b.date],
+        ),
+      );
     }
   }
 
-  // 공지사항
   if (notices && notices.length > 0) {
     const active = notices
       .filter((n) => n.published !== false)
@@ -261,41 +392,189 @@ export async function loadDynamicKB(): Promise<string> {
         if (!a.pinned && b.pinned) return 1;
         return (b.date || "").localeCompare(a.date || "");
       });
+
     if (active.length > 0) {
-      kb += "\n[최근 공지사항]\n";
-      for (const n of active) {
-        kb += `- [${n.category || "공지"}] ${n.title}`;
-        if (n.date) kb += ` (${n.date})`;
-        if (n.pinned) kb += " [고정]";
-        kb += "\n";
-        if (n.content && n.content !== n.title) {
-          kb += `  내용: ${n.content.slice(0, 200)}\n`;
-        }
-      }
+      docs.push(
+        createDoc(
+          "최근 공지사항 요약",
+          active
+            .map((n) => `[${n.category || "공지"}] ${n.title}${n.date ? ` (${n.date})` : ""}${n.pinned ? " [고정]" : ""}`)
+            .join("\n"),
+          "dynamic",
+          ["공지", "notice", "행사"],
+        ),
+      );
+    }
+
+    for (const n of active) {
+      docs.push(
+        createDoc(
+          `공지 ${n.title}`,
+          [
+            `분류: ${n.category || "공지"}`,
+            n.date ? `날짜: ${n.date}` : "",
+            n.pinned ? "고정 공지입니다." : "",
+            n.content ? `내용: ${n.content}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+          "dynamic",
+          ["공지", "notice", n.category || "공지", n.date || ""],
+        ),
+      );
     }
   }
 
-  // 최근 설교
-  if (sermons && sermons.length > 0) {
-    const latest = sermons.slice(0, 5);
-    kb += "\n[최근 설교]\n";
-    for (const s of latest) {
-      kb += `- ${s.date || "?"}: ${s.title || "제목 미상"}`;
-      if (s.preacher) kb += ` (${s.preacher})`;
-      if (s.scripture) kb += ` · ${s.scripture}`;
-      if (s.youtube_url) kb += ` · ${s.youtube_url}`;
-      kb += "\n";
+  const latestSermons = sermons && sermons.length > 0
+    ? sermons.slice(0, 5)
+    : FALLBACK_VIDEOS.slice(0, 5).map((video) => ({
+        title: video.title,
+        preacher: "신점일 목사",
+        date: video.publishedAt,
+        scripture: "",
+        youtube_url: `https://www.youtube.com/watch?v=${video.id}`,
+      }));
+
+  if (latestSermons.length > 0) {
+    docs.push(
+      createDoc(
+        "최근 설교 요약",
+        latestSermons
+          .map((s) => {
+            return `${s.date || "날짜 미상"} 설교. 제목: ${s.title || "제목 미상"}${s.preacher ? ` / 설교자: ${s.preacher}` : ""}${s.scripture ? ` / 본문: ${s.scripture}` : ""}`;
+          })
+          .join("\n"),
+        "dynamic",
+        ["설교", "sermon", "유튜브", "youtube"],
+      ),
+    );
+
+    for (const s of latestSermons) {
+      docs.push(
+        createDoc(
+          `설교 ${s.title || s.date || "최근 설교"}`,
+          [
+            s.date ? `날짜: ${s.date}` : "",
+            s.preacher ? `설교자: ${s.preacher}` : "",
+            s.scripture ? `본문: ${s.scripture}` : "",
+            s.youtube_url ? `영상: ${s.youtube_url}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+          "dynamic",
+          ["설교", "sermon", s.date || ""],
+        ),
+      );
     }
   }
 
-  // 갤러리 최근 항목
   if (gallery && gallery.length > 0) {
     const latest = gallery.slice(0, 6);
-    kb += "\n[최근 갤러리]\n";
-    for (const g of latest) {
-      kb += `- ${g.date || "?"} [${g.category || "일반"}] ${g.title || "-"}\n`;
-    }
+    docs.push(
+      createDoc(
+        "최근 갤러리 요약",
+        latest
+          .map((g) => `${g.date || "날짜 미상"} / ${g.category || "일반"} / ${g.title || "-"}`)
+          .join("\n"),
+        "dynamic",
+        ["갤러리", "gallery", "사진"],
+      ),
+    );
   }
 
-  return kb;
+  return docs;
+}
+
+function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s/]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenize(text: string): string[] {
+  return Array.from(
+    new Set(
+      normalize(text)
+        .split(" ")
+        .map((token) => token.trim())
+        .filter((token) => token.length >= 2),
+    ),
+  );
+}
+
+function isSecondaryKnowledgeQuery(query: string): boolean {
+  return /공지|광고|광고사항|주보|행사|이벤트|소식|뉴스|최근|갤러리|사진|bulletin|notice|announcement|event|gallery/i.test(query);
+}
+
+function isSecondaryKnowledgeDoc(doc: KnowledgeDoc): boolean {
+  return doc.source === "dynamic" || /최근 주보|주보 |공지 |최근 공지사항|갤러리|최근 설교 요약/.test(doc.title);
+}
+
+function isPrimaryGuideDoc(doc: KnowledgeDoc): boolean {
+  return /기본 안내 원칙|교회소개 메뉴 안내|예배\/말씀 메뉴 안내|다음세대 메뉴 안내|나눔과 소식 메뉴 안내|예배 시간 기본 안내 형식|교회 개요|담임목사|연락처|오시는 길|예배 시간|다음세대 사역|교회 역사 타임라인|교회 사명|홈페이지 주요 메뉴 구조/.test(doc.title);
+}
+
+export function searchKnowledgeDocs(query: string, docs: KnowledgeDoc[], limit = 6): KnowledgeDoc[] {
+  const normalizedQuery = normalize(query);
+  const queryCompact = normalizedQuery.replace(/\s+/g, "");
+  const tokens = tokenize(query);
+  const secondaryQuery = isSecondaryKnowledgeQuery(query);
+
+  const scored = docs
+    .map((doc) => {
+      const haystack = normalize(`${doc.title}\n${doc.content}`);
+      const haystackCompact = haystack.replace(/\s+/g, "");
+      let score = 0;
+
+      if (isPrimaryGuideDoc(doc) && !secondaryQuery) score += 18;
+      if (isSecondaryKnowledgeDoc(doc) && secondaryQuery) score += 22;
+      if (isSecondaryKnowledgeDoc(doc) && !secondaryQuery) score -= 24;
+
+      if (normalizedQuery && haystack.includes(normalizedQuery)) score += 50;
+      if (queryCompact && haystackCompact.includes(queryCompact)) score += 40;
+
+      for (const token of tokens) {
+        if (haystack.includes(token)) score += token.length >= 4 ? 12 : 7;
+      }
+
+      if (normalizedQuery.includes("교회소개") && doc.title.includes("교회소개 메뉴 안내")) score += 45;
+      if ((normalizedQuery.includes("예배") || normalizedQuery.includes("말씀")) && doc.title.includes("예배/말씀 메뉴 안내")) score += 35;
+      if ((normalizedQuery.includes("다음세대") || normalizedQuery.includes("유초등부") || normalizedQuery.includes("중고등부") || normalizedQuery.includes("청년부")) && doc.title.includes("다음세대 메뉴 안내")) score += 35;
+      if ((normalizedQuery.includes("나눔과 소식") || normalizedQuery.includes("소식")) && doc.title.includes("나눔과 소식 메뉴 안내")) score += 35;
+      if ((normalizedQuery.includes("예배안내") || normalizedQuery.includes("예배 시간")) && doc.title.includes("예배 시간 기본 안내 형식")) score += 55;
+
+      for (const keyword of doc.keywords || []) {
+        const normalizedKeyword = normalize(keyword);
+        if (normalizedKeyword && normalizedQuery.includes(normalizedKeyword)) score += 15;
+      }
+
+      return { doc, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit).map((entry) => entry.doc);
+}
+
+export function serializeKnowledgeDocs(docs: KnowledgeDoc[]): string {
+  return docs
+    .map((doc) => `[${doc.title}]\n${doc.content}`)
+    .join("\n\n");
+}
+
+export async function loadKnowledgeDocs(): Promise<KnowledgeDoc[]> {
+  const dynamicDocs = await loadDynamicKnowledgeDocs();
+  return [...STATIC_KNOWLEDGE_DOCS, ...dynamicDocs];
+}
+
+export async function loadKnowledgeBaseText(): Promise<string> {
+  const docs = await loadKnowledgeDocs();
+  return serializeKnowledgeDocs(docs);
+}
+
+export async function loadDynamicKB(): Promise<string> {
+  const docs = await loadDynamicKnowledgeDocs();
+  return serializeKnowledgeDocs(docs);
 }

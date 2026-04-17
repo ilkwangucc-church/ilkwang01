@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import ChatbotLoader from "@/components/ChatbotLoader";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ilkwang.org";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: { default: "일광교회", template: "%s | 일광교회" },
   description: "행복과 영원으로 초대하는 일광교회 - 대한예수교장로회(합동) 서울 성북구 동소문로 212-68",
   keywords: ["일광교회", "교회", "성북구", "동소문로", "대한예수교장로회", "합동"],
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${geist.variable} h-full`}>
+    <html lang="ko" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

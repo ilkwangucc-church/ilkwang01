@@ -46,7 +46,7 @@
   --color-background: var(--background);
   --color-surface:    var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist);
+  --font-sans: "Nanum Gothic", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 
   /* Primary Green */
   --color-primary:       var(--brand-green-600);
@@ -70,7 +70,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Nanum Gothic", var(--font-sans), sans-serif;
+  font-family: var(--font-sans);
   word-break: keep-all;
 }
 

@@ -312,34 +312,9 @@
     },
   };
 
-  /* ── Ticket translations (all 20 languages) ── */
-  var TICKET_LANG = {
-    en: { title:'Create Support Ticket', name:'Your name', email:'Your email *', subject:'Subject *', desc:'Describe your issue...', cancel:'Cancel', submit:'Submit Ticket', required:'Email and subject are required.', success:'Ticket #{id} created! We\'ll get back to you soon.', fail:'Failed to create ticket.' },
-    ko: { title:'지원 티켓 생성', name:'이름', email:'이메일 *', subject:'제목 *', desc:'문제를 설명해 주세요...', cancel:'취소', submit:'티켓 제출', required:'이메일과 제목은 필수입니다.', success:'티켓 #{id}이 생성되었습니다!', fail:'티켓 생성 실패.' },
-    ja: { title:'サポートチケット作成', name:'お名前', email:'メール *', subject:'件名 *', desc:'問題を説明してください...', cancel:'キャンセル', submit:'チケット送信', required:'メールと件名は必須です。', success:'チケット #{id} が作成されました！', fail:'チケット作成に失敗しました。' },
-    zh: { title:'创建支持工单', name:'您的姓名', email:'邮箱 *', subject:'主题 *', desc:'描述您的问题...', cancel:'取消', submit:'提交工单', required:'邮箱和主题是必填项。', success:'工单 #{id} 已创建！', fail:'工单创建失败。' },
-    es: { title:'Crear Ticket', name:'Tu nombre', email:'Tu email *', subject:'Asunto *', desc:'Describe tu problema...', cancel:'Cancelar', submit:'Enviar Ticket', required:'Email y asunto son obligatorios.', success:'Ticket #{id} creado!', fail:'Error al crear ticket.' },
-    vi: { title:'Tạo Yêu Cầu', name:'Tên của bạn', email:'Email *', subject:'Chủ đề *', desc:'Mô tả vấn đề...', cancel:'Hủy', submit:'Gửi Yêu Cầu', required:'Email và chủ đề là bắt buộc.', success:'Yêu cầu #{id} đã tạo!', fail:'Không thể tạo yêu cầu.' },
-    id: { title:'Buat Tiket', name:'Nama Anda', email:'Email *', subject:'Subjek *', desc:'Jelaskan masalah...', cancel:'Batal', submit:'Kirim Tiket', required:'Email dan subjek wajib.', success:'Tiket #{id} dibuat!', fail:'Gagal membuat tiket.' },
-    th: { title:'สร้างตั๋วสนับสนุน', name:'ชื่อของคุณ', email:'อีเมล *', subject:'หัวข้อ *', desc:'อธิบายปัญหา...', cancel:'ยกเลิก', submit:'ส่งตั๋ว', required:'ต้องกรอกอีเมลและหัวข้อ', success:'ตั๋ว #{id} สร้างแล้ว!', fail:'ไม่สามารถสร้างตั๋ว' },
-    fr: { title:'Créer un Ticket', name:'Votre nom', email:'Votre email *', subject:'Sujet *', desc:'Décrivez votre problème...', cancel:'Annuler', submit:'Envoyer', required:'Email et sujet requis.', success:'Ticket #{id} créé !', fail:'Échec de la création.' },
-    de: { title:'Ticket erstellen', name:'Ihr Name', email:'Ihre E-Mail *', subject:'Betreff *', desc:'Beschreiben Sie Ihr Problem...', cancel:'Abbrechen', submit:'Ticket senden', required:'E-Mail und Betreff erforderlich.', success:'Ticket #{id} erstellt!', fail:'Ticket-Erstellung fehlgeschlagen.' },
-    pt: { title:'Criar Ticket', name:'Seu nome', email:'Seu email *', subject:'Assunto *', desc:'Descreva seu problema...', cancel:'Cancelar', submit:'Enviar Ticket', required:'Email e assunto obrigatórios.', success:'Ticket #{id} criado!', fail:'Falha ao criar ticket.' },
-    ar: { title:'إنشاء تذكرة', name:'اسمك', email:'بريدك *', subject:'الموضوع *', desc:'اوصف مشكلتك...', cancel:'إلغاء', submit:'إرسال', required:'البريد والموضوع مطلوبان.', success:'تذكرة #{id} أُنشئت!', fail:'فشل إنشاء التذكرة.' },
-    ms: { title:'Cipta Tiket', name:'Nama anda', email:'E-mel *', subject:'Subjek *', desc:'Terangkan masalah...', cancel:'Batal', submit:'Hantar Tiket', required:'E-mel dan subjek diperlukan.', success:'Tiket #{id} dicipta!', fail:'Gagal mencipta tiket.' },
-    hi: { title:'सहायता टिकट', name:'आपका नाम', email:'ईमेल *', subject:'विषय *', desc:'समस्या बताएं...', cancel:'रद्द', submit:'टिकट भेजें', required:'ईमेल और विषय आवश्यक।', success:'टिकट #{id} बनाया गया!', fail:'टिकट बनाने में विफल।' },
-    it: { title:'Crea Ticket', name:'Il tuo nome', email:'La tua email *', subject:'Oggetto *', desc:'Descrivi il problema...', cancel:'Annulla', submit:'Invia Ticket', required:'Email e oggetto richiesti.', success:'Ticket #{id} creato!', fail:'Creazione ticket fallita.' },
-    sv: { title:'Skapa Ärende', name:'Ditt namn', email:'Din e-post *', subject:'Ämne *', desc:'Beskriv ditt problem...', cancel:'Avbryt', submit:'Skicka', required:'E-post och ämne krävs.', success:'Ärende #{id} skapat!', fail:'Kunde inte skapa ärende.' },
-    fi: { title:'Luo Tukipyyntö', name:'Nimesi', email:'Sähköpostisi *', subject:'Aihe *', desc:'Kuvaile ongelmasi...', cancel:'Peruuta', submit:'Lähetä', required:'Sähköposti ja aihe vaaditaan.', success:'Tukipyyntö #{id} luotu!', fail:'Luonti epäonnistui.' },
-    da: { title:'Opret Sag', name:'Dit navn', email:'Din e-mail *', subject:'Emne *', desc:'Beskriv dit problem...', cancel:'Annuller', submit:'Send', required:'E-mail og emne påkrævet.', success:'Sag #{id} oprettet!', fail:'Kunne ikke oprette sag.' },
-    hu: { title:'Jegy Létrehozása', name:'Neve', email:'E-mail *', subject:'Tárgy *', desc:'Írja le a problémát...', cancel:'Mégse', submit:'Küldés', required:'E-mail és tárgy szükséges.', success:'Jegy #{id} létrehozva!', fail:'Nem sikerült létrehozni.' },
-    he: { title:'יצירת כרטיס', name:'שמך', email:'אימייל *', subject:'נושא *', desc:'תאר את הבעיה...', cancel:'ביטול', submit:'שלח', required:'אימייל ונושא נדרשים.', success:'כרטיס #{id} נוצר!', fail:'יצירה נכשלה.' },
-  };
-
   /* ── State ── */
   var config = null;
   var t = LANG.ko;
-  var tt = TICKET_LANG.ko;
   var conversationId = null;
   var visitorId;
   try {
@@ -355,7 +330,6 @@
   var _proactiveSections = new Set();
   var _lastProactiveTime = 0;
   var _sectionDwellMs = 2000;
-  var _ticketOpen = false;
   var _wasHidden = false;
 
   /* Conversation persistence */
@@ -449,7 +423,6 @@
       var lang = 'ko';
       config._lang = lang;
       t = JSON.parse(JSON.stringify(LANG.ko));
-      tt = TICKET_LANG.ko;
       if (config.bot_greeting) t.greeting = config.bot_greeting;
       _sectionDwellMs = parseInt(config.section_dwell_time) || 2000;
       scheduleProfileRotation(config);
@@ -460,7 +433,6 @@
       config = applyOverrides(JSON.parse(JSON.stringify(DEFAULT_CONFIG)));
       config._lang = 'ko';
       t = JSON.parse(JSON.stringify(LANG.ko));
-      tt = TICKET_LANG.ko;
       if (config.bot_greeting) t.greeting = config.bot_greeting;
       cb(config);
     };
@@ -589,19 +561,6 @@ background:#1A2744;color:#fff;font-size:12px;line-height:18px;text-align:center;
 .nrc-pulse{animation:nrcPulseAnim 1.5s ease-in-out 3;}\
 @keyframes nrcPulseAnim{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,.35)}50%{box-shadow:0 0 0 8px rgba(102,126,234,.3)}}\
 \
-.nrc-ticket{display:none;flex-direction:column;gap:10px;padding:20px;flex:1;overflow-y:auto;background:#ffffff;}\
-.nrc-ticket.nrc-show{display:flex;}\
-.nrc-ticket-title{font-size:14px;font-weight:700;color:#1A2744;}\
-.nrc-ticket input,.nrc-ticket textarea{padding:8px 12px;background:#F1F4F9;border:1px solid #E5E8EE;\
-border-radius:8px;color:#1A2744;font-size:13px;font-family:inherit;outline:none;}\
-.nrc-ticket input::placeholder,.nrc-ticket textarea::placeholder{color:#8A94A8;}\
-.nrc-ticket input:focus,.nrc-ticket textarea:focus{border-color:' + primary + ';background:#ffffff;}\
-.nrc-ticket textarea{min-height:80px;resize:vertical;}\
-.nrc-ticket-btns{display:flex;gap:8px;}\
-.nrc-ticket-btns button{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}\
-.nrc-ticket-cancel{background:none;border:1px solid #E5E8EE;color:#1A2744;}\
-.nrc-ticket-submit{background:' + primary + ';border:none;color:#ffffff;}\
-\
 @media(max-width:480px){\
 .nrc-wrap{bottom:16px;' + (posRight ? 'right:16px;' : 'left:16px;') + '}\
 .nrc-panel{width:calc(100vw - 32px);max-height:70vh;' + (posRight ? 'right:-8px;' : 'left:-8px;') + '}\
@@ -709,14 +668,6 @@ border-radius:8px;color:#1A2744;font-size:13px;font-family:inherit;outline:none;
     resetBtn.onclick = resetChat;
     header.appendChild(resetBtn);
 
-    // Ticket icon in header (top right, next to close)
-    var ticketBtn = document.createElement('button');
-    ticketBtn.className = 'nrc-header-btn';
-    ticketBtn.title = tt.title;
-    ticketBtn.innerHTML = '&#x1F3AB;';
-    ticketBtn.onclick = function () { toggleTicketForm(true); };
-    header.appendChild(ticketBtn);
-
     panel.appendChild(header);
 
     // Messages
@@ -724,29 +675,6 @@ border-radius:8px;color:#1A2744;font-size:13px;font-family:inherit;outline:none;
     msgs.className = 'nrc-messages';
     msgs.id = 'nrc-messages';
     panel.appendChild(msgs);
-
-    // Ticket form (hidden by default)
-    var ticketPanel = document.createElement('div');
-    ticketPanel.className = 'nrc-ticket';
-    ticketPanel.id = 'nrc-ticket';
-    ticketPanel.innerHTML = '<div class="nrc-ticket-title">' + esc(tt.title) + '</div>'
-      + '<input type="text" id="nrc-ticket-name" placeholder="' + esc(tt.name) + '">'
-      + '<input type="email" id="nrc-ticket-email" placeholder="' + esc(tt.email) + '">'
-      + '<input type="text" id="nrc-ticket-subject" placeholder="' + esc(tt.subject) + '">'
-      + '<textarea id="nrc-ticket-desc" placeholder="' + esc(tt.desc) + '"></textarea>'
-      + '<div class="nrc-ticket-btns">'
-      + '<button class="nrc-ticket-cancel" type="button" id="nrc-ticket-cancel">' + esc(tt.cancel) + '</button>'
-      + '<button class="nrc-ticket-submit" type="button" id="nrc-ticket-submit">' + esc(tt.submit) + '</button>'
-      + '</div>';
-    panel.appendChild(ticketPanel);
-
-    // Ticket event wiring
-    setTimeout(function () {
-      var cancelBtn = $('#nrc-ticket-cancel');
-      var submitBtn = $('#nrc-ticket-submit');
-      if (cancelBtn) cancelBtn.onclick = function () { toggleTicketForm(false); };
-      if (submitBtn) submitBtn.onclick = submitTicket;
-    }, 0);
 
     // Input form
     var form = document.createElement('form');
@@ -1144,66 +1072,6 @@ border-radius:8px;color:#1A2744;font-size:13px;font-family:inherit;outline:none;
       }
     } catch (_) {}
     return ctx;
-  }
-
-  /* ── Ticket form toggle ── */
-  function toggleTicketForm(show) {
-    var tp = $('#nrc-ticket');
-    var msgs = $('#nrc-messages');
-    var form = $('#nrc-form');
-    if (!tp) return;
-    _ticketOpen = show;
-    if (show) {
-      tp.classList.add('nrc-show');
-      if (msgs) msgs.style.display = 'none';
-      if (form) form.style.display = 'none';
-    } else {
-      tp.classList.remove('nrc-show');
-      if (msgs) msgs.style.display = '';
-      if (form) form.style.display = '';
-    }
-  }
-
-  /* ── Submit ticket ── */
-  function submitTicket() {
-    var email = ($('#nrc-ticket-email') || {}).value || '';
-    var subject = ($('#nrc-ticket-subject') || {}).value || '';
-    if (!email.trim() || !subject.trim()) {
-      addMessage('bot', tt.required);
-      toggleTicketForm(false);
-      return;
-    }
-    var btn = $('#nrc-ticket-submit');
-    if (btn) btn.disabled = true;
-
-    var x = new XMLHttpRequest();
-    x.open('POST', API_BASE + '/api/chatbot-ext/ticket');
-    x.setRequestHeader('Content-Type', 'application/json');
-    x.setRequestHeader('X-Api-Key', API_KEY);
-    x.onload = function () {
-      if (btn) btn.disabled = false;
-      toggleTicketForm(false);
-      if (x.status === 200) {
-        try {
-          var data = JSON.parse(x.responseText);
-          addMessage('bot', tt.success.replace('{id}', data.ticket_id || ''));
-        } catch (_) { addMessage('bot', tt.success.replace('{id}', '')); }
-      } else {
-        addMessage('bot', tt.fail);
-      }
-    };
-    x.onerror = function () {
-      if (btn) btn.disabled = false;
-      toggleTicketForm(false);
-      addMessage('bot', tt.fail);
-    };
-    x.send(JSON.stringify({
-      conversation_id: conversationId,
-      email: email.trim(),
-      name: ($('#nrc-ticket-name') || {}).value || '',
-      subject: subject.trim(),
-      description: ($('#nrc-ticket-desc') || {}).value || ''
-    }));
   }
 
   /* ── Auto greeting on page load (bubble preview) - home/index pages ── */
