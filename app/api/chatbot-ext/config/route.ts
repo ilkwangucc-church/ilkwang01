@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
     return Response.json(
       {
         enabled: settings["enabled"] !== "false",
-        welcome_message: settings["welcome_message"] || "안녕하세요! 일광교회입니다. 무엇을 도와드릴까요?",
+        welcome_message: settings["welcome_message"] || "반갑습니다. 일광교회입니다.",
         bubble_label: settings["bubble_label"] || "채팅 상담",
         bot_name: settings["bot_name"] || "일광안내",
         bot_names: botNames,
@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
     return Response.json(
       {
         enabled: true,
-        welcome_message: "안녕하세요! 일광교회입니다. 무엇을 도와드릴까요?",
+        welcome_message: "반갑습니다. 일광교회입니다.",
         bubble_label: "채팅 상담",
         bot_name: "일광안내",
         bot_greeting: "",

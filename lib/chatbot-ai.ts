@@ -9,33 +9,7 @@
  */
 
 import { getSetting } from "@/lib/chatbot-db";
-
-/* ── 일광교회 지식베이스 (코어, 관리자 설정으로 확장 가능) ───── */
-const KNOWLEDGE_BASE = `
-일광교회 (Ilkwang Church) — 대한예수교장로회(합동).
-주소: 서울 성북구 동소문로 212-68. 전화: 02-927-0691.
-웹사이트: https://ilkwang.or.kr  이메일: pastor@ilkwang.or.kr
-담임목사: 담임목사님이 섬기고 계십니다.
-
-예배 시간:
-- 주일예배 1부: 주일 오전 9:00
-- 주일예배 2부: 주일 오전 11:00
-- 수요예배: 수요일 오후 7:30
-- 새벽기도회: 화~토 오전 5:30
-- 금요철야: 금요일 오후 9:00
-
-사역부서: 유아부, 유치부, 유년부, 초등부, 중등부, 고등부, 청년부, 장년부.
-주요 기관: 주일학교, 청소년부, 청년부, 선교부, 찬양대, 새가족부.
-
-참여 방법:
-- 처음 방문: 주일 예배에 오셔서 새가족실에 등록. 안내가 있습니다.
-- 등록: 교회 홈페이지 '회원가입' 또는 새가족실 방문.
-- 헌금: 주일 헌금, 계좌이체(국민은행) 둘 다 가능. 헌금 관련 문의는 재정부.
-- 봉사: 각 부서장 또는 교역자께 문의.
-
-오시는 길: 지하철 4호선 성신여대입구역에서 마을버스로 이동 가능.
-주차: 교회 앞 주차 가능.
-`;
+import { CHURCH_KB, loadDynamicKB } from "@/lib/chatbot-kb";
 
 const ESCALATION_KEYWORDS = [
   "사람", "상담사", "직접", "관리자", "목사님 연결", "담당자", "불만", "항의", "환불",
@@ -76,7 +50,7 @@ export interface ChatMessage {
 }
 
 /* ── 시스템 프롬프트 ────────────────────────────────────────── */
-function buildSystemPrompt(customKb: string, userLang: string): string {
+function buildSystemPrompt(customKb: string, dynamicKb: string, userLang: string): string {
   // 일광교회 규칙:
   //  - 영어 질문 → 영어로만 응답
   //  - 그 외 모든 언어(한국어 포함) → 해당 언어로 응답 (기본은 한국어)
@@ -86,24 +60,26 @@ function buildSystemPrompt(customKb: string, userLang: string): string {
       ? `*** MANDATORY: 사용자는 한국어로 질문하고 있습니다. 반드시 한국어로만 응답하세요. 영어를 쓰지 마세요. ***`
       : `*** MANDATORY: The user is writing in ${userLang}. You MUST respond ENTIRELY in ${userLang}. Do NOT use English or any other language. ***`;
 
-  return `You are the Ilkwang Church (일광교회) friendly AI assistant. You help visitors with questions about the church, worship services, ministries, and how to get involved.
+  return `You are the Ilkwang Church (일광교회) friendly AI assistant. You help visitors with questions about the church, worship services, ministries, blog posts, bulletins, notices, sermons, offerings, and how to get involved.
 
 CRITICAL RULES:
 1. ${langRule}
-2. Be warm, welcoming, and concise. Do NOT introduce yourself by name in every message.
-3. Only answer questions about Ilkwang Church, worship, Christian faith basics, and related topics.
-4. If you do not know the answer, say so honestly and suggest contacting the church (pastor@ilkwang.or.kr / 02-927-0691).
-5. Do NOT invent facts about the church that are not in the knowledge base.
+2. Be warm, welcoming, and concise. Do NOT introduce yourself by name in every message. 첫 인사는 "반갑습니다. 일광교회입니다."처럼 자연스럽게.
+3. Answer any church-related question the visitor may have — worship times, ministries, bulletins, notices, sermons, directions, offerings, contact info, sign-up process, staff, history, vision, faith basics, etc.
+4. Base every answer on the CHURCH KNOWLEDGE below. If the specific fact is not present, say you are not sure and suggest contacting the church office (02-927-0691 / ilkwang@ilkwang.or.kr).
+5. Do NOT invent facts, times, staff names, or events that are not in the knowledge base.
 6. Do NOT use any markdown or special formatting. No ** (bold), no * (italic), no ## (headings), no --- (dashes), no bullet dashes, no numbered prefixes, no backticks, no links in []() format. Plain readable text only.
-7. For complaints or administrative matters, suggest contacting the church office directly.
+7. For sensitive matters (complaints, personal counseling, specific giving records), suggest contacting the church office directly at 02-927-0691.
+8. When giving directions or worship times, prefer the most specific data from the CHURCH KNOWLEDGE (not generic answers).
 
 TEACHING STYLE:
-- Explain step by step when helpful (e.g. "주일 예배에 오시려면... ").
-- After explaining, ask a friendly follow-up question when appropriate.
-- Be conversational and encouraging — like a helpful church staff member.
+- Be conversational and encouraging — like a helpful church staff member welcoming a visitor.
+- After answering, ask a friendly follow-up question when appropriate (e.g. "혹시 예배 참석 방법도 안내해 드릴까요?").
+- Use Korean 존댓말.
 
-CHURCH KNOWLEDGE:
-${KNOWLEDGE_BASE}
+CHURCH KNOWLEDGE (static):
+${CHURCH_KB}
+${dynamicKb ? `\nCHURCH KNOWLEDGE (live — bulletins, notices, sermons, gallery):\n${dynamicKb}` : ""}
 ${customKb ? `\nADDITIONAL INFO (admin-provided):\n${customKb}` : ""}`;
 }
 
@@ -162,12 +138,15 @@ async function callCloudflareAi(
 /* ── 메인 AI 응답 함수 ─────────────────────────────────────── */
 export async function runChatbotAI(messages: ChatMessage[]): Promise<string> {
   try {
-    const customKb = await getSetting("custom_knowledge_base");
+    const [customKb, dynamicKb] = await Promise.all([
+      getSetting("custom_knowledge_base"),
+      loadDynamicKB().catch(() => ""),
+    ]);
 
     const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    const userLang = lastUser ? detectLanguage(lastUser.content) : "English";
+    const userLang = lastUser ? detectLanguage(lastUser.content) : "Korean";
 
-    const systemPrompt = buildSystemPrompt(customKb, userLang);
+    const systemPrompt = buildSystemPrompt(customKb, dynamicKb, userLang);
 
     const aiMessages: CFAiMessage[] = [
       { role: "system", content: systemPrompt },

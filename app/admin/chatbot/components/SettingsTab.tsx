@@ -80,7 +80,7 @@ export function SettingsTab({ settings, setSettings, settingsSaving, saveSetting
           <TextInput
             value={settings.welcome_message ?? ""}
             onChange={(v) => setSettings((s) => ({ ...s, welcome_message: v }))}
-            placeholder="안녕하세요! 무엇을 도와드릴까요?"
+            placeholder="반갑습니다. 일광교회입니다."
           />
         </div>
 
