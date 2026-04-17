@@ -6,7 +6,8 @@ import {
   LayoutDashboard, Users, BookUser, Award, MessageSquare,
   Video, Monitor, Heart, Building2, FileStack,
   Bell, BookOpen, BookMarked, Image, DollarSign,
-  Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight
+  Settings, LogOut, Menu, X, Zap, ChevronDown, ChevronRight,
+  Bot
 } from "lucide-react";
 import { ROLE_LABELS, ROLE_COLORS } from "@/lib/adminAuth";
 
@@ -38,6 +39,7 @@ const navGroups: NavGroup[] = [
     label: "교회 운영",
     items: [
       { label: "문의 접수함",  href: "/admin/contacts",  icon: MessageSquare },
+      { label: "챗봇 관리",    href: "/admin/chatbot",   icon: Bot },
       { label: "공지/게시판",  href: "/admin/notices",   icon: Bell },
       { label: "설교/미디어",  href: "/admin/sermons",   icon: BookOpen },
       { label: "주보 관리",    href: "/admin/bulletins", icon: BookMarked },

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import ChatbotLoader from "@/components/ChatbotLoader";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
@@ -33,6 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SpeedInsights />
         {/* Vercel Analytics — 페이지 방문 통계 */}
         <Analytics />
+        {/* 챗봇 위젯 — 관리자/로그인 페이지에서는 숨김 */}
+        <ChatbotLoader />
       </body>
     </html>
   );
