@@ -16,7 +16,7 @@
   if (window.__nrChatbotLoaded) return;
   window.__nrChatbotLoaded = true;
 
-  var NRC_VERSION = '1.6.0';
+  var NRC_VERSION = '2.0.0-ilkwang-light';
 
   /* ── Config from script tag ── */
   var script = document.currentScript || (function () {
@@ -972,10 +972,8 @@ border-radius:8px;color:#1A2744;font-size:13px;font-family:inherit;outline:none;
   /* ── Bubble preview (outside panel) ── */
   function isDarkPage() {
     var el = document.documentElement;
-    if (el.classList.contains('dark')) return true;
-    if (el.dataset && el.dataset.theme === 'dark') return true;
-    if (document.body && document.body.classList.contains('dark')) return true;
-    try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (_) { return false; }
+    // 일광교회: 항상 라이트 모드 고정 (OS/페이지 다크 모드 설정 무시)
+    return false;
   }
 
   function applyPanelTheme() {
