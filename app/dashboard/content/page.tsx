@@ -37,7 +37,7 @@ const sections = [
     fields: [
       { name: "worship_1", label: "1부 예배", value: "주일 오전 9:30" },
       { name: "worship_2", label: "2부 예배", value: "주일 오전 11:00" },
-      { name: "worship_3", label: "3부 예배", value: "주일 오후 1:30" },
+      { name: "worship_3", label: "오후예배", value: "주일 오후 1:30" },
       { name: "worship_dawn", label: "새벽기도회", value: "매일 오전 5:00" },
     ],
   },

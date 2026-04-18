@@ -19,7 +19,7 @@ const submenu = [
 const services = [
   { name: "주일 1부 예배",   time: "주일 오전 9:30",       place: "본당", Icon: Sun,      desc: "온 가족이 함께 드리는 아침 예배입니다." },
   { name: "주일 2부 예배",   time: "주일 오전 11:00",      place: "본당", Icon: Leaf,     desc: "일광교회의 주 예배입니다. 모든 성도가 함께 합니다." },
-  { name: "주일 3부 예배",   time: "주일 오후 1:30",       place: "본당", Icon: Sun,      desc: "청년 및 오후 성도를 위한 예배입니다." },
+  { name: "주일 오후예배",   time: "주일 오후 1:30",       place: "본당", Icon: Sun,      desc: "청년 및 오후 성도를 위한 예배입니다." },
   { name: "새벽기도회",      time: "매일 오전 5:00",       place: "본당", Icon: Sunrise,  desc: "이른 아침 하나님 앞에 나아가는 기도회입니다." },
   { name: "수요오전기도회",  time: "수요일 오전 10:30",    place: "본당", Icon: Users,    desc: "중보기도와 함께하는 오전 기도회입니다." },
   { name: "수요성경공부",    time: "수요일 오후 8:00",     place: "본당", Icon: BookOpen, desc: "말씀을 깊이 공부하는 성경공부입니다." },

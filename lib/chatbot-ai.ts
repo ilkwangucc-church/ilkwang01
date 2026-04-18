@@ -26,6 +26,14 @@ import {
   searchFaqEntries,
   serializeFaqEntries,
 } from "@/lib/chatbot-faq-db";
+import {
+  buildOfficeInquiryReply,
+  buildScopeGuidanceReply,
+  CHURCH_OFFICE_PHONE,
+  CHURCH_OFFICE_EMAIL,
+  isDetailedInquiry,
+  isSupportedGuideQuery,
+} from "@/lib/chatbot-guard";
 import { runFallbackChatbotAI } from "@/lib/chatbot-fallback";
 
 const ESCALATION_KEYWORDS = [
@@ -83,10 +91,10 @@ CRITICAL RULES:
 1. ${langRule}
 2. Be warm, welcoming, and concise. Do NOT introduce yourself by name in every message. 첫 인사는 짧고 자연스럽게 받고, 같은 문장을 모든 질문에 반복하지 마세요.
 3. Answer any church-related question the visitor may have — worship times, ministries, bulletins, notices, sermons, directions, offerings, contact info, sign-up process, staff, history, vision, faith basics, etc.
-4. Base every answer on the CHURCH KNOWLEDGE below. If the specific fact is not present, say you are not sure and suggest contacting the church office (02-927-0691 / ilkwang@ilkwang.or.kr).
+4. Base every answer on the CHURCH KNOWLEDGE below. If the specific fact is not present, do NOT guess. Say that the detail should be confirmed with the church office (${CHURCH_OFFICE_PHONE} / ${CHURCH_OFFICE_EMAIL}).
 5. Do NOT invent facts, times, staff names, or events that are not in the knowledge base.
 6. Do NOT use any markdown or special formatting. No ** (bold), no * (italic), no ## (headings), no --- (dashes), no bullet dashes, no numbered prefixes, no backticks, no links in []() format. Plain readable text only, but short sections and line breaks are allowed.
-7. For sensitive matters (complaints, personal counseling, specific giving records), suggest contacting the church office directly at 02-927-0691.
+7. For sensitive matters or detailed operational matters (complaints, personal counseling, records, application details, schedules needing confirmation, registration, costs, 담당자 확인), direct the user to the church office at ${CHURCH_OFFICE_PHONE}.
 8. When giving directions or worship times, prefer the most specific data from the CHURCH KNOWLEDGE (not generic answers).
 9. For basic guidance, prioritize the header menu structure in this order: 교회소개, 예배/말씀, 다음세대, 나눔과 소식.
 10. Basic information such as worship schedule, directions, pastor introduction, church vision, and church history must be answered from 1st-tier guide information. Do NOT mix in notices, bulletins, events, or other 2nd-tier updates unless the user explicitly asks for notices, bulletins, events, gallery, or recent updates.
@@ -94,6 +102,7 @@ CRITICAL RULES:
 12. For greetings or small talk, respond lightly to the greeting itself first. Do not jump straight into a generic feature list unless the user asks what you can do.
 13. Understand the intent of the user's actual question before answering. If the user asks one thing, answer that one thing first.
 14. Rewrite knowledge naturally. Never paste raw database rows, copied menu dumps, or repetitive stock sentences.
+15. If the question is outside supported public guidance, respond proactively by explaining what you can help with next. If the question needs detailed confirmation, stop and ask the user to contact the church office instead of improvising.
 
 TEACHING STYLE:
 - Be conversational and encouraging — like a helpful church staff member welcoming a visitor.
@@ -189,6 +198,20 @@ export async function runChatbotAI(messages: ChatMessage[]): Promise<string> {
     const relevantFaqs = lastUser ? searchFaqEntries(lastUser.content, 6) : [];
     const relevantDialogues = lastUser ? searchDialogueExamples(lastUser.content, 4) : [];
 
+    if (lastUser && isDetailedInquiry(lastUser.content)) {
+      return buildOfficeInquiryReply();
+    }
+
+    if (lastUser && relevantFaqs.length === 0 && relevantDialogues.length === 0) {
+      if (!isSupportedGuideQuery(lastUser.content)) {
+        return buildScopeGuidanceReply();
+      }
+
+      if (relevantDocs.length === 0) {
+        return buildScopeGuidanceReply();
+      }
+    }
+
     const knowledgeText = [
       relevantDialogues.length > 0 ? `[대화 예시]\n${serializeDialogueExamples(relevantDialogues)}` : "",
       relevantFaqs.length > 0 ? `[FAQ 데이터]\n${serializeFaqEntries(relevantFaqs)}` : "",
@@ -219,14 +242,14 @@ export async function runChatbotAI(messages: ChatMessage[]): Promise<string> {
       .replace(/\n{3,}/g, "\n\n")
       .trim();
 
-    return text || "죄송합니다. 지금 응답을 드리기 어렵습니다. 잠시 후 다시 시도하시거나 pastor@ilkwang.or.kr 로 문의해 주세요.";
+    return text || `죄송합니다. 지금 응답을 바로 정리하지 못했습니다. 교회 사무실 ${CHURCH_OFFICE_PHONE}로 문의해 주세요.`;
   } catch (e) {
     console.error("[chatbot-ai] error:", e);
     try {
       return await runFallbackChatbotAI(messages);
     } catch (fallbackError) {
       console.error("[chatbot-ai] fallback error:", fallbackError);
-      return "죄송합니다. 지금 응답을 드리기 어렵습니다. 잠시 후 다시 시도하시거나 pastor@ilkwang.or.kr 로 문의해 주세요.";
+      return `죄송합니다. 지금 응답을 바로 정리하지 못했습니다. 교회 사무실 ${CHURCH_OFFICE_PHONE}로 문의해 주세요.`;
     }
   }
 }

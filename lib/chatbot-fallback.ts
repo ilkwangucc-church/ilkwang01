@@ -1,7 +1,6 @@
 import {
   loadKnowledgeDocs,
   searchKnowledgeDocs,
-  serializeKnowledgeDocs,
   type KnowledgeDoc,
 } from "@/lib/chatbot-kb";
 import {
@@ -17,6 +16,12 @@ import {
   formatWorshipReply,
 } from "@/lib/chatbot-dialogue-db";
 import { findFaqReply } from "@/lib/chatbot-faq-db";
+import {
+  buildOfficeInquiryReply,
+  buildScopeGuidanceReply,
+  isDetailedInquiry,
+  isSupportedGuideQuery,
+} from "@/lib/chatbot-guard";
 
 interface ChatMessageLike {
   role: "user" | "assistant" | "system";
@@ -124,10 +129,6 @@ function composeDirectAnswer(query: string, docs: KnowledgeDoc[]): string | null
     }
   }
 
-  if (top.content.length <= 380) {
-    return `${top.content}\n\n원하시면 관련 메뉴나 페이지 경로까지 이어서 안내해 드리겠습니다.`;
-  }
-
   return null;
 }
 
@@ -149,30 +150,27 @@ export async function runFallbackChatbotAI(messages: ChatMessageLike[]): Promise
     return normalizeAnswer(dialogueReply);
   }
 
+  if (isDetailedInquiry(query)) {
+    return buildOfficeInquiryReply();
+  }
+
+  if (!isSupportedGuideQuery(query)) {
+    return buildScopeGuidanceReply();
+  }
+
   const docs = await loadKnowledgeDocs();
   const relevantDocs = searchKnowledgeDocs(query, docs, 6);
 
   if (relevantDocs.length === 0) {
-    return "현재 공개 지식 기준으로는 정확한 내용을 바로 확인하지 못했습니다. 예배, 연락처, 오시는 길, 공지, 설교, 사이트 메뉴, 관리자 기능, API 구조처럼 질문을 조금 더 구체적으로 말씀해 주시면 이어서 확인해 드리겠습니다.";
+    return buildScopeGuidanceReply();
   }
 
   const direct = composeDirectAnswer(query, relevantDocs);
   if (direct) return normalizeAnswer(direct);
 
-  const summary = relevantDocs
-    .slice(0, 3)
-    .map((doc) => `${doc.title}: ${shorten(doc.content)}`)
-    .join("\n\n");
+  if (relevantDocs.length > 0 && relevantDocs[0]) {
+    return normalizeAnswer(`${shorten(relevantDocs[0].content, 260)}\n\n필요하시면 예배, 위치, 다음세대, 주보, 설교, 연락처 중 어떤 안내가 필요한지 바로 이어서 도와드리겠습니다.`);
+  }
 
-  const detailBlock = serializeKnowledgeDocs(relevantDocs.slice(0, 2));
-  const answer = [
-    "질문과 가장 가까운 정보를 기준으로 정리해 드리겠습니다.",
-    summary,
-    detailBlock ? `추가 참고 정보:\n${detailBlock}` : "",
-    "더 구체적인 메뉴명, 페이지 경로, 기능명, 예배명이나 날짜를 말씀해 주시면 그 기준으로 더 정확히 안내해 드리겠습니다.",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-
-  return normalizeAnswer(answer);
+  return buildScopeGuidanceReply();
 }

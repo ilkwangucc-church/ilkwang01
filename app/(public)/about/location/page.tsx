@@ -63,7 +63,7 @@ export default function LocationPage() {
             {[
               { name: "주일 1부 예배", time: "오전 9:30" },
               { name: "주일 2부 예배", time: "오전 11:00" },
-              { name: "주일 3부 예배", time: "오후 1:30" },
+              { name: "주일 오후예배", time: "오후 1:30" },
               { name: "새벽기도회", time: "매일 오전 5:00" },
               { name: "수요오전기도회", time: "수요일 오전 10:30" },
               { name: "수요성경공부", time: "수요일 오후 8:00" },
