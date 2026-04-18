@@ -16,6 +16,7 @@ import {
   formatSermonReply,
   formatWorshipReply,
 } from "@/lib/chatbot-dialogue-db";
+import { findFaqReply } from "@/lib/chatbot-faq-db";
 
 interface ChatMessageLike {
   role: "user" | "assistant" | "system";
@@ -136,6 +137,11 @@ export async function runFallbackChatbotAI(messages: ChatMessageLike[]): Promise
 
   if (!query) {
     return formatLightGreetingReply();
+  }
+
+  const faqReply = findFaqReply(query);
+  if (faqReply) {
+    return normalizeAnswer(faqReply);
   }
 
   const dialogueReply = findDialogueReply(query);

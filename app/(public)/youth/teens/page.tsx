@@ -35,8 +35,8 @@ export default function TeensPage() {
             <div className="bg-indigo-50 rounded-2xl p-5 sm:p-7">
               <h3 className="font-bold text-indigo-800 mb-3 sm:mb-4 text-base sm:text-lg">주일 예배</h3>
               <ul className="text-sm text-gray-700 space-y-2">
-                <li>매 주일 오전 11:00</li>
-                <li>교육관 대강당</li>
+                <li>매 주일 오전 9:00</li>
+                <li>3층 소예배실</li>
                 <li>말씀 중심 강해 설교</li>
                 <li>청소년 찬양팀 인도</li>
               </ul>

@@ -98,9 +98,9 @@ export function formatLocationReply(): string {
 export function formatNextGenerationReply(): string {
   return blocks(
     section("다음세대 안내", [
-      "유초등부 주일 오전 11:00",
-      "중고등부 주일 오전 11:00",
-      "청년부 주일 오후 1:30",
+      "유초등부 주일 오전 11:00 / 4층 유초등부실",
+      "중고등부 주일 오전 9:00 / 3층 소예배실",
+      "청년부 주일 오후 1:30 / 3층 소예배실",
     ]),
     section("바로 찾는 안내", [
       "유초등부 /youth/sunday",
@@ -160,13 +160,13 @@ const DIALOGUE_SEEDS: DialogueSeed[] = [
   sharedSeed(
     "greeting_morning",
     ["아침", "굿모닝", "morning"],
-    ["좋은 아침이에요", "굿모닝", "아침인데 문의해도 돼요", "오늘 아침 예배 있어요?", "good morning"],
+    ["좋은 아침이에요", "굿모닝", "아침 인사드려요", "오늘도 평안한 아침이에요", "good morning"],
     "좋은 아침입니다. 오늘 방문이나 예배를 준비 중이시면 필요한 안내만 바로 정리해 드릴게요.",
   ),
   sharedSeed(
     "greeting_evening",
     ["저녁", "밤", "evening", "tonight"],
-    ["좋은 저녁이에요", "늦은 시간인데 문의돼요", "밤에 물어봐도 되나요", "오늘 밤에도 답해요?", "good evening"],
+    ["좋은 저녁이에요", "늦은 밤 인사드려요", "오늘 저녁도 평안하세요", "밤 인사드려요", "good evening"],
     "좋은 저녁입니다. 늦은 시간에도 편하게 물어보세요. 예배 시간이나 위치 안내는 바로 도와드릴 수 있습니다.",
   ),
   sharedSeed(
@@ -299,19 +299,19 @@ const DIALOGUE_SEEDS: DialogueSeed[] = [
     "kids_ministry",
     ["유초등부", "유치부", "아동부", "초등부"],
     ["유초등부 예배 시간 알려주세요", "유치부는 몇 시예요", "아동부 안내해 주세요", "초등학생 예배가 있나요", "주일학교 정보 주세요"],
-    "유초등부는 주일 오전 11:00에 운영됩니다. 유치부는 본관 2층 유치부실, 아동부는 교육관 101·102호를 사용합니다.",
+    "유초등부는 주일 오전 11:00에 4층 유초등부실에서 운영됩니다.",
   ),
   sharedSeed(
     "teens_ministry",
     ["중고등부", "청소년", "teen"],
     ["중고등부 예배 시간 알려주세요", "청소년 예배가 있나요", "teen ministry", "중학생도 갈 수 있나요", "고등부 안내해 주세요"],
-    "중고등부는 주일 오전 11:00에 교육관 대강당에서 예배드립니다. 금요 기도 모임과 소그룹 성경공부도 함께 운영됩니다.",
+    "중고등부는 주일 오전 9:00에 3층 소예배실에서 예배드립니다. 금요 기도 모임과 소그룹 성경공부도 함께 운영됩니다.",
   ),
   sharedSeed(
     "young_adults",
     ["청년부", "청년", "young adults"],
     ["청년부 안내해 주세요", "청년 예배 몇 시예요", "young adults ministry", "청년 모임이 있나요", "대학생도 갈 수 있나요"],
-    "청년부는 주일 오후 1:30 예배와 청년 모임을 중심으로 운영됩니다. 금요 성경공부와 소그룹 모임도 함께 진행됩니다.",
+    "청년부는 주일 오후 1:30에 3층 소예배실에서 예배드리고, 예배 후 청년 모임으로 이어집니다. 금요 성경공부와 소그룹 모임도 함께 진행됩니다.",
   ),
   sharedSeed(
     "online_worship",
@@ -430,7 +430,13 @@ function tokenize(text: string): string[] {
   );
 }
 
+function isFactualChurchQuery(query: string): boolean {
+  return /예배|시간|주소|위치|오시는 길|전화|문의|연락|담임목사|목사|교회소개|비전|역사|유초등부|유치부|아동부|중고등부|청년부|다음세대|주보|공지|행사|설교|헌금|계좌|등록|성경|창세기|출애굽기|복음서|예수님|구약|신약|기도회|수요|새벽/i.test(query);
+}
+
 export function searchDialogueExamples(query: string, limit = 5): DialogueExample[] {
+  if (isFactualChurchQuery(query)) return [];
+
   const normalizedQuery = normalize(query);
   const compactQuery = compact(query);
   const tokens = tokenize(query);
@@ -461,6 +467,8 @@ export function searchDialogueExamples(query: string, limit = 5): DialogueExampl
 }
 
 export function findDialogueReply(query: string): string | null {
+  if (isFactualChurchQuery(query)) return null;
+
   const matches = searchDialogueExamples(query, 1);
   const best = matches[0];
   if (!best) return null;

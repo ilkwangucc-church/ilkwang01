@@ -41,7 +41,7 @@ export default function SundaySchoolPage() {
               </p>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li>주일 오전 11:00</li>
-                <li>유치부실 (본관 2층)</li>
+                <li>4층 유초등부실</li>
                 <li>담당 교역자 별도 운영</li>
               </ul>
             </div>
@@ -57,7 +57,7 @@ export default function SundaySchoolPage() {
               </p>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li>주일 오전 11:00</li>
-                <li>교육관 101·102호</li>
+                <li>4층 유초등부실</li>
                 <li>담당 전도사 2인 운영</li>
               </ul>
             </div>

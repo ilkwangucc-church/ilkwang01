@@ -80,10 +80,10 @@ export default function YouthPage() {
           {/* 모바일: 카드형 */}
           <div className="sm:hidden space-y-3">
             {[
-              { dept: "유치부", target: "5~7세", time: "주일 오전 11:00", place: "유치부실" },
-              { dept: "아동부 (초등부)", target: "초등학교 1~6학년", time: "주일 오전 11:00", place: "교육관 101호" },
-              { dept: "중고등부", target: "중학교 1학년 ~ 고등학교 3학년", time: "주일 오전 11:00", place: "교육관 대강당" },
-              { dept: "청년부", target: "대학생 ~ 30대 미혼", time: "주일 오후 1:30 (3부)", place: "본당" },
+              { dept: "유치부", target: "5~7세", time: "주일 오전 11:00", place: "4층 유초등부실" },
+              { dept: "아동부 (초등부)", target: "초등학교 1~6학년", time: "주일 오전 11:00", place: "4층 유초등부실" },
+              { dept: "중고등부", target: "중학교 1학년 ~ 고등학교 3학년", time: "주일 오전 9:00", place: "3층 소예배실" },
+              { dept: "청년부", target: "대학생 ~ 30대 미혼", time: "주일 오후 1:30 (3부)", place: "3층 소예배실" },
             ].map((row, i) => (
               <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <p className="font-bold text-gray-900 text-sm mb-2">{row.dept}</p>
@@ -108,10 +108,10 @@ export default function YouthPage() {
               </thead>
               <tbody>
                 {[
-                  { dept: "유치부", target: "5~7세", time: "주일 오전 11:00", place: "유치부실" },
-                  { dept: "아동부 (초등부)", target: "초등학교 1~6학년", time: "주일 오전 11:00", place: "교육관 101호" },
-                  { dept: "중고등부", target: "중학교 1학년 ~ 고등학교 3학년", time: "주일 오전 11:00", place: "교육관 대강당" },
-                  { dept: "청년부", target: "대학생 ~ 30대 미혼", time: "주일 오후 1:30 (3부)", place: "본당" },
+                  { dept: "유치부", target: "5~7세", time: "주일 오전 11:00", place: "4층 유초등부실" },
+                  { dept: "아동부 (초등부)", target: "초등학교 1~6학년", time: "주일 오전 11:00", place: "4층 유초등부실" },
+                  { dept: "중고등부", target: "중학교 1학년 ~ 고등학교 3학년", time: "주일 오전 9:00", place: "3층 소예배실" },
+                  { dept: "청년부", target: "대학생 ~ 30대 미혼", time: "주일 오후 1:30 (3부)", place: "3층 소예배실" },
                 ].map((row, i) => (
                   <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="px-4 py-3 font-medium text-gray-900">{row.dept}</td>

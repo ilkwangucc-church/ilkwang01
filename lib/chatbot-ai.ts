@@ -21,6 +21,11 @@ import {
   searchDialogueExamples,
   serializeDialogueExamples,
 } from "@/lib/chatbot-dialogue-db";
+import {
+  findFaqReply,
+  searchFaqEntries,
+  serializeFaqEntries,
+} from "@/lib/chatbot-faq-db";
 import { runFallbackChatbotAI } from "@/lib/chatbot-fallback";
 
 const ESCALATION_KEYWORDS = [
@@ -157,6 +162,11 @@ export async function runChatbotAI(messages: ChatMessage[]): Promise<string> {
   const userLang = lastUser ? detectLanguage(lastUser.content) : "Korean";
 
   if (lastUser) {
+    const faqReply = findFaqReply(lastUser.content);
+    if (faqReply) {
+      return faqReply;
+    }
+
     const dialogueReply = findDialogueReply(lastUser.content);
     if (dialogueReply) {
       return dialogueReply;
@@ -176,10 +186,12 @@ export async function runChatbotAI(messages: ChatMessage[]): Promise<string> {
     const relevantDocs = lastUser
       ? searchKnowledgeDocs(lastUser.content, allDocs, 8)
       : allDocs.slice(0, 8);
+    const relevantFaqs = lastUser ? searchFaqEntries(lastUser.content, 6) : [];
     const relevantDialogues = lastUser ? searchDialogueExamples(lastUser.content, 4) : [];
 
     const knowledgeText = [
       relevantDialogues.length > 0 ? `[대화 예시]\n${serializeDialogueExamples(relevantDialogues)}` : "",
+      relevantFaqs.length > 0 ? `[FAQ 데이터]\n${serializeFaqEntries(relevantFaqs)}` : "",
       serializeKnowledgeDocs(relevantDocs.length > 0 ? relevantDocs : allDocs.slice(0, 8)),
     ]
       .filter(Boolean)

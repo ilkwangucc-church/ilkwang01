@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const meetings = [
-  { Icon: Church,   title: "주일 예배",    detail: "매 주일 오후 1:30\n3부 예배 함께 참여\n예배 후 청년 모임" },
+  { Icon: Church,   title: "주일 예배",    detail: "매 주일 오후 1:30\n3층 소예배실\n예배 후 청년 모임" },
   { Icon: BookOpen, title: "금요 성경공부", detail: "매주 금요일 오후 7:30\n소그룹 말씀 나눔\n찬양 & 기도 포함" },
   { Icon: Coffee,   title: "소그룹 & 교제", detail: "격주 토요일 오후\n소그룹(5~8명) 운영\n삶 나눔과 기도" },
 ];
@@ -75,7 +75,7 @@ export default function YoungAdultsPage() {
             <h3 className="text-lg sm:text-xl font-bold mb-3">청년부에 오세요!</h3>
             <p className="text-green-200 text-sm mb-5 sm:mb-6 break-keep">
               믿음이 있든 없든, 교회가 처음이든 — 누구나 환영합니다.<br />
-              매 주일 오후 1:30 본당에서 먼저 예배를 드리고 오세요.
+              매 주일 오후 1:30 3층 소예배실로 오시면 됩니다.
             </p>
             <Link href="/contact" className="inline-block px-7 py-3 bg-[#FFC107] text-gray-900 rounded-full font-bold hover:bg-yellow-400 transition-colors min-h-[44px] flex items-center justify-center w-fit mx-auto">
               문의하기
